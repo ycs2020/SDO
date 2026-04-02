@@ -3,7 +3,8 @@
 include_once '../sdo-funciones/conexion.php';
 include_once '../sdo-funciones/funciones.php';
 
-include '../vendor/quickchart/QuickChart.php';
+
+include_once '../vendor/quickchart/QuickChart.php';
 
 
 date_default_timezone_set('America/Santiago');
