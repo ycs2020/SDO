@@ -45,4 +45,13 @@ if ($rolUsuario2 == "personal") {
 
 }
 
+if(isset($_POST['idConsumo'])){
+    $idConsumo = $_POST['idConsumo'];
+    $fecha = $_POST['fecha'];
+    $obs = $_POST['obs'];
+
+    $sql = "INSERT INTO `criogenico_obs`(`id`, `obs`, `fecha`, `idConvenio`) VALUES ('[value-1]','[value-2]','[value-3]','[value-4]')";
+
+
+}
 

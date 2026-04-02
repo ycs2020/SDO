@@ -439,12 +439,13 @@ date_default_timezone_set('America/Santiago');
                                           </div>
                                           <div class="modal-body">
                                             <label>Fecha</label>
-                                            <input type="text" class="form-control"  value="${row.now}" readonly>
+                                            <input type="text" class="form-control" name="fecha"  value="${row.now}" readonly>
                                             <br>
                                             <label>Observación</label>
                                             <textarea class="form-control" name="obs" rows="15" style="resize: none"></textarea>
                                           </div>
                                           <div class="modal-footer">
+                                            <input type="text" name="idConsumo" value="${row.id}">
                                             <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                                             <button type="button" class="btn btn-primary">Guardar Camnbios</button>
                                           </div>
