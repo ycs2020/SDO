@@ -14,19 +14,30 @@ $datos = [];
 
 while ($fila = $resultado->fetch_assoc()) {
     $id = $fila['id'];
+
+    // FORMATEOS
     $fila["fecha"] = date("m/Y", strtotime($fila["fecha"]));
     $fila['metrosConsumidos'] = number_format($fila['metrosConsumidos'], 0, ',', '.');
     $fila['precioUnitario'] = '$'.number_format($fila['precioUnitario'], 0, ',', '.');
     $fila['valorTotal']     = '$'.number_format($fila['valorTotal'], 0, ',', '.');
-    $fila['valorTotalConIVA']     = '$'.number_format($fila['valorTotalConIVA'], 0, ',', '.');
+    $fila['valorTotalConIVA'] = '$'.number_format($fila['valorTotalConIVA'], 0, ',', '.');
 
-    $now = date('Y-m-d H:i:s');
+    $fila['now'] = date('Y-m-d H:i:s');
 
-    $fila['now'] = $now;
+    // 🔽 CONSULTA DE OBSERVACIONES
+    $obsQuery = $conexion->prepare("SELECT fecha, obs FROM criogenico_obs WHERE idConsumo = ?");
+    $obsQuery->bind_param("i", $id);
+    $obsQuery->execute();
+    $obsResult = $obsQuery->get_result();
+
+    $observaciones = [];
+    while ($obs = $obsResult->fetch_assoc()) {
+        $observaciones[] = $obs;
+    }
+
+    $fila['observaciones'] = $observaciones;
 
     $datos[] = $fila;
-
-
 }
 echo json_encode(['data' => $datos], JSON_UNESCAPED_UNICODE);
 

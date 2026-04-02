@@ -424,38 +424,98 @@ date_default_timezone_set('America/Santiago');
                     {
                         "data": null,
                         "render": function (data, type, row) {
-                            return `<button class="btn btn-success" data-toggle="modal" data-target="#exampleModal${row.id}">
-                                    <i class="fas fa-plus"> Agregar Observacion</i>
-                                    </button>
-                            <form action="../sdo-funciones/criogenico_nueva_observacion.php" method="post" enctype="multipart/form-data">
-                                <div class="modal fade" id="exampleModal${row.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                      <div class="modal-dialog" role="document">
-                                        <div class="modal-content">
-                                          <div class="modal-header bg-secondary">
-                                            <h5 class="modal-title" id="exampleModalLabel">Agregar Observación</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                              <span aria-hidden="true">&times;</span>
-                                            </button>
-                                          </div>
-                                          <div class="modal-body">
-                                            <label>Fecha</label>
-                                            <input type="text" class="form-control" name="fecha"  value="${row.now}" readonly>
-                                            <br>
-                                            <label>Observación</label>
-                                            <textarea class="form-control" name="obs" rows="15" style="resize: none"></textarea>
-                                          </div>
-                                          <div class="modal-footer">
-                                            <input type="text" name="idConsumo" value="${row.id}">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                            <button type="button" class="btn btn-primary">Guardar Camnbios</button>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                            </form>
+                            return `
+<div class="d-flex justify-content-center">
 
+    <button title="Agregar Observacion" class="btn btn-success" data-toggle="modal" data-target="#exampleModal${row.id}">
+        <i class="fas fa-plus"></i>
+    </button>
 
-                        `;
+    <button title="Ver Observacion" class="btn btn-success" data-toggle="modal" data-target="#listado${row.id}">
+        <i class="fas fa-eye"></i>
+    </button>
+
+</div>
+
+<form action="../sdo-funciones/criogenico_nueva_observacion.php" method="post" enctype="multipart/form-data">
+    <div class="modal fade" id="exampleModal${row.id}" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+
+                <div class="modal-header bg-secondary">
+                    <h5 class="modal-title">Agregar Observación</h5>
+                    <button type="button" class="close" data-dismiss="modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <label>Fecha</label>
+                    <input type="text" class="form-control" name="fecha" value="${row.now}" readonly>
+
+                    <br>
+
+                    <label>Observación</label>
+                    <textarea class="form-control" name="obs" rows="15" style="resize: none"></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <input type="hidden" name="idConsumo" value="${row.id}">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- Modal -->
+<div class="modal fade" id="listado${row.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+      <div class="modal-header bg-success">
+        <h5 class="modal-title" id="exampleModalLabel">Observaciones</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+<table class="table table-bordered">
+    <thead class="bg-secondary">
+        <tr>
+            <th>Fecha</th>
+            <th>Observación</th>
+        </tr>
+    </thead>
+    <tbody>
+        ${
+                                row.observaciones.length > 0
+                                    ? row.observaciones.map(obs => `
+                <tr>
+                    <td>${obs.fecha}</td>
+                    <td>${obs.obs}</td>
+                </tr>
+            `).join('')
+                                    : `<tr><td colspan="2" class="text-center">Sin observaciones</td></tr>`
+                            }
+    </tbody>
+<tfoot class="bg-secondary">
+        <tr>
+            <th>Fecha</th>
+            <th>Observación</th>
+        </tr>
+    </tfoot>
+</table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+`;
                         }
                     }
                 ],

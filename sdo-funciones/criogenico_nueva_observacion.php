@@ -50,8 +50,20 @@ if(isset($_POST['idConsumo'])){
     $fecha = $_POST['fecha'];
     $obs = $_POST['obs'];
 
-    $sql = "INSERT INTO `criogenico_obs`(`id`, `obs`, `fecha`, `idConvenio`) VALUES ('[value-1]','[value-2]','[value-3]','[value-4]')";
+    $sql = "INSERT INTO `criogenico_obs`(`id`, `obs`, `fecha`, `idConsumo`) 
+    VALUES (null,'$obs','$fecha',$idConsumo)";
 
+    $res = mysqli_query($conexion,$sql);
 
+    if($res) {
+        header('Location:../'.$rutaDireccion.'/criogenico_datos.php?exito=true');
+        exit();
+    }else{
+        header('Location:../'.$rutaDireccion.'/criogenico_datos.php?error=true');
+        exit();
+    }
+}else{
+    header('Location:../'.$rutaDireccion.'/criogenico_datos.php?errorGeneral=true');
+    exit();
 }
 
