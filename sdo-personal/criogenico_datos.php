@@ -426,18 +426,21 @@ date_default_timezone_set('America/Santiago');
                         "render": function (data, type, row) {
                             return `
 <div class="d-flex justify-content-center">
+    <button title="Agregar Observacion" class="btn btn-warning" data-toggle="modal" data-target="#modificar${row.id}">
+            <i class="fas fa-pen"></i>
+    </button>
 
     <button title="Agregar Observacion" class="btn btn-success" data-toggle="modal" data-target="#exampleModal${row.id}">
         <i class="fas fa-plus"></i>
     </button>
 
-    <button title="Ver Observacion" class="btn btn-success" data-toggle="modal" data-target="#listado${row.id}">
+    <button title="Ver Observacion" class="btn btn-primary" data-toggle="modal" data-target="#listado${row.id}">
         <i class="fas fa-eye"></i>
     </button>
 
 </div>
 
-<form action="../sdo-funciones/criogenico_nueva_observacion.php" method="post" enctype="multipart/form-data">
+        <form action="../sdo-funciones/criogenico_nueva_observacion.php" method="post" enctype="multipart/form-data">
     <div class="modal fade" id="exampleModal${row.id}" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -470,50 +473,71 @@ date_default_timezone_set('America/Santiago');
     </div>
 </form>
 
-<!-- Modal -->
-<div class="modal fade" id="listado${row.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl" role="document">
-    <div class="modal-content">
-      <div class="modal-header bg-success">
-        <h5 class="modal-title" id="exampleModalLabel">Observaciones</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-<table class="table table-bordered">
-    <thead class="bg-secondary">
-        <tr>
-            <th>Fecha</th>
-            <th>Observación</th>
-        </tr>
-    </thead>
-    <tbody>
-        ${
-                                row.observaciones.length > 0
-                                    ? row.observaciones.map(obs => `
+        <!-- Modal -->
+        <div class="modal fade" id="listado${row.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+              <div class="modal-header bg-success">
+                <h5 class="modal-title" id="exampleModalLabel">Observaciones</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+        <table class="table table-bordered">
+            <thead class="bg-secondary">
                 <tr>
-                    <td>${obs.fecha}</td>
-                    <td>${obs.obs}</td>
+                    <th>Fecha</th>
+                    <th>Observación</th>
                 </tr>
-            `).join('')
-                                    : `<tr><td colspan="2" class="text-center">Sin observaciones</td></tr>`
-                            }
-    </tbody>
-<tfoot class="bg-secondary">
-        <tr>
-            <th>Fecha</th>
-            <th>Observación</th>
-        </tr>
-    </tfoot>
-</table>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
+            </thead>
+            <tbody>
+                ${
+                                        row.observaciones.length > 0
+                                            ? row.observaciones.map(obs => `
+                        <tr>
+                            <td>${obs.fecha}</td>
+                            <td>${obs.obs}</td>
+                        </tr>
+                    `).join('')
+                                            : `<tr><td colspan="2" class="text-center">Sin observaciones</td></tr>`
+                                    }
+            </tbody>
+        <tfoot class="bg-secondary">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Observación</th>
+                </tr>
+            </tfoot>
+        </table>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+                <!-- Modal -->
+        <div class="modal fade" id="modificar${row.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                ...
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
 
 `;
                         }

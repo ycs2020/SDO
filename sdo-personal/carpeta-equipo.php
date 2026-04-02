@@ -2891,7 +2891,7 @@ if (isset($_POST['idCarpeta'])) {
                                                                                         <input type="hidden" id="idCarpeta" name="idCarpeta" value="<?php echo $idEquipo ?>">
                                                                                         <button type="submit" title="Visualizar Hoja de Vida del equipo" class="btn btn-primary btn-sm"><i class="far fa-file"></i></button>
                                                                                     </form>
-                                                                                    <form action="equipo.php" method="POST" style="display: inline">
+                                                                                    <form action="equipo.php" method="POST" target="_blank" style="display: inline">
                                                                                         <input type="hidden" id="idCategoria" name="idCategoria" value="<?php echo $idCarpeta ?>">
                                                                                         <input type="hidden" id="idEquipo" name="idEquipo" value="<?php echo $idEquipo ?>">
                                                                                         <button type="submit" title="Informacion del equipo" class="btn btn-info btn-sm"><i class="fa-solid fa-door-open"></i></button>
