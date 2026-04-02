@@ -1,6 +1,8 @@
 <?php
-include '../sdo-funciones/conexion.php';
-include '../sdo-funciones/funciones.php';
+//SE CAMBIA A INCLUDE_ONCE PARA EVITAR PROBLEMAS DE INCLUSIONES MÚLTIPLES EN CASO DE QUE ESTE ARCHIVO SEA INCLUIDO VARIAS VECES EN EL FUTURO
+
+include_once '../sdo-funciones/conexion.php';
+include_once '../sdo-funciones/funciones.php';
 
 include '../vendor/quickchart/QuickChart.php';
 
