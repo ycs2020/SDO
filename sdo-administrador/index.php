@@ -9,6 +9,7 @@ include '../vendor/quickchart/QuickChart.php';
 date_default_timezone_set('America/Santiago');
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
+
 }
 
 $nomUsuario = $_SESSION['nomUsuario'];
