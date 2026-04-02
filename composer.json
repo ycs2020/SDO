@@ -1,0 +1,12 @@
+{
+    "require": {
+        "php": "7.4.33",
+        "phpmailer/phpmailer": "^6.6",
+        "spipu/html2pdf": "^4.6",
+        "mpdf/mpdf": "8.0.16",
+        "phpoffice/phpword": "^1.0",
+        "dompdf/dompdf": "3.0.0",
+        "setasign/fpdi": "2.1",
+        "phpoffice/phpspreadsheet": "1.23"
+    }
+}

@@ -1,0 +1,57 @@
+<?php
+include_once 'conexion.php';
+include_once 'funciones.php';
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+$userUsuario = $_SESSION['userUsuario'];
+$idUsuario = $_SESSION['idUsuario'];
+$nomUsuario = $_SESSION['nomUsuario'];
+
+$rolUsuario = $_SESSION['rolUsuario'];
+
+$rolUsuario2 = strtolower($rolUsuario);
+
+$rutaDireccion = "";
+
+if ($rolUsuario2 == "personal") {
+    $tipoUsuario = 'personal';
+    $rutaDireccion = "sdo-personal";
+} else if ($rolUsuario2 == "administrativo") {
+    $tipoUsuario = 'administrativo';
+    $rutaDireccion = "sdo-admtec";
+} else if ($rolUsuario2 == "bodega pañol") {
+    $tipoUsuario = 'bodega pañol';
+    $rutaDireccion = "sdo-bodega-panol";
+} else if ($rolUsuario2 == "jefe tecnico") {
+    $tipoUsuario = 'jefe tecnico';
+    $rutaDireccion = "sdo-jefestecnicos";
+} else if ($rolUsuario2 == "administrador") {
+    $tipoUsuario = 'administrador';
+    $rutaDireccion = "sdo-administrador";
+} else if ($rolUsuario2 == "directiva") {
+    $tipoUsuario = 'directiva';
+    $rutaDireccion = "sdo-directiva";
+} else {
+    header('Location: ../sdo-flujo/login_index.php?errorSesion=true');
+}
+
+
+if(isset($_POST['idCredencial'])){
+    $idCredencial = $_POST['idCredencial'];
+
+    $sqlUPDATE = "UPDATE credenciales_rrhh SET activacionCredencial = 0 WHERE idCredencial = $idCredencial";
+    $resUPDATE = mysqli_query($conexion,$sqlUPDATE);
+    if($resUPDATE){
+        header('Location: ../'.$rutaDireccion.'/activarRRHH.php?exitoDesac=true');
+        exit();
+    }else{
+        header('Location: ../'.$rutaDireccion.'/activarRRHH.php?errorDesac=true');
+        exit();
+    }
+
+}else{
+    header('Location: ../'.$rutaDireccion.'/activarRRHH.php?idFaltante=true');
+    exit();
+}

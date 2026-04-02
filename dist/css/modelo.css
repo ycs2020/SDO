@@ -1,0 +1,47 @@
+div.mobile {
+    display: none;
+}
+
+div.mobile1 {
+    display: none;
+}
+
+div.desktop {
+    display: inline;
+}
+
+@media only screen and (max-width: 549px) {
+    div.mobile {
+        display: inline;
+    }
+    div.mobile1 {
+        display: none;
+    }
+    div.desktop {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 550px) and (max-width: 800px) {
+    div.mobile {
+        display: none;
+    }
+    div.mobile1 {
+        display: inline;
+    }
+    div.desktop {
+        display: none;
+    }
+}
+
+@media only screen and (min-width: 801px) and (max-width: 1000px) {
+    div.mobile {
+        display: none;
+    }
+    div.mobile1 {
+        display: none;
+    }
+    div.desktop {
+        display: inline;
+    }
+}

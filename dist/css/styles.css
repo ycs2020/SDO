@@ -1,0 +1,51 @@
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
+
+.tree {
+    position: relative;
+}
+
+.trunk {
+    position: absolute;
+    bottom: 0;
+    left: calc(50% - 20px);
+    width: 40px;
+    height: 60px;
+    background-color: #8B4513;
+    border-radius: 10px;
+}
+
+.foliage {
+    position: relative;
+}
+
+.layer {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 50px solid transparent;
+    border-right: 50px solid transparent;
+}
+
+#top-layer {
+    top: 0;
+    border-bottom: 70px solid #228B22;
+}
+
+#middle-layer {
+    top: 30px;
+    border-bottom: 60px solid #228B22;
+}
+
+#bottom-layer {
+    top: 60px;
+    border-bottom: 50px solid #228B22;
+}

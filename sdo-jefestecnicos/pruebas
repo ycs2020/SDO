@@ -1,0 +1,8 @@
+$sql11 = "SELECT * FROM categorias_equipo WHERE idDepartamento = $idDepartamento ";
+$res11 = mysqli_query($conexion,$sql11);
+while($row11 = $res11->fetch_assoc()){
+    $datos11 = [];
+    $datos11['idCategoria'] = $row11['idCategoria'];
+
+
+}

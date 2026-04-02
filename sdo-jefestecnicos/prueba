@@ -1,0 +1,785 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OrganizationChannel version="1.0" idCount="1469">
+	 <Channel idUnique="9" idDevice="3" idRegion="1" name="RH4C SC-4-6" no="0" type="6" />
+     <Channel idUnique="10" idDevice="3" idRegion="1" name="BD EQUIPOS P-4-32" no="1" type="6" />
+     <Channel idUnique="11" idDevice="3" idRegion="1" name="BD ROPA LIMPIA P-4-29" no="2" type="6" />
+     <Channel idUnique="12" idDevice="3" idRegion="1" name="STC-4-03" no="3" type="6" />
+     <Channel idUnique="13" idDevice="3" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="14" idDevice="3" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="15" idDevice="3" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="16" idDevice="3" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="17" idDevice="2" idRegion="1" name="RH2D SC-2-24" no="0" type="6" />
+     <Channel idUnique="18" idDevice="2" idRegion="1" name="STC-2-1" no="1" type="6" />
+     <Channel idUnique="19" idDevice="2" idRegion="1" name="MP-2-A6" no="2" type="6" />
+     <Channel idUnique="20" idDevice="2" idRegion="1" name="SE-2-4" no="3" type="6" />
+     <Channel idUnique="21" idDevice="2" idRegion="1" name="BD ROPA LIMPIA J-2-21" no="4" type="6" />
+     <Channel idUnique="22" idDevice="2" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="23" idDevice="2" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="24" idDevice="2" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="25" idDevice="4" idRegion="1" name="MP-S1-A4" no="0" type="6" />
+     <Channel idUnique="26" idDevice="4" idRegion="1" name="BD FARMACO G-S1-43" no="1" type="6" />
+     <Channel idUnique="27" idDevice="4" idRegion="1" name="SE-S1-02" no="2" type="6" />
+     <Channel idUnique="28" idDevice="4" idRegion="1" name="TRABAJO SUCIO C-S1-2" no="3" type="6" />
+     <Channel idUnique="29" idDevice="4" idRegion="1" name="BD ROPA SUCIA I-S1-44" no="4" type="6" />
+     <Channel idUnique="30" idDevice="4" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="31" idDevice="4" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="32" idDevice="4" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="41" idDevice="7" idRegion="1" name="RH5A SC-5-4" no="0" type="6" />
+     <Channel idUnique="42" idDevice="7" idRegion="1" name="BD ROPA LIMPIA N-5-14" no="1" type="6" />
+     <Channel idUnique="43" idDevice="7" idRegion="1" name="MP (O-5-56)" no="2" type="6" />
+     <Channel idUnique="44" idDevice="7" idRegion="1" name="MP (N-5-58)" no="3" type="6" />
+     <Channel idUnique="45" idDevice="7" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="46" idDevice="7" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="47" idDevice="7" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="48" idDevice="7" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="49" idDevice="5" idRegion="1" name="SE-1-05" no="0" type="6" />
+     <Channel idUnique="50" idDevice="5" idRegion="1" name="B-1-20(1)" no="1" type="6" />
+     <Channel idUnique="51" idDevice="5" idRegion="1" name="B-1-20(2)" no="2" type="6" />
+     <Channel idUnique="52" idDevice="5" idRegion="1" name="RH1A SC-1-23" no="3" type="6" />
+     <Channel idUnique="53" idDevice="5" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="54" idDevice="5" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="55" idDevice="5" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="56" idDevice="5" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="57" idDevice="8" idRegion="1" name="SE-2-12" no="0" type="6" />
+     <Channel idUnique="58" idDevice="8" idRegion="1" name="RH2A SC-2-16" no="1" type="6" />
+     <Channel idUnique="59" idDevice="8" idRegion="1" name="SC-2-17" no="2" type="6" />
+     <Channel idUnique="60" idDevice="8" idRegion="1" name="TECHO MECANICO 1" no="3" type="6" />
+     <Channel idUnique="61" idDevice="8" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="62" idDevice="8" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="63" idDevice="8" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="64" idDevice="8" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="65" idDevice="10" idRegion="1" name="RH0A SC-S1-11" no="0" type="6" />
+     <Channel idUnique="66" idDevice="10" idRegion="1" name="SE-S1-08" no="1" type="6" />
+     <Channel idUnique="67" idDevice="10" idRegion="1" name="BD ECONOMATO G-S1-3" no="2" type="6" />
+     <Channel idUnique="68" idDevice="10" idRegion="1" name="BD NO PERECI G-S1-31" no="3" type="6" />
+     <Channel idUnique="69" idDevice="10" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="70" idDevice="10" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="71" idDevice="10" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="72" idDevice="10" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="73" idDevice="9" idRegion="1" name="STC-5-02" no="0" type="6" />
+     <Channel idUnique="74" idDevice="9" idRegion="1" name="SE-5-2" no="1" type="6" />
+     <Channel idUnique="75" idDevice="9" idRegion="1" name="RH5B SC-5-5" no="2" type="6" />
+     <Channel idUnique="76" idDevice="9" idRegion="1" name="SE-6-1" no="3" type="6" />
+     <Channel idUnique="77" idDevice="9" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="78" idDevice="9" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="79" idDevice="9" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="80" idDevice="9" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="89" idDevice="12" idRegion="1" name="BD EQUIPOS O-5-46" no="0" type="6" />
+     <Channel idUnique="90" idDevice="12" idRegion="1" name="BD ROPA LIMPIA O-5-28" no="1" type="6" />
+     <Channel idUnique="91" idDevice="12" idRegion="1" name="MP(O-5-62)" no="2" type="6" />
+     <Channel idUnique="92" idDevice="12" idRegion="1" name="RH5C SC-5-6" no="3" type="6" />
+     <Channel idUnique="93" idDevice="12" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="94" idDevice="12" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="95" idDevice="12" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="96" idDevice="12" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="97" idDevice="16" idRegion="1" name="BD REPUESTO C-S1-3" no="0" type="6" />
+     <Channel idUnique="98" idDevice="16" idRegion="1" name="SE-S1-01" no="1" type="6" />
+     <Channel idUnique="99" idDevice="16" idRegion="1" name="SE-S1-05" no="2" type="6" />
+     <Channel idUnique="100" idDevice="16" idRegion="1" name="MP-S1-A7" no="3" type="6" />
+     <Channel idUnique="101" idDevice="16" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="102" idDevice="16" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="103" idDevice="16" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="104" idDevice="16" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="105" idDevice="15" idRegion="1" name="SE-03-06" no="0" type="6" />
+     <Channel idUnique="106" idDevice="15" idRegion="1" name="MP(D-3-44)" no="1" type="6" />
+     <Channel idUnique="107" idDevice="15" idRegion="1" name="RH3B SC-3-09" no="2" type="6" />
+     <Channel idUnique="108" idDevice="15" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="109" idDevice="15" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="110" idDevice="15" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="111" idDevice="15" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="112" idDevice="15" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="113" idDevice="13" idRegion="1" name="OF TICS 2 J-3-4" no="0" type="6" />
+     <Channel idUnique="114" idDevice="13" idRegion="1" name="SE-3-5" no="1" type="6" />
+     <Channel idUnique="115" idDevice="13" idRegion="1" name="MP-3-A12" no="2" type="6" />
+     <Channel idUnique="116" idDevice="13" idRegion="1" name="SE-3-7" no="3" type="6" />
+     <Channel idUnique="117" idDevice="13" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="118" idDevice="13" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="119" idDevice="13" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="120" idDevice="13" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="121" idDevice="14" idRegion="1" name="BD EQUIPOS N-4-16" no="0" type="6" />
+     <Channel idUnique="122" idDevice="14" idRegion="1" name="RH4A SC-4-4" no="1" type="6" />
+     <Channel idUnique="123" idDevice="14" idRegion="1" name="STC-4-01" no="2" type="6" />
+     <Channel idUnique="124" idDevice="14" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="125" idDevice="14" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="126" idDevice="14" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="127" idDevice="14" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="128" idDevice="14" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="129" idDevice="17" idRegion="1" name="SE-S1-09" no="0" type="6" />
+     <Channel idUnique="130" idDevice="17" idRegion="1" name="RH0B SC-S1-10" no="1" type="6" />
+     <Channel idUnique="131" idDevice="17" idRegion="1" name="BD DETERGENTE H-S1-6" no="2" type="6" />
+     <Channel idUnique="132" idDevice="17" idRegion="1" name="BD PAÑOL H-S1-25" no="3" type="6" />
+     <Channel idUnique="133" idDevice="17" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="134" idDevice="17" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="135" idDevice="17" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="136" idDevice="17" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="137" idDevice="20" idRegion="1" name="STI-3-5" no="0" type="6" />
+     <Channel idUnique="138" idDevice="20" idRegion="1" name="ACCESO TICS" no="1" type="6" />
+     <Channel idUnique="139" idDevice="20" idRegion="1" name="BD TICS H-3-8" no="2" type="6" />
+     <Channel idUnique="140" idDevice="20" idRegion="1" name="DATA CENTER" no="3" type="6" />
+     <Channel idUnique="141" idDevice="20" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="142" idDevice="20" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="143" idDevice="20" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="144" idDevice="20" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="145" idDevice="18" idRegion="1" name="Door 1" no="0" type="6" />
+     <Channel idUnique="146" idDevice="18" idRegion="1" name="RH1B SC-1-22" no="1" type="6" />
+     <Channel idUnique="147" idDevice="18" idRegion="1" name="SE-1-7" no="2" type="6" />
+     <Channel idUnique="148" idDevice="18" idRegion="1" name="SC-1-21" no="3" type="6" />
+     <Channel idUnique="149" idDevice="18" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="150" idDevice="18" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="151" idDevice="18" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="152" idDevice="18" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="161" idDevice="23" idRegion="1" name="RH0C SC-S1-12" no="0" type="6" />
+     <Channel idUnique="162" idDevice="23" idRegion="1" name="TM-S1-04" no="1" type="6" />
+     <Channel idUnique="163" idDevice="23" idRegion="1" name="STE-S1-02" no="2" type="6" />
+     <Channel idUnique="164" idDevice="23" idRegion="1" name="MP-TH-P0" no="3" type="6" />
+     <Channel idUnique="165" idDevice="23" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="166" idDevice="23" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="167" idDevice="23" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="168" idDevice="23" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="177" idDevice="21" idRegion="1" name="MP (H-2-82)" no="0" type="6" />
+     <Channel idUnique="178" idDevice="21" idRegion="1" name="BD ROPA LIMPIA I-2-60" no="1" type="6" />
+     <Channel idUnique="179" idDevice="21" idRegion="1" name="MP (I-2-77)" no="2" type="6" />
+     <Channel idUnique="180" idDevice="21" idRegion="1" name="SE-2-5" no="3" type="6" />
+     <Channel idUnique="181" idDevice="21" idRegion="1" name="MP (H-2-79)" no="4" type="6" />
+     <Channel idUnique="182" idDevice="21" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="183" idDevice="21" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="184" idDevice="21" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="185" idDevice="24" idRegion="1" name="BD EQUIPOS H-2-42" no="0" type="6" />
+     <Channel idUnique="186" idDevice="24" idRegion="1" name="BD EQUIPOS G-2-32" no="1" type="6" />
+     <Channel idUnique="187" idDevice="24" idRegion="1" name="BD EQUIPOS G-2-31" no="2" type="6" />
+     <Channel idUnique="188" idDevice="24" idRegion="1" name="RH2C SC-2-22" no="3" type="6" />
+     <Channel idUnique="189" idDevice="24" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="190" idDevice="24" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="191" idDevice="24" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="192" idDevice="24" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="193" idDevice="25" idRegion="1" name="RH1E SC-1-26" no="0" type="6" />
+     <Channel idUnique="194" idDevice="25" idRegion="1" name="SE-1-12" no="1" type="6" />
+     <Channel idUnique="195" idDevice="25" idRegion="1" name="Door 3" no="2" type="6" />
+     <Channel idUnique="196" idDevice="25" idRegion="1" name="BD EQUIPOS I-1-26" no="3" type="6" />
+     <Channel idUnique="197" idDevice="25" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="198" idDevice="25" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="199" idDevice="25" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="200" idDevice="25" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="201" idDevice="27" idRegion="1" name="RH2B SC-2-19" no="0" type="6" />
+     <Channel idUnique="202" idDevice="27" idRegion="1" name="SALA ARC D-2-52" no="1" type="6" />
+     <Channel idUnique="203" idDevice="27" idRegion="1" name="BD INSUMOS D-2-60" no="2" type="6" />
+     <Channel idUnique="204" idDevice="27" idRegion="1" name="BD EQUIPOS D-2-17" no="3" type="6" />
+     <Channel idUnique="205" idDevice="27" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="206" idDevice="27" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="207" idDevice="27" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="208" idDevice="27" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="209" idDevice="26" idRegion="1" name="RH1C SC-1-24" no="0" type="6" />
+     <Channel idUnique="210" idDevice="26" idRegion="1" name="SE-1-15" no="1" type="6" />
+     <Channel idUnique="211" idDevice="26" idRegion="1" name="Door 3" no="2" type="6" />
+     <Channel idUnique="212" idDevice="26" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="213" idDevice="26" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="214" idDevice="26" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="215" idDevice="26" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="216" idDevice="26" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="217" idDevice="28" idRegion="1" name="SE-1-10" no="0" type="6" />
+     <Channel idUnique="218" idDevice="28" idRegion="1" name="BD INSUMOS I-1-3" no="1" type="6" />
+     <Channel idUnique="219" idDevice="28" idRegion="1" name="BD EQUIPOS J-1-28" no="2" type="6" />
+     <Channel idUnique="220" idDevice="28" idRegion="1" name="MP-1-A12" no="3" type="6" />
+     <Channel idUnique="221" idDevice="28" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="222" idDevice="28" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="223" idDevice="28" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="224" idDevice="28" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="225" idDevice="30" idRegion="1" name="EE-1-01" no="0" type="6" />
+     <Channel idUnique="226" idDevice="30" idRegion="1" name="BD INSUMO SAMU M-1-4" no="1" type="6" />
+     <Channel idUnique="227" idDevice="30" idRegion="1" name="BD EQUIPO SAMU M-1-9" no="2" type="6" />
+     <Channel idUnique="228" idDevice="30" idRegion="1" name="RL1A SC-1-30" no="3" type="6" />
+     <Channel idUnique="229" idDevice="30" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="230" idDevice="30" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="231" idDevice="30" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="232" idDevice="30" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="233" idDevice="31" idRegion="1" name="MP(N-5-3)" no="0" type="6" />
+     <Channel idUnique="234" idDevice="31" idRegion="1" name="SE-5-01" no="1" type="6" />
+     <Channel idUnique="235" idDevice="31" idRegion="1" name="STC-5-01" no="2" type="6" />
+     <Channel idUnique="236" idDevice="31" idRegion="1" name="BD EQUIPOS N-5-16" no="3" type="6" />
+     <Channel idUnique="237" idDevice="31" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="238" idDevice="31" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="239" idDevice="31" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="240" idDevice="31" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="257" idDevice="35" idRegion="1" name="MP(G-2-61)" no="0" type="6" />
+     <Channel idUnique="258" idDevice="35" idRegion="1" name="SE-2-1" no="1" type="6" />
+     <Channel idUnique="259" idDevice="35" idRegion="1" name="MP-2-A4" no="2" type="6" />
+     <Channel idUnique="260" idDevice="35" idRegion="1" name="SE-2-3" no="3" type="6" />
+     <Channel idUnique="261" idDevice="35" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="262" idDevice="35" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="263" idDevice="35" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="264" idDevice="35" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="265" idDevice="33" idRegion="1" name="RHD1 SC-1-25" no="0" type="6" />
+     <Channel idUnique="266" idDevice="33" idRegion="1" name="SE-1-16" no="1" type="6" />
+     <Channel idUnique="267" idDevice="33" idRegion="1" name="BD INSUMOS H-1-28" no="2" type="6" />
+     <Channel idUnique="268" idDevice="33" idRegion="1" name="BD ARCHIVO H-1-73" no="3" type="6" />
+     <Channel idUnique="269" idDevice="33" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="270" idDevice="33" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="271" idDevice="33" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="272" idDevice="33" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="273" idDevice="34" idRegion="1" name="SC-2-20" no="0" type="6" />
+     <Channel idUnique="274" idDevice="34" idRegion="1" name="SE-2-10" no="1" type="6" />
+     <Channel idUnique="275" idDevice="34" idRegion="1" name="MP(D-2-1)" no="2" type="6" />
+     <Channel idUnique="276" idDevice="34" idRegion="1" name="BD INSUMOS D-2-16" no="3" type="6" />
+     <Channel idUnique="277" idDevice="34" idRegion="1" name="MP-2-A8" no="4" type="6" />
+     <Channel idUnique="278" idDevice="34" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="279" idDevice="34" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="280" idDevice="34" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="281" idDevice="36" idRegion="1" name="MP (C-1-12)" no="0" type="6" />
+     <Channel idUnique="282" idDevice="36" idRegion="1" name="MP (C-1-29)" no="1" type="6" />
+     <Channel idUnique="283" idDevice="36" idRegion="1" name="Door 3" no="2" type="6" />
+     <Channel idUnique="284" idDevice="36" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="285" idDevice="36" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="286" idDevice="36" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="287" idDevice="36" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="288" idDevice="36" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="289" idDevice="37" idRegion="1" name="MP(G-1-12)" no="0" type="6" />
+     <Channel idUnique="290" idDevice="37" idRegion="1" name="SE-1-14" no="1" type="6" />
+     <Channel idUnique="291" idDevice="37" idRegion="1" name="BD ARCH ACTIVO G-1-50" no="2" type="6" />
+     <Channel idUnique="292" idDevice="37" idRegion="1" name="MP-1-A4" no="3" type="6" />
+     <Channel idUnique="293" idDevice="37" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="294" idDevice="37" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="295" idDevice="37" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="296" idDevice="37" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="321" idDevice="44" idRegion="1" name="SE-2-6" no="0" type="6" />
+     <Channel idUnique="322" idDevice="44" idRegion="1" name="MP(J-2-52)" no="1" type="6" />
+     <Channel idUnique="323" idDevice="44" idRegion="1" name="BD EQUIPOS J-2-71" no="2" type="6" />
+     <Channel idUnique="324" idDevice="44" idRegion="1" name="BD ROPA LIMPIA J-2-76" no="3" type="6" />
+     <Channel idUnique="325" idDevice="44" idRegion="1" name="TECHO MECANICO 5" no="4" type="6" />
+     <Channel idUnique="326" idDevice="44" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="327" idDevice="44" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="328" idDevice="44" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="329" idDevice="43" idRegion="1" name="SE-1-09" no="0" type="6" />
+     <Channel idUnique="330" idDevice="43" idRegion="1" name="RH1G SC-1-18" no="1" type="6" />
+     <Channel idUnique="331" idDevice="43" idRegion="1" name="BD EQUIPO K-1-12" no="2" type="6" />
+     <Channel idUnique="332" idDevice="43" idRegion="1" name="ARC BIBLIO K-1-10" no="3" type="6" />
+     <Channel idUnique="333" idDevice="43" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="334" idDevice="43" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="335" idDevice="43" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="336" idDevice="43" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="337" idDevice="42" idRegion="1" name="SE-1-01" no="0" type="6" />
+     <Channel idUnique="338" idDevice="42" idRegion="1" name="SC-1-20" no="1" type="6" />
+     <Channel idUnique="339" idDevice="42" idRegion="1" name="Door 3" no="2" type="6" />
+     <Channel idUnique="340" idDevice="42" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="341" idDevice="42" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="342" idDevice="42" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="343" idDevice="42" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="344" idDevice="42" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="345" idDevice="41" idRegion="1" name="SC-3-11" no="0" type="6" />
+     <Channel idUnique="346" idDevice="41" idRegion="1" name="SE-3-4" no="1" type="6" />
+     <Channel idUnique="347" idDevice="41" idRegion="1" name="MP(E-3-26)" no="2" type="6" />
+     <Channel idUnique="348" idDevice="41" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="349" idDevice="41" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="350" idDevice="41" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="351" idDevice="41" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="352" idDevice="41" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="353" idDevice="45" idRegion="1" name="MP (H-2-8)" no="0" type="6" />
+     <Channel idUnique="354" idDevice="45" idRegion="1" name="ARC H-2-4" no="1" type="6" />
+     <Channel idUnique="355" idDevice="45" idRegion="1" name="BD ROPA LIMPIA H-2-35" no="2" type="6" />
+     <Channel idUnique="356" idDevice="45" idRegion="1" name="TECHO MECANICO 4" no="3" type="6" />
+     <Channel idUnique="357" idDevice="45" idRegion="1" name="TECHO MECANICO 3" no="4" type="6" />
+     <Channel idUnique="358" idDevice="45" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="359" idDevice="45" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="360" idDevice="45" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="361" idDevice="46" idRegion="1" name="MP (H-2-61)" no="0" type="6" />
+     <Channel idUnique="362" idDevice="46" idRegion="1" name="BD EQUIPOS H-2-41" no="1" type="6" />
+     <Channel idUnique="363" idDevice="46" idRegion="1" name="SC-2-23" no="2" type="6" />
+     <Channel idUnique="364" idDevice="46" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="365" idDevice="46" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="366" idDevice="46" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="367" idDevice="46" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="368" idDevice="46" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="377" idDevice="47" idRegion="1" name="BD ROPA LIMPIA G-2-29" no="0" type="6" />
+     <Channel idUnique="378" idDevice="47" idRegion="1" name="MP(G-2-42)" no="1" type="6" />
+     <Channel idUnique="379" idDevice="47" idRegion="1" name="SE-2-2" no="2" type="6" />
+     <Channel idUnique="380" idDevice="47" idRegion="1" name="TECHO MECANICO 2" no="3" type="6" />
+     <Channel idUnique="381" idDevice="47" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="382" idDevice="47" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="383" idDevice="47" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="384" idDevice="47" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="385" idDevice="50" idRegion="1" name="MP(D-3-2)" no="0" type="6" />
+     <Channel idUnique="386" idDevice="50" idRegion="1" name="SE-03-03" no="1" type="6" />
+     <Channel idUnique="387" idDevice="50" idRegion="1" name="Door 3" no="2" type="6" />
+     <Channel idUnique="388" idDevice="50" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="389" idDevice="50" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="390" idDevice="50" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="391" idDevice="50" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="392" idDevice="50" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="393" idDevice="49" idRegion="1" name="CONTROL CENTRALIZADO" no="0" type="6" />
+     <Channel idUnique="394" idDevice="49" idRegion="1" name="SE-03-01" no="1" type="6" />
+     <Channel idUnique="395" idDevice="49" idRegion="1" name="CORREO NEUMÁTICO" no="2" type="6" />
+     <Channel idUnique="396" idDevice="49" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="397" idDevice="49" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="398" idDevice="49" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="399" idDevice="49" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="400" idDevice="49" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="401" idDevice="51" idRegion="1" name="SE-1-04" no="0" type="6" />
+     <Channel idUnique="402" idDevice="51" idRegion="1" name="BD INSUMOS C-1-18" no="1" type="6" />
+     <Channel idUnique="403" idDevice="51" idRegion="1" name="BD EQUIPOS C-1-19" no="2" type="6" />
+     <Channel idUnique="404" idDevice="51" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="405" idDevice="51" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="406" idDevice="51" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="407" idDevice="51" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="408" idDevice="51" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="409" idDevice="52" idRegion="1" name="SC-1-27" no="0" type="6" />
+     <Channel idUnique="410" idDevice="52" idRegion="1" name="MP (C-1-36)" no="1" type="6" />
+     <Channel idUnique="411" idDevice="52" idRegion="1" name="MP (C-1-2)" no="2" type="6" />
+     <Channel idUnique="412" idDevice="52" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="413" idDevice="52" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="414" idDevice="52" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="415" idDevice="52" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="416" idDevice="52" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="417" idDevice="55" idRegion="1" name="STC-1-02" no="0" type="6" />
+     <Channel idUnique="418" idDevice="55" idRegion="1" name="SE-1-13" no="1" type="6" />
+     <Channel idUnique="419" idDevice="55" idRegion="1" name="MP-1-A5" no="2" type="6" />
+     <Channel idUnique="420" idDevice="55" idRegion="1" name="MP (H-1-34)" no="3" type="6" />
+     <Channel idUnique="421" idDevice="55" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="422" idDevice="55" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="423" idDevice="55" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="424" idDevice="55" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="425" idDevice="56" idRegion="1" name="Door 1" no="0" type="6" />
+     <Channel idUnique="426" idDevice="56" idRegion="1" name="SE-1-03" no="1" type="6" />
+     <Channel idUnique="427" idDevice="56" idRegion="1" name="TALLER DE ORTESIS" no="2" type="6" />
+     <Channel idUnique="428" idDevice="56" idRegion="1" name="BD INSUMOS D-1-16" no="3" type="6" />
+     <Channel idUnique="429" idDevice="56" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="430" idDevice="56" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="431" idDevice="56" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="432" idDevice="56" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="433" idDevice="57" idRegion="1" name="BD INSUMOS C-2-15" no="0" type="6" />
+     <Channel idUnique="434" idDevice="57" idRegion="1" name="SE-2-13" no="1" type="6" />
+     <Channel idUnique="435" idDevice="57" idRegion="1" name="BD INFLAMABLES C-2-21" no="2" type="6" />
+     <Channel idUnique="436" idDevice="57" idRegion="1" name="MP(C-2-12)" no="3" type="6" />
+     <Channel idUnique="437" idDevice="57" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="438" idDevice="57" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="439" idDevice="57" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="440" idDevice="57" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="449" idDevice="61" idRegion="1" name="MP (O-6-45)" no="0" type="6" />
+     <Channel idUnique="450" idDevice="61" idRegion="1" name="SE-6-02" no="1" type="6" />
+     <Channel idUnique="451" idDevice="61" idRegion="1" name="STC-6-02" no="2" type="6" />
+     <Channel idUnique="452" idDevice="61" idRegion="1" name="SC-6-05" no="3" type="6" />
+     <Channel idUnique="453" idDevice="61" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="454" idDevice="61" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="455" idDevice="61" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="456" idDevice="61" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="457" idDevice="62" idRegion="1" name="BD EQUIPOS O-6-41" no="0" type="6" />
+     <Channel idUnique="458" idDevice="62" idRegion="1" name="BODEGA CC" no="1" type="6" />
+     <Channel idUnique="459" idDevice="62" idRegion="1" name="RH6A SC-6-6" no="2" type="6" />
+     <Channel idUnique="460" idDevice="62" idRegion="1" name="MP (O-6-57)" no="3" type="6" />
+     <Channel idUnique="461" idDevice="62" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="462" idDevice="62" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="463" idDevice="62" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="464" idDevice="62" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="465" idDevice="63" idRegion="1" name="MP (P-5-55)" no="0" type="6" />
+     <Channel idUnique="466" idDevice="63" idRegion="1" name="SE-5-03" no="1" type="6" />
+     <Channel idUnique="467" idDevice="63" idRegion="1" name="STC-5-03" no="2" type="6" />
+     <Channel idUnique="468" idDevice="63" idRegion="1" name="BD ROPA LIMPIA P-5-17" no="3" type="6" />
+     <Channel idUnique="469" idDevice="63" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="470" idDevice="63" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="471" idDevice="63" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="472" idDevice="63" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="481" idDevice="65" idRegion="1" name="MP (N-4-3)" no="0" type="6" />
+     <Channel idUnique="482" idDevice="65" idRegion="1" name="SE-4-1" no="1" type="6" />
+     <Channel idUnique="483" idDevice="65" idRegion="1" name="Door 3" no="2" type="6" />
+     <Channel idUnique="484" idDevice="65" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="485" idDevice="65" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="486" idDevice="65" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="487" idDevice="65" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="488" idDevice="65" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="489" idDevice="66" idRegion="1" name="MP (N-4-64)" no="0" type="6" />
+     <Channel idUnique="490" idDevice="66" idRegion="1" name="MP (N-4-59)" no="1" type="6" />
+     <Channel idUnique="491" idDevice="66" idRegion="1" name="BD ROPA LIMPIA N-4-14" no="2" type="6" />
+     <Channel idUnique="492" idDevice="66" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="493" idDevice="66" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="494" idDevice="66" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="495" idDevice="66" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="496" idDevice="66" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="497" idDevice="67" idRegion="1" name="BD P-4-5" no="0" type="6" />
+     <Channel idUnique="498" idDevice="67" idRegion="1" name="MP (P-4-5)" no="1" type="6" />
+     <Channel idUnique="499" idDevice="67" idRegion="1" name="SE-4-3" no="2" type="6" />
+     <Channel idUnique="500" idDevice="67" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="501" idDevice="67" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="502" idDevice="67" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="503" idDevice="67" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="504" idDevice="67" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="505" idDevice="68" idRegion="1" name="MP (N-4-118)" no="0" type="6" />
+     <Channel idUnique="506" idDevice="68" idRegion="1" name="BD ROPA LIMPIA N-4-74" no="1" type="6" />
+     <Channel idUnique="507" idDevice="68" idRegion="1" name="BD EQUIPOS N-4-76" no="2" type="6" />
+     <Channel idUnique="508" idDevice="68" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="509" idDevice="68" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="510" idDevice="68" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="511" idDevice="68" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="512" idDevice="68" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="513" idDevice="69" idRegion="1" name="Door 1" no="0" type="6" />
+     <Channel idUnique="514" idDevice="69" idRegion="1" name="BD LUDO CARRO O-5-5" no="1" type="6" />
+     <Channel idUnique="515" idDevice="69" idRegion="1" name="Door 3" no="2" type="6" />
+     <Channel idUnique="516" idDevice="69" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="517" idDevice="69" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="518" idDevice="69" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="519" idDevice="69" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="520" idDevice="69" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="521" idDevice="71" idRegion="1" name="BD ROPA LIMPIA O-6-23" no="0" type="6" />
+     <Channel idUnique="522" idDevice="71" idRegion="1" name="MP P7 A5" no="1" type="6" />
+     <Channel idUnique="523" idDevice="71" idRegion="1" name="MP P7 A6" no="2" type="6" />
+     <Channel idUnique="524" idDevice="71" idRegion="1" name="STC-6-01" no="3" type="6" />
+     <Channel idUnique="525" idDevice="71" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="526" idDevice="71" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="527" idDevice="71" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="528" idDevice="71" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="529" idDevice="72" idRegion="1" name="MP (B-1-7)" no="0" type="6" />
+     <Channel idUnique="530" idDevice="72" idRegion="1" name="MP (B-1-9)" no="1" type="6" />
+     <Channel idUnique="531" idDevice="72" idRegion="1" name="Door 3" no="2" type="6" />
+     <Channel idUnique="532" idDevice="72" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="533" idDevice="72" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="534" idDevice="72" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="535" idDevice="72" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="536" idDevice="72" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="537" idDevice="73" idRegion="1" name="MP (B-1-2)" no="0" type="6" />
+     <Channel idUnique="538" idDevice="73" idRegion="1" name="MP (C-1-16)" no="1" type="6" />
+     <Channel idUnique="539" idDevice="73" idRegion="1" name="Door 3" no="2" type="6" />
+     <Channel idUnique="540" idDevice="73" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="541" idDevice="73" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="542" idDevice="73" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="543" idDevice="73" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="544" idDevice="73" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="545" idDevice="74" idRegion="1" name="MP(C-2-28)" no="0" type="6" />
+     <Channel idUnique="546" idDevice="74" idRegion="1" name="BD INSUMOS C-2-29" no="1" type="6" />
+     <Channel idUnique="547" idDevice="74" idRegion="1" name="BD REACTIVOS C-2-27" no="2" type="6" />
+     <Channel idUnique="548" idDevice="74" idRegion="1" name="TECHO MECANICO 6" no="3" type="6" />
+     <Channel idUnique="549" idDevice="74" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="550" idDevice="74" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="551" idDevice="74" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="552" idDevice="74" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="553" idDevice="75" idRegion="1" name="BD BIOPSIAS B-2-15" no="0" type="6" />
+     <Channel idUnique="554" idDevice="75" idRegion="1" name="BD TACOS B-2-17" no="1" type="6" />
+     <Channel idUnique="555" idDevice="75" idRegion="1" name="BD PLACAS B-2-16" no="2" type="6" />
+     <Channel idUnique="556" idDevice="75" idRegion="1" name="MP-2-A1" no="3" type="6" />
+     <Channel idUnique="557" idDevice="75" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="558" idDevice="75" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="559" idDevice="75" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="560" idDevice="75" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="561" idDevice="76" idRegion="1" name="SE-2-07" no="0" type="6" />
+     <Channel idUnique="562" idDevice="76" idRegion="1" name="MP(J-2-4)" no="1" type="6" />
+     <Channel idUnique="563" idDevice="76" idRegion="1" name="BD EQUIPOS J-2-23" no="2" type="6" />
+     <Channel idUnique="564" idDevice="76" idRegion="1" name="MP(J-2-16)" no="3" type="6" />
+     <Channel idUnique="565" idDevice="76" idRegion="1" name="BD EQUIPOS J-2-40" no="4" type="6" />
+     <Channel idUnique="566" idDevice="76" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="567" idDevice="76" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="568" idDevice="76" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="569" idDevice="77" idRegion="1" name="BD SUERO H-S1-8" no="0" type="6" />
+     <Channel idUnique="570" idDevice="77" idRegion="1" name="BD ACTIVA H-S1-19" no="1" type="6" />
+     <Channel idUnique="571" idDevice="77" idRegion="1" name="BD VACUNA H-S1-23" no="2" type="6" />
+     <Channel idUnique="572" idDevice="77" idRegion="1" name="MP (I-S1-34)" no="3" type="6" />
+     <Channel idUnique="573" idDevice="77" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="574" idDevice="77" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="575" idDevice="77" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="576" idDevice="77" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="585" idDevice="79" idRegion="1" name="BD INSUMOS D-3-39" no="0" type="6" />
+     <Channel idUnique="586" idDevice="79" idRegion="1" name="ST-03-03" no="1" type="6" />
+     <Channel idUnique="587" idDevice="79" idRegion="1" name="MP-3-A6" no="2" type="6" />
+     <Channel idUnique="588" idDevice="79" idRegion="1" name="STC-03-01" no="3" type="6" />
+     <Channel idUnique="589" idDevice="79" idRegion="1" name="NVA RH3A" no="4" type="6" />
+     <Channel idUnique="590" idDevice="79" idRegion="1" name="NVA SALA SEGURIDAD" no="5" type="6" />
+     <Channel idUnique="591" idDevice="79" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="592" idDevice="79" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="593" idDevice="80" idRegion="1" name="ARC F-3-18" no="0" type="6" />
+     <Channel idUnique="594" idDevice="80" idRegion="1" name="ARC F-3-20" no="1" type="6" />
+     <Channel idUnique="595" idDevice="80" idRegion="1" name="ARC F-3-17" no="2" type="6" />
+     <Channel idUnique="596" idDevice="80" idRegion="1" name="BD F-3-13" no="3" type="6" />
+     <Channel idUnique="597" idDevice="80" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="598" idDevice="80" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="599" idDevice="80" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="600" idDevice="80" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="601" idDevice="81" idRegion="1" name="BD ROPA LIMPIA D-3-56" no="0" type="6" />
+     <Channel idUnique="602" idDevice="81" idRegion="1" name="BD EQUIPOS D-3-10" no="1" type="6" />
+     <Channel idUnique="603" idDevice="81" idRegion="1" name="BD INSUMOS D-3-9" no="2" type="6" />
+     <Channel idUnique="604" idDevice="81" idRegion="1" name="BD D-3-32" no="3" type="6" />
+     <Channel idUnique="605" idDevice="81" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="606" idDevice="81" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="607" idDevice="81" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="608" idDevice="81" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="609" idDevice="82" idRegion="1" name="SC-2-18" no="0" type="6" />
+     <Channel idUnique="610" idDevice="82" idRegion="1" name="SE-2-15" no="1" type="6" />
+     <Channel idUnique="611" idDevice="82" idRegion="1" name="SE-2-14" no="2" type="6" />
+     <Channel idUnique="612" idDevice="82" idRegion="1" name="SALA ARC E-2-55" no="3" type="6" />
+     <Channel idUnique="613" idDevice="82" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="614" idDevice="82" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="615" idDevice="82" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="616" idDevice="82" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="621" idDevice="85" idRegion="1" name="SALA INFRA ST-03-08" no="0" type="6" />
+     <Channel idUnique="622" idDevice="85" idRegion="1" name="MP-03-A8" no="1" type="6" />
+     <Channel idUnique="623" idDevice="85" idRegion="1" name="MP(D-3-26)" no="2" type="6" />
+     <Channel idUnique="624" idDevice="85" idRegion="1" name="SC-03-10" no="3" type="6" />
+     <Channel idUnique="625" idDevice="85" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="626" idDevice="85" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="627" idDevice="85" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="628" idDevice="85" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="629" idDevice="22" idRegion="1" name="SE-1-08" no="0" type="6" />
+     <Channel idUnique="630" idDevice="22" idRegion="1" name="RH1F SE-1-19" no="1" type="6" />
+     <Channel idUnique="631" idDevice="22" idRegion="1" name="STC-1-03" no="2" type="6" />
+     <Channel idUnique="632" idDevice="22" idRegion="1" name="ALMACE FARMA E-1-48" no="3" type="6" />
+     <Channel idUnique="633" idDevice="22" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="634" idDevice="22" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="635" idDevice="22" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="636" idDevice="22" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="637" idDevice="86" idRegion="1" name="SC-1-28" no="0" type="6" />
+     <Channel idUnique="638" idDevice="86" idRegion="1" name="MP (J-1-35)" no="1" type="6" />
+     <Channel idUnique="639" idDevice="86" idRegion="1" name="BD INSUMOS J-1-50" no="2" type="6" />
+     <Channel idUnique="640" idDevice="86" idRegion="1" name="SE-1-11" no="3" type="6" />
+     <Channel idUnique="641" idDevice="86" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="642" idDevice="86" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="643" idDevice="86" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="644" idDevice="86" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="645" idDevice="87" idRegion="1" name="BD INSUMOS J-1-20" no="0" type="6" />
+     <Channel idUnique="646" idDevice="87" idRegion="1" name="BD EQUIPOS J-1-64" no="1" type="6" />
+     <Channel idUnique="647" idDevice="87" idRegion="1" name="MP (J-1-8)" no="2" type="6" />
+     <Channel idUnique="648" idDevice="87" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="649" idDevice="87" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="650" idDevice="87" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="651" idDevice="87" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="652" idDevice="87" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="653" idDevice="88" idRegion="1" name="BD ROPA LIMPIA I-1-21" no="0" type="6" />
+     <Channel idUnique="654" idDevice="88" idRegion="1" name="BD INSUMOS I-1-25" no="1" type="6" />
+     <Channel idUnique="655" idDevice="88" idRegion="1" name="SC-1-29" no="2" type="6" />
+     <Channel idUnique="656" idDevice="88" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="657" idDevice="89" idRegion="1" name="BD INSUMOS I-1-11" no="0" type="6" />
+     <Channel idUnique="658" idDevice="89" idRegion="1" name="MP (I-1-10)" no="1" type="6" />
+     <Channel idUnique="659" idDevice="89" idRegion="1" name="MP (H-1-65)" no="2" type="6" />
+     <Channel idUnique="660" idDevice="89" idRegion="1" name="BD CATASTROFE H-1-75" no="3" type="6" />
+     <Channel idUnique="661" idDevice="89" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="662" idDevice="89" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="663" idDevice="89" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="664" idDevice="89" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="665" idDevice="88" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="666" idDevice="88" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="667" idDevice="88" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="668" idDevice="88" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="669" idDevice="90" idRegion="1" name="SALA REAS" no="0" type="6" />
+     <Channel idUnique="670" idDevice="90" idRegion="1" name="COMPACTADOR" no="1" type="6" />
+     <Channel idUnique="671" idDevice="90" idRegion="1" name="SB-S1-7" no="2" type="6" />
+     <Channel idUnique="672" idDevice="90" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="673" idDevice="90" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="674" idDevice="90" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="675" idDevice="90" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="676" idDevice="90" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="677" idDevice="91" idRegion="1" name="STI-S1-02" no="0" type="6" />
+     <Channel idUnique="678" idDevice="91" idRegion="1" name="SB-S1-06" no="1" type="6" />
+     <Channel idUnique="679" idDevice="91" idRegion="1" name="Door 3" no="2" type="6" />
+     <Channel idUnique="680" idDevice="91" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="681" idDevice="91" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="682" idDevice="91" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="683" idDevice="91" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="684" idDevice="91" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="685" idDevice="92" idRegion="1" name="SC-2-26" no="0" type="6" />
+     <Channel idUnique="686" idDevice="92" idRegion="1" name="TM-2-1" no="1" type="6" />
+     <Channel idUnique="687" idDevice="92" idRegion="1" name="Door 3" no="2" type="6" />
+     <Channel idUnique="688" idDevice="92" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="689" idDevice="92" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="690" idDevice="92" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="691" idDevice="92" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="692" idDevice="92" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="693" idDevice="93" idRegion="1" name="MP-1-A2(2)" no="0" type="6" />
+     <Channel idUnique="694" idDevice="93" idRegion="1" name="Door 2" no="1" type="6" />
+     <Channel idUnique="695" idDevice="93" idRegion="1" name="SE-1-06" no="2" type="6" />
+     <Channel idUnique="696" idDevice="93" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="697" idDevice="94" idRegion="1" name="MP-1-A1" no="0" type="6" />
+     <Channel idUnique="698" idDevice="94" idRegion="1" name="Door 2" no="1" type="6" />
+     <Channel idUnique="699" idDevice="94" idRegion="1" name="MP-1-A2 (1)" no="2" type="6" />
+     <Channel idUnique="700" idDevice="94" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="701" idDevice="95" idRegion="1" name="BD ROPA LIMPIA B-1-30" no="0" type="6" />
+     <Channel idUnique="702" idDevice="95" idRegion="1" name="MP (B-1-36)" no="1" type="6" />
+     <Channel idUnique="703" idDevice="95" idRegion="1" name="Door 3" no="2" type="6" />
+     <Channel idUnique="704" idDevice="95" idRegion="1" name="MP (B-1-1)" no="3" type="6" />
+     <Channel idUnique="705" idDevice="95" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="706" idDevice="95" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="707" idDevice="95" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="708" idDevice="95" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="709" idDevice="93" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="710" idDevice="93" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="711" idDevice="93" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="712" idDevice="93" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="713" idDevice="94" idRegion="1" name="MP (B-1-38)" no="4" type="6" />
+     <Channel idUnique="714" idDevice="94" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="715" idDevice="94" idRegion="1" name="MP (B-1-38)" no="6" type="6" />
+     <Channel idUnique="716" idDevice="94" idRegion="1" name="MP (B-1-38)" no="7" type="6" />
+     <Channel idUnique="717" idDevice="96" idRegion="1" name="BD EXCLUIDO K-S1-1" no="0" type="6" />
+     <Channel idUnique="718" idDevice="96" idRegion="1" name="STI-S1-01" no="1" type="6" />
+     <Channel idUnique="719" idDevice="96" idRegion="1" name="STI-S1-04" no="2" type="6" />
+     <Channel idUnique="720" idDevice="96" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="721" idDevice="96" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="722" idDevice="96" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="723" idDevice="96" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="724" idDevice="96" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="725" idDevice="97" idRegion="1" name="TM-S1-07" no="0" type="6" />
+     <Channel idUnique="726" idDevice="97" idRegion="1" name="TM-S1-01" no="1" type="6" />
+     <Channel idUnique="727" idDevice="97" idRegion="1" name="SC-S1-16" no="2" type="6" />
+     <Channel idUnique="728" idDevice="97" idRegion="1" name="TM-S1-02" no="3" type="6" />
+     <Channel idUnique="729" idDevice="97" idRegion="1" name="BICI 2" no="4" type="6" />
+     <Channel idUnique="730" idDevice="97" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="731" idDevice="97" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="732" idDevice="97" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="733" idDevice="98" idRegion="1" name="TM-S1-03" no="0" type="6" />
+     <Channel idUnique="734" idDevice="98" idRegion="1" name="TM-S1-08" no="1" type="6" />
+     <Channel idUnique="735" idDevice="98" idRegion="1" name="STE-S1-01" no="2" type="6" />
+     <Channel idUnique="736" idDevice="98" idRegion="1" name="BICICLETERO" no="3" type="6" />
+     <Channel idUnique="737" idDevice="98" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="738" idDevice="98" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="739" idDevice="98" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="740" idDevice="98" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="749" idDevice="100" idRegion="1" name="MP (I-S1-57)" no="0" type="6" />
+     <Channel idUnique="750" idDevice="100" idRegion="1" name="BD INSUMOS I-S1-30" no="1" type="6" />
+     <Channel idUnique="751" idDevice="100" idRegion="1" name="Door 3" no="2" type="6" />
+     <Channel idUnique="752" idDevice="100" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="753" idDevice="100" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="754" idDevice="100" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="755" idDevice="100" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="756" idDevice="100" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="757" idDevice="101" idRegion="1" name="MP (J-1-19)" no="0" type="6" />
+     <Channel idUnique="758" idDevice="101" idRegion="1" name="BD ROPA LIMPIA J-1-68" no="1" type="6" />
+     <Channel idUnique="759" idDevice="101" idRegion="1" name="BD ROPA LIMPIA J-1-18" no="2" type="6" />
+     <Channel idUnique="760" idDevice="101" idRegion="1" name="MP (J-1-43)" no="3" type="6" />
+     <Channel idUnique="761" idDevice="101" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="762" idDevice="101" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="763" idDevice="101" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="764" idDevice="101" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="765" idDevice="102" idRegion="1" name="BD PARTES D-1-45" no="0" type="6" />
+     <Channel idUnique="766" idDevice="102" idRegion="1" name="MP-1-A8 (2)" no="1" type="6" />
+     <Channel idUnique="767" idDevice="102" idRegion="1" name="MP-1-A8 (1)" no="2" type="6" />
+     <Channel idUnique="768" idDevice="102" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="769" idDevice="102" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="770" idDevice="102" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="771" idDevice="102" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="772" idDevice="102" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="781" idDevice="104" idRegion="1" name="BD ARCH ACTIVO G-1-32" no="0" type="6" />
+     <Channel idUnique="782" idDevice="104" idRegion="1" name="BD ARCH ACTIVO G-1-37" no="1" type="6" />
+     <Channel idUnique="783" idDevice="104" idRegion="1" name="BD ARCHIVO G-1-15" no="2" type="6" />
+     <Channel idUnique="784" idDevice="104" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="785" idDevice="104" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="786" idDevice="104" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="787" idDevice="104" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="788" idDevice="104" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="797" idDevice="106" idRegion="1" name="DIRECCIÓN" no="0" type="6" />
+     <Channel idUnique="798" idDevice="106" idRegion="1" name="Door 2" no="1" type="6" />
+     <Channel idUnique="799" idDevice="106" idRegion="1" name="Door 3" no="2" type="6" />
+     <Channel idUnique="800" idDevice="106" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="809" idDevice="11" idRegion="1" name="RH4B SC-4-5" no="0" type="6" />
+     <Channel idUnique="810" idDevice="11" idRegion="1" name="SE-4-2" no="1" type="6" />
+     <Channel idUnique="811" idDevice="11" idRegion="1" name="STC-4-02" no="2" type="6" />
+     <Channel idUnique="812" idDevice="11" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="813" idDevice="11" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="814" idDevice="11" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="815" idDevice="11" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="816" idDevice="11" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="817" idDevice="114" idRegion="1" name="8001" no="8001" type="5" />
+     <Channel idUnique="818" idDevice="114" idRegion="1" name="8002" no="8002" type="5" />
+     <Channel idUnique="819" idDevice="114" idRegion="1" name="8003" no="8003" type="5" />
+     <Channel idUnique="820" idDevice="114" idRegion="1" name="8004" no="8004" type="5" />
+     <Channel idUnique="821" idDevice="114" idRegion="1" name="8005" no="8005" type="5" />
+     <Channel idUnique="822" idDevice="114" idRegion="1" name="8006" no="8006" type="5" />
+     <Channel idUnique="823" idDevice="114" idRegion="1" name="8007" no="8007" type="5" />
+     <Channel idUnique="824" idDevice="114" idRegion="1" name="8008" no="8008" type="5" />
+     <Channel idUnique="825" idDevice="114" idRegion="1" name="8009" no="8009" type="5" />
+     <Channel idUnique="826" idDevice="114" idRegion="1" name="9901" no="9901" type="5" />
+     <Channel idUnique="827" idDevice="19" idRegion="1" name="BD-INSUMOS I-2-45" no="0" type="6" />
+     <Channel idUnique="828" idDevice="19" idRegion="1" name="MP-I-2-79" no="1" type="6" />
+     <Channel idUnique="829" idDevice="19" idRegion="1" name="SC-2-25" no="2" type="6" />
+     <Channel idUnique="830" idDevice="19" idRegion="1" name="BD-ROPA LIMPA I-2-52" no="3" type="6" />
+     <Channel idUnique="831" idDevice="19" idRegion="1" name="MP-J-2-6" no="4" type="6" />
+     <Channel idUnique="832" idDevice="19" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="833" idDevice="19" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="834" idDevice="19" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="835" idDevice="107" idRegion="1" name="BD INSUMO G-S1-11" no="0" type="6" />
+     <Channel idUnique="836" idDevice="107" idRegion="1" name="BD FARMACO G-S1-15" no="1" type="6" />
+     <Channel idUnique="837" idDevice="107" idRegion="1" name="MP (G-S1-7) (1)" no="2" type="6" />
+     <Channel idUnique="838" idDevice="107" idRegion="1" name="MP (G-S1-7) (2)" no="3" type="6" />
+     <Channel idUnique="839" idDevice="107" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="840" idDevice="107" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="841" idDevice="107" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="842" idDevice="107" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="843" idDevice="103" idRegion="1" name="OFI TESORERIA G-1-29" no="0" type="6" />
+     <Channel idUnique="844" idDevice="103" idRegion="1" name="STC-1-01" no="1" type="6" />
+     <Channel idUnique="845" idDevice="103" idRegion="1" name="SE-1-17" no="2" type="6" />
+     <Channel idUnique="846" idDevice="103" idRegion="1" name="BD ARCH ACTIVO G-1-31" no="3" type="6" />
+     <Channel idUnique="847" idDevice="103" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="848" idDevice="103" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="849" idDevice="103" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="850" idDevice="103" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="867" idDevice="130" idRegion="1" name="MP-3-A4" no="0" type="6" />
+     <Channel idUnique="868" idDevice="130" idRegion="1" name="SALA TEC 9" no="1" type="6" />
+     <Channel idUnique="869" idDevice="130" idRegion="1" name="SALA ENTEL" no="2" type="6" />
+     <Channel idUnique="870" idDevice="130" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="871" idDevice="130" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="872" idDevice="130" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="873" idDevice="130" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="874" idDevice="130" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="875" idDevice="29" idRegion="1" name="MP-S1-A12(2)" no="0" type="6" />
+     <Channel idUnique="876" idDevice="29" idRegion="1" name="SE-S1-03" no="1" type="6" />
+     <Channel idUnique="877" idDevice="29" idRegion="1" name="MP-S1-A12(1)" no="2" type="6" />
+     <Channel idUnique="878" idDevice="29" idRegion="1" name="SE-S1-4" no="3" type="6" />
+     <Channel idUnique="879" idDevice="29" idRegion="1" name="ET CAMILLAS" no="4" type="6" />
+     <Channel idUnique="880" idDevice="29" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="881" idDevice="29" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="882" idDevice="29" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="883" idDevice="1" idRegion="1" name="SE-S1-7" no="0" type="6" />
+     <Channel idUnique="884" idDevice="1" idRegion="1" name="MP-S1-A1" no="1" type="6" />
+     <Channel idUnique="885" idDevice="1" idRegion="1" name="MP (N-S1-1)" no="2" type="6" />
+     <Channel idUnique="886" idDevice="1" idRegion="1" name="MP (H-S1-12)" no="3" type="6" />
+     <Channel idUnique="887" idDevice="1" idRegion="1" name="MP-S1-A2" no="4" type="6" />
+     <Channel idUnique="888" idDevice="1" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="889" idDevice="1" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="890" idDevice="1" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="891" idDevice="105" idRegion="1" name="MP-1-A6" no="0" type="6" />
+     <Channel idUnique="892" idDevice="105" idRegion="1" name="AC TAC (MP H-1-13)" no="1" type="6" />
+     <Channel idUnique="893" idDevice="105" idRegion="1" name="Door 3" no="2" type="6" />
+     <Channel idUnique="894" idDevice="105" idRegion="1" name="Door 4" no="3" type="6" />
+     <Channel idUnique="895" idDevice="105" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="896" idDevice="105" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="897" idDevice="105" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="898" idDevice="105" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="907" idDevice="99" idRegion="1" name="MP-S1-A8" no="0" type="6" />
+     <Channel idUnique="908" idDevice="99" idRegion="1" name="TM-S1-05" no="1" type="6" />
+     <Channel idUnique="909" idDevice="99" idRegion="1" name="STI-S1-03" no="2" type="6" />
+     <Channel idUnique="910" idDevice="99" idRegion="1" name="BD EXCLUIDO K-S1-2" no="3" type="6" />
+     <Channel idUnique="911" idDevice="99" idRegion="1" name="SC-S1-15 (BD TICS)" no="4" type="6" />
+     <Channel idUnique="912" idDevice="99" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="913" idDevice="99" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="914" idDevice="99" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="915" idDevice="32" idRegion="1" name="MP (I-S1-55)" no="0" type="6" />
+     <Channel idUnique="916" idDevice="32" idRegion="1" name="BD INSUMOS I-S1-59" no="1" type="6" />
+     <Channel idUnique="917" idDevice="32" idRegion="1" name="BOMBA ACEITE I-S1-58" no="2" type="6" />
+     <Channel idUnique="918" idDevice="32" idRegion="1" name="SE-S1-06" no="3" type="6" />
+     <Channel idUnique="919" idDevice="32" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="920" idDevice="32" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="921" idDevice="32" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="922" idDevice="32" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="1438" idDevice="58" idRegion="1" name="MP-2-A2" no="0" type="6" />
+     <Channel idUnique="1439" idDevice="58" idRegion="1" name="SE-2-11" no="1" type="6" />
+     <Channel idUnique="1440" idDevice="58" idRegion="1" name="MP(B-2-4) ANATO PATOLOGICA" no="2" type="6" />
+     <Channel idUnique="1441" idDevice="58" idRegion="1" name="BD INFLAMABLE B-2-24" no="3" type="6" />
+     <Channel idUnique="1442" idDevice="58" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="1443" idDevice="58" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="1444" idDevice="58" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="1445" idDevice="58" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="1446" idDevice="38" idRegion="1" name="SC-2-21" no="0" type="6" />
+     <Channel idUnique="1447" idDevice="38" idRegion="1" name="SE-2-9" no="1" type="6" />
+     <Channel idUnique="1448" idDevice="38" idRegion="1" name="J-2-2" no="2" type="6" />
+     <Channel idUnique="1449" idDevice="38" idRegion="1" name="MP-2-A12" no="3" type="6" />
+     <Channel idUnique="1450" idDevice="38" idRegion="1" name="STC-2-2" no="4" type="6" />
+     <Channel idUnique="1451" idDevice="38" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="1452" idDevice="38" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="1453" idDevice="38" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="1454" idDevice="64" idRegion="1" name="SE-6-3" no="0" type="6" />
+     <Channel idUnique="1455" idDevice="64" idRegion="1" name="STC-6-03" no="1" type="6" />
+     <Channel idUnique="1456" idDevice="64" idRegion="1" name="BD EQUIPOS P-6-35" no="2" type="6" />
+     <Channel idUnique="1457" idDevice="64" idRegion="1" name="BD ROPA LIMPIA P-6-31" no="3" type="6" />
+     <Channel idUnique="1458" idDevice="64" idRegion="1" name="A12 P6" no="4" type="6" />
+     <Channel idUnique="1459" idDevice="64" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="1460" idDevice="64" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="1461" idDevice="64" idRegion="1" name="Door 8" no="7" type="6" />
+     <Channel idUnique="1462" idDevice="6" idRegion="1" name="MP(E-3-46)" no="0" type="6" />
+     <Channel idUnique="1463" idDevice="6" idRegion="1" name="Door 2" no="1" type="6" />
+     <Channel idUnique="1464" idDevice="6" idRegion="1" name="STC-03-02" no="2" type="6" />
+     <Channel idUnique="1465" idDevice="6" idRegion="1" name="RH3C SC-3-12" no="3" type="6" />
+     <Channel idUnique="1466" idDevice="6" idRegion="1" name="Door 5" no="4" type="6" />
+     <Channel idUnique="1467" idDevice="6" idRegion="1" name="Door 6" no="5" type="6" />
+     <Channel idUnique="1468" idDevice="6" idRegion="1" name="Door 7" no="6" type="6" />
+     <Channel idUnique="1469" idDevice="6" idRegion="1" name="Door 8" no="7" type="6" />
+</OrganizationChannel>

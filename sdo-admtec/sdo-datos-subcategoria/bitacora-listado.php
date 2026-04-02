@@ -1,0 +1,234 @@
+<?php
+
+include '../../sdo-funciones/conexion.php';
+include '../../sdo-funciones/funciones.php';
+
+if (isset($_POST['idSubcategoria'], $_POST['nomUsuario2'])) {
+
+    $idSubcategoria = trim($_POST['idSubcategoria']);
+    $nomUsuario2 = trim($_POST['nomUsuario2']);
+
+    $cadena = '';
+
+    $numReporte = 1;
+
+    if (!empty($idSubcategoria) && $idSubcategoria > 0 && !empty($nomUsuario2)) {
+
+        $contarObservaciones = contarObservacionesSubCategoria($idSubcategoria);
+
+        if ($contarObservaciones > 0) {
+            $query = "SELECT * FROM bitacora WHERE idSubCategoria = '" . $idSubcategoria . "' ORDER BY fechaBitacora DESC";
+
+            $res = mysqli_query($conexion, $query);
+
+
+
+            while ($row = $res->fetch_assoc()) {
+
+                if ($row['idSubcategoria'] > 0) {
+                    $nomSubcategoria = getNomSubCategoria($row["idSubcategoria"]);
+                } else {
+                    $nomSubcategoria = 'Error al Obtener Categoria';
+                }
+
+                $cadena .= '<tr>';
+
+                $cadena .= '<td nowrap="nowrap" style="vertical-align:middle; width:10%"><center>' . $numReporte . '</center></td>';
+
+                if ($row['fechaBitacora'] == 0) {
+
+                    $cadena .= '<td nowrap="nowrap" style="vertical-align:middle; width:10%;"><center>Error al Obtener Fecha</center></td>';
+                } else {
+                    $inicioFecha = date('d/m/Y', strtotime(str_replace('/', '-', $row['fechaBitacora'])));
+                    $inicioHora = date('H:i', strtotime(str_replace('/', '-', $row['fechaBitacora'])));
+
+                    $fechaBitacora2 = strtotime($row['fechaBitacora']);
+
+                    $cadena .= '<td nowrap="nowrap" style="vertical-align:middle; width:10%;"><center>' . $inicioFecha . '<br>' . $inicioHora . '</center></td>';
+                }
+
+                $cadena .= '<td nowrap="nowrap" style="vertical-align:middle; width:10%;"><center>';
+
+                $cadena .= '<button type="button" data-toggle="modal" data-target="#modalObserva' . $row['idBitacora'] . '" id="inputMozi" class="btn btn-primary">Ver Observaci&oacute;n</button>';
+
+                $cadena .= '<div class="modal fade" id="modalObserva' . $row['idBitacora'] . '" name="modalObserva' . $row['idBitacora'] . '" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">';
+
+                $cadena .= '<div class="modal-dialog" role="document">';
+
+                $cadena .= '<div class="modal-content">';
+
+                $cadena .= '<div class="modal-header bg-primary">';
+
+                $cadena .= '<h5 class="modal-title" id="exampleModalLabel">Visualizando Observaci&oacute;n</h5>';
+
+                $cadena .= '<button type="button" class="close" data-dismiss="modal" aria-label="Close">';
+
+                $cadena .= '<span aria-hidden="true">&times;</span>';
+
+                $cadena .= '</button>';
+
+                $cadena .= '</div>';
+
+                $cadena .= '<div class="modal-body">';
+
+                $cadena .= '<div style="text-align:left;" class="form-group">';
+
+                $cadena .= '<label for="exampleInputBorder">Categoria: &nbsp;</label><label style="font-weight: normal;" for="exampleInputBorder">' . $nomSubcategoria . '</label><br>';
+
+                $cadena .= '<label for="exampleInputBorder">Tecnico: &nbsp;</label><label style="font-weight: normal;" for="exampleInputBorder">' . $row["tecnicoBitacora"] . '</label><br>';
+
+                $cadena .= '<label for="exampleInputBorder">Fecha Observacion: &nbsp;</label><label style="font-weight: normal;" for="exampleInputBorder">' . fechaEspañol($fechaBitacora2) . ' a las ' . $inicioHora . '</label><br>';
+
+                $cadena .= '<label for="exampleInputBorder">Observacion: &nbsp;</label><br>';
+
+                $cadena .= '<textarea id="observacionBitacora" style="resize:none;" readonly="readonly" name="observacionBitacora" class="form-control bg-light" rows="15" placeholder="Observaciones...">' . $row["observacionBitacora"] . '</textarea>';
+
+                $cadena .= '</div>';
+
+                $cadena .= '</div>';
+
+                $cadena .= '<div class="modal-footer">';
+
+                $cadena .= '<button type="button" class="btn btn-danger" data-dismiss="modal">Salir</button>';
+
+                $cadena .= '</div>';
+
+                $cadena .= '</div>';
+
+                $cadena .= '</div>';
+
+                $cadena .= '</div>';
+
+                $cadena .= '</center></td>';
+
+                $cadena .= '<td nowrap="nowrap"  style="vertical-align:middle; width:10%;" align="center">' . $nomSubcategoria . '</td>';
+
+                $cadena .= '<td nowrap="nowrap"  style="vertical-align:middle; width:10%" align="center">' . $row["tecnicoBitacora"] . '</td>';
+
+                $cadena .= '</tr>';
+
+                $numReporte++;
+            }
+        } else {
+            $cadena .= '<tr>';
+            $cadena .= '<td colspan="5"><center>No Existen Registros.</center></td>';
+            $cadena .= '</tr>';
+        }
+    } else if (!empty($idSubcategoria) && $idSubcategoria == 'todo') {
+
+        $contarObservaciones = contarObservaciones($idSubcategoria);
+
+        if ($contarObservaciones > 0) {
+            $query = "SELECT * FROM bitacora ORDER BY fechaBitacora DESC";
+
+            $res = mysqli_query($conexion, $query);
+
+
+
+            while ($row = $res->fetch_assoc()) {
+
+                $cadena .= '<tr>';
+
+                $cadena .= '<td nowrap="nowrap" style="vertical-align:middle; width:10%;"><center>' . $numReporte . '</center></td>';
+
+                if ($row['fechaBitacora'] == 0) {
+
+                    $cadena .= '<td nowrap="nowrap" style="vertical-align:middle; width:10%;"><center>Error al Obtener Fecha</center></td>';
+                } else {
+                    $inicioFecha = date('d/m/Y', strtotime(str_replace('/', '-', $row['fechaBitacora'])));
+                    $inicioHora = date('H:i', strtotime(str_replace('/', '-', $row['fechaBitacora'])));
+
+                    $fechaBitacora2 = strtotime($row['fechaBitacora']);
+
+                    $cadena .= '<td nowrap="nowrap" style="vertical-align:middle; width:10%;"><center>' . $inicioFecha . '<br>' . $inicioHora . '</center></td>';
+                }
+
+                $rowIdSubcategoria = $row["idSubcategoria"];
+
+                if ($row['idSubcategoria'] > 0) {
+                    $nomSubcategoria = getNomSubCategoria($row["idSubcategoria"]);
+                } else {
+                    $nomSubcategoria = 'Error al Obtener Categoria';
+                }
+
+                // $cadena .= '<td style="vertical-align:middle; width:60%;" align="justify">' . nl2br($row["observacionBitacora"]) . '</td>';
+
+                $cadena .= '<td nowrap="nowrap" style="vertical-align:middle; width:10%;"><center>';
+
+                $cadena .= '<button type="button" data-toggle="modal" data-target="#modalObserva' . $row['idBitacora'] . '" id="inputMozi" class="btn btn-primary">Ver Observaci&oacute;n</button>';
+
+                $cadena .= '<div class="modal fade" id="modalObserva' . $row['idBitacora'] . '" name="modalObserva' . $row['idBitacora'] . '" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">';
+
+                $cadena .= '<div class="modal-dialog" role="document">';
+
+                $cadena .= '<div class="modal-content">';
+
+                $cadena .= '<div class="modal-header bg-primary">';
+
+                $cadena .= '<h5 class="modal-title" id="exampleModalLabel">Visualizando Observaci&oacute;n</h5>';
+
+                $cadena .= '<button type="button" class="close" data-dismiss="modal" aria-label="Close">';
+
+                $cadena .= '<span aria-hidden="true">&times;</span>';
+
+                $cadena .= '</button>';
+
+                $cadena .= '</div>';
+
+                $cadena .= '<div class="modal-body">';
+
+                $cadena .= '<div style="text-align:left;" class="form-group">';
+
+                $cadena .= '<label for="exampleInputBorder">Categoria: &nbsp;</label><label style="font-weight: normal;" for="exampleInputBorder">' . $nomSubcategoria . '</label><br>';
+
+                $cadena .= '<label for="exampleInputBorder">Tecnico: &nbsp;</label><label style="font-weight: normal;" for="exampleInputBorder">' . $row["tecnicoBitacora"] . '</label><br>';
+
+                $cadena .= '<label for="exampleInputBorder">Fecha Observacion: &nbsp;</label><label style="font-weight: normal;" for="exampleInputBorder">' . fechaEspañol($fechaBitacora2) . ' a las ' . $inicioHora . '</label><br>';
+
+                $cadena .= '<label for="exampleInputBorder">Observacion: &nbsp;</label><br>';
+
+                $cadena .= '<textarea id="observacionBitacora" readonly="readonly" style="resize:none;" name="observacionBitacora" class="form-control bg-light" rows="15" placeholder="Observaciones...">' . $row["observacionBitacora"] . '</textarea>';
+
+                $cadena .= '</div>';
+
+                $cadena .= '</div>';
+
+                $cadena .= '</div>';
+
+                $cadena .= '<div class="modal-footer">';
+
+                $cadena .= '<button type="button" class="btn btn-danger" data-dismiss="modal">Salir</button>';
+
+                $cadena .= '</div>';
+
+                $cadena .= '</div>';
+
+                $cadena .= '</div>';
+
+                $cadena .= '</div>';
+
+                $cadena .= '</center></td>';
+
+
+
+                $cadena .= '<td nowrap="nowrap"  style="vertical-align:middle; width:10%;" align="center">' . $nomSubcategoria . '</td>';
+
+                $cadena .= '<td nowrap="nowrap"  style="vertical-align:middle; width:10%;" align="center">' . $row["tecnicoBitacora"] . '</td>';
+
+                $cadena .= '</tr>';
+
+                $numReporte++;
+            }
+        } else {
+            $cadena .= '<tr>';
+            $cadena .= '<td colspan="5"><center>No Existen Registros.</center></td>';
+            $cadena .= '</tr>';
+        }
+    } else {
+        $cadena .= '<tr>';
+        $cadena .= '<td colspan="5"><center>No Existen Registros.</center></td>';
+        $cadena .= '</tr>';
+    }
+
+    echo $cadena;
+}

@@ -1,0 +1,10 @@
+.cantidad-badge {
+    position: absolute;
+    top: -10px; /* Ajusta la posición vertical del banderín */
+    right: -10px; /* Ajusta la posición horizontal del banderín */
+    background-color: #ff0000; /* Color de fondo del banderín */
+    color: #ffffff; /* Color del texto del número */
+    border-radius: 50%; /* Hace que el banderín sea circular */
+    padding: 4px 8px; /* Espaciado interno del banderín */
+    font-size: 12px; /* Tamaño de fuente del número */
+}

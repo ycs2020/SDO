@@ -1,0 +1,427 @@
+Delivered-To: saladecontrolhbqp@gmail.com
+Received: by 2002:a59:884f:0:b0:493:ada1:5190 with SMTP id l15csp382254vqj;
+        Tue, 15 Oct 2024 09:44:16 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHJvktlZN3Dz2gQb+XwPM64ybO0spSxBYoXku34T7tUZ36/HCzfEZg37BHBW/qF6RWwMIrZ
+X-Received: by 2002:a05:6358:618a:b0:1b8:688e:6ea3 with SMTP id e5c5f4694b2df-1c3784dedc0mr136317655d.18.1729010655819;
+        Tue, 15 Oct 2024 09:44:15 -0700 (PDT)
+ARC-Seal: i=2; a=rsa-sha256; t=1729010655; cv=pass;
+        d=google.com; s=arc-20240605;
+        b=lHbwOYJd8wgUWyBjFkft0GAxRtbB3bL86IRV30qtKqiottUj5p/yNsT2Hk4ktFw0wl
+         dpPT9w82E0qijMhOBwFIGXCt4Jkkhb8hACCSFPbgmX32eZNDIDvfYQc1iddgFfgrk+79
+         fQccfQXvhwWaZLZzK9khL2rgxHHCNC1Ovz2fn0uz+xyiD6k37ocDLHpzktLzt/OgssLo
+         gfaeBc6TOTdkjv4RzQS9y77+aOOBOP9Z829XeR3ySVHthsZ6YpjdZGQLeZPCcaFgoTdp
+         rF7CSpht+r8ymNlOw4JiGxzdDTLhhLhjTozHjnXcMWGnDnUVMwbZoHQMBsZMpJCEEvXN
+         XLHA==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=mime-version:content-language:accept-language:message-id:date
+         :thread-index:subject:to:from:dkim-signature;
+        bh=QT20OVsnPsZ2H0z5EeoY/AFHNnwZmyosKDFxLVebTYc=;
+        fh=uK7zBGYVxvBj31KriMcO9DECTwU8i+g2z/gZA8UYWPQ=;
+        b=lglo7RoLY1FanxNLKuN+ReMUuMYqNtD5m0p/N+2j49lbFUtxEdy0mpWLQ4CUBJtk+T
+         Ld2cfvx2wukBwPw9N6XgSaYKEUv8/12HikLrRVM5E94oRvcikeIN1a3N4RP/5l6lKSA5
+         rrtvcfayZf6ihq+sVjG5yo+9uqCgfuio/8RGo+RQe8oTaiPWF7xqlTptQ9HkTVNHDyOd
+         c2drxfjX3y1BL4+/9IDXYTpWM9CyPbix9W3FdX7jym/9Io3V/Wk4u+Yni6+PcMzzf3hB
+         GuD5nhu+R2fg3FAJQonNouyRCW0CgK+lI/RH5+GslPEred/xPZei5LtihYtD1j7qxJAY
+         NGVA==;
+        dara=google.com
+ARC-Authentication-Results: i=2; mx.google.com;
+       dkim=pass header.i=@licenciasminsal.onmicrosoft.com header.s=selector1-licenciasminsal-onmicrosoft-com header.b=rWoFVfTz;
+       arc=pass (i=1 spf=pass spfdomain=redsalud.gob.cl dkim=pass dkdomain=redsalud.gob.cl dmarc=pass fromdomain=redsalud.gob.cl);
+       spf=pass (google.com: domain of josebek.carrasco@redsalud.gob.cl designates 2a01:111:f403:2412::714 as permitted sender) smtp.mailfrom=josebek.carrasco@redsalud.gob.cl
+Return-Path: <josebek.carrasco@redsalud.gob.cl>
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on20714.outbound.protection.outlook.com. [2a01:111:f403:2412::714])
+        by mx.google.com with ESMTPS id 41be03b00d2f7-7ea9c6c1930si2081623a12.186.2024.10.15.09.44.15
+        for <saladecontrolhbqp@gmail.com>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 15 Oct 2024 09:44:15 -0700 (PDT)
+Received-SPF: pass (google.com: domain of josebek.carrasco@redsalud.gob.cl designates 2a01:111:f403:2412::714 as permitted sender) client-ip=2a01:111:f403:2412::714;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@licenciasminsal.onmicrosoft.com header.s=selector1-licenciasminsal-onmicrosoft-com header.b=rWoFVfTz;
+       arc=pass (i=1 spf=pass spfdomain=redsalud.gob.cl dkim=pass dkdomain=redsalud.gob.cl dmarc=pass fromdomain=redsalud.gob.cl);
+       spf=pass (google.com: domain of josebek.carrasco@redsalud.gob.cl designates 2a01:111:f403:2412::714 as permitted sender) smtp.mailfrom=josebek.carrasco@redsalud.gob.cl
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=gvqAMD5pprvXrXCQN9T9ngkU4NWbzNZJzeRjDUlbgRFMvPsJlvwoTrIAIXS2zslQnSX+lSnaNbJoSPIcJk577KL9UFWwS1LG6h/7+qbizkUfmH5RGPGie/h4w2lltTRCao5bKg2STrggSk4VNN+NhtfEwEPOxuI27czgND6+VUsjUS7mJR/Uy29YUVRDtnRP+Jd+XvslXmrCNkbCkK6oxce7mt/RXrDtIejJ2y8q9GCLl2daLxARf5wgD+lPScbLVTyf1Pwx5HkiLNF/BKsXoT+x9LWSf52+VxiK4CQuHSOYYBxqzCAZi7/exXtkrLeNYPD/lMqU/N/oYwxdhCgORw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QT20OVsnPsZ2H0z5EeoY/AFHNnwZmyosKDFxLVebTYc=;
+ b=PE7mX3YtSxZzC5uf+2oUT7RpTguCeXfzDabqY42Z1ldWz2Hyhkm+JnILq4jfYRXrLCCFyU78D2hgqIXFVpGZZuY2WiRadxmT0o8I4UtbDaNVXIKKgh/CbyrR/V7OBkideTGiA3gWFq8DdMEmqvGDSiizhl26azfAmM/4rJD0j2UBQ2Cv81yv5/KIpzuj6iXt2XJVufmoGtZUNpqbWM1C/VprQzxOM1c+PZGPGvG70hEF9dD4+1xhT9ulQCtHz3Ev8ore/o+fNahofNINMA3vHp/3QkwpetlFDXy/VXbXS3MHpCHKSB/0UT0bL8toZzch3PsrV4Gmd/8lTZhGCNmHLQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=redsalud.gob.cl; dmarc=pass action=none
+ header.from=redsalud.gob.cl; dkim=pass header.d=redsalud.gob.cl; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=licenciasminsal.onmicrosoft.com;
+ s=selector1-licenciasminsal-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QT20OVsnPsZ2H0z5EeoY/AFHNnwZmyosKDFxLVebTYc=;
+ b=rWoFVfTzY91ImTBulFL6GnaWoTtfVeoC66zbrbGMkB3qrxMR020NU/bXmfowufBdVUtTiJ/aagoRL7TAN+wDzYhIbo05XSN1CugYn8ZTZwi5k2aRUhT8azlolehEJLvawYNCtleQU1LowcVXfPluDypN/SQo90rhweFrcgQ7h8E=
+Received: from BY5PR19MB4726.namprd19.prod.outlook.com (2603:10b6:a03:1da::19)
+ by DM6PR19MB4342.namprd19.prod.outlook.com (2603:10b6:5:2ba::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8048.27; Tue, 15 Oct
+ 2024 16:44:12 +0000
+Received: from BY5PR19MB4726.namprd19.prod.outlook.com
+ ([fe80::c76e:73b1:bd99:a8ae]) by BY5PR19MB4726.namprd19.prod.outlook.com
+ ([fe80::c76e:73b1:bd99:a8ae%4]) with mapi id 15.20.8069.016; Tue, 15 Oct 2024
+ 16:44:12 +0000
+From: Josebek Carrasco <josebek.carrasco@redsalud.gob.cl>
+To: Sala de Control Centralizado - HBQP <saladecontrolhbqp@gmail.com>
+Subject:
+Thread-Index: AdsfIXUGVUaoY7xLTf+MQ9Zq2F+F4Q==
+Date: Tue, 15 Oct 2024 16:44:12 +0000
+Message-ID:
+ <BY5PR19MB4726A21F9A8EBDF8CDB52FC9CE452@BY5PR19MB4726.namprd19.prod.outlook.com>
+Accept-Language: es-ES, en-US
+Content-Language: es-ES
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=redsalud.gob.cl;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: BY5PR19MB4726:EE_|DM6PR19MB4342:EE_
+x-ms-office365-filtering-correlation-id: 1811bef5-1dc9-42cc-d575-08dced389958
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|376014|366016|1800799024|38070700018;
+x-microsoft-antispam-message-info:
+ =?iso-8859-1?Q?0v8NEdXsQDOWZudhMSAMXrf2LkyeR4FDAVohGOGzsjqPBphFVuUEkiX827?=
+ =?iso-8859-1?Q?btdv0/bXXn8XtmM3M29VKP2LGYcZKnjE5mW1Hb/v0BGArv9cNayMuZ9hMO?=
+ =?iso-8859-1?Q?2cpSZRV/bTHJe/WLP81i3Mby24I03n/3rWXQ4dFtfpD7OkI7p8C7lh7UZu?=
+ =?iso-8859-1?Q?Up878wL5Xh1xTgW8o+YorUa5hlCJbx/T7unsBQbY2Zdwg4M1XE1CsTCm/z?=
+ =?iso-8859-1?Q?DaEQn7TeTpYJtVASzSaxDHSstn5mF6j/UTWEzWbCg769bnGkSUm0tESwMa?=
+ =?iso-8859-1?Q?APWa95wnKU8ZmliDfBjvSKsC9523yLEW6BSBUQUFpn/v1kPPj0UaExM9EO?=
+ =?iso-8859-1?Q?x7sHTFK3ek+F2WlMbG891IbANxUtcOi16xeuLJ+Au+5T2Tozckph7kbA7A?=
+ =?iso-8859-1?Q?ASMn8x6pT7ONqWUxAHoswxrUMMXCqmrLpRurZ1zyk9Wiso1gXILKAl3Xi1?=
+ =?iso-8859-1?Q?kb9KdUo7iu6cBYP0ZgBW9uCB9lVpsNhYCm//MtfjTR9nnUT9+i8Cer2roX?=
+ =?iso-8859-1?Q?3Fcjnf4KF/c7crz+siS4xiaHoWL9qvEnY1jBgGsQMLMNdwmxNFv1wcfkAd?=
+ =?iso-8859-1?Q?2EwBVSajCmZYryAyxj1jNkBOUBWcXz2oDTgtS2iiltWgTFWLTE66wFok6/?=
+ =?iso-8859-1?Q?v5Il36i+IsT4TDbfLnFmICcYVz0nLmd8c7UyKZJQRrjXFYWPDHOaGWYuQ1?=
+ =?iso-8859-1?Q?giKsMQDO9LRMpPjP3iGzHLdqWqFBSWRDaDcIRuTMYEb1I6kIPRMxKCq2Fv?=
+ =?iso-8859-1?Q?S9nvV5x0l7Uc5xl9UaogAL91cfngiVbUqBdy32SBO07zthnRm+2nLahjDV?=
+ =?iso-8859-1?Q?amLhP7QMCFdA8yGa2w2B7xZaqSTR3cz710YFCHMRaw9wwY0G+qz+GE5l+J?=
+ =?iso-8859-1?Q?XtzFB+yW9peXfzlcoPmj/ZlmL3LrHxzTb+IM6Q5K1f/1Yh5dboGncTSo20?=
+ =?iso-8859-1?Q?Xg/vAzJ5YEsbRZPGgz6+wyGXdU/HzHsrMEi0ZGXSyesP/6muc7OvTE2haT?=
+ =?iso-8859-1?Q?JPq0tlE3wS+GwXLOz3YAozo9BrUZBaIvyI3mOj7adn4QGoYXKA37IGMww6?=
+ =?iso-8859-1?Q?WpqbE1Eh8MYtb6hMb7L1DnQ+Hj+jRNe2REDYoQuaarK3c7+Eoo57tFEEeX?=
+ =?iso-8859-1?Q?unDpCQj6T8bvB8GnAdJZFEMcgHb171GHHN/Hp62wqUmenVU/ee+RK5TbcD?=
+ =?iso-8859-1?Q?jSbg8FFEJ0DLJPioRuZRVwZG5Jrk18OzwoliRZ8t+dOEiSkYfosfOvDqTO?=
+ =?iso-8859-1?Q?5O77yDCBKD6UIsZromNSrxnmaQ23buP6qMZW7YRqKJRfQNlWslurcsbbbH?=
+ =?iso-8859-1?Q?jzc+2gJLUSxPVBY+UiU1DMSeYWsCaD2F/zw/tftGlc4G5ovIfstGdBslZZ?=
+ =?iso-8859-1?Q?yhiRiAPtpbALIipdv7MwczdniIyB7IWQ=3D=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:es;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR19MB4726.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024)(38070700018);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?iso-8859-1?Q?n+E6qZ2I5bnP5nIRYkPk3x+U4jPL5zKWdKkYp7B/Iw2CrlwSpvVcfZ1u4E?=
+ =?iso-8859-1?Q?S/j333eKgPgctUui5YvMzhvvicOjOiqHlNHR/8i2YNv3ztfyd8/PLh5ThF?=
+ =?iso-8859-1?Q?37yrkUYxKkUh0VgpIbbhWb4uPBMknBlzLDAXBbHor6PEmZasUE9AqBfJeu?=
+ =?iso-8859-1?Q?VgfkwOHCMDqRcOSvcIzCRzrU0yMboiG2YPSZKP9uNbSy0M6N4ZISmNop5r?=
+ =?iso-8859-1?Q?Naho8RzHM6F/UEEG7Qt1IXmmXGXt1ntG/XPn2AP5d9Xq2Pgmjp5drDLL+S?=
+ =?iso-8859-1?Q?UDMmJRIwqdSicKIs/Ka0GkcTqK8F2UzZ+3L6GOD12+NF3eADvES78dtXy2?=
+ =?iso-8859-1?Q?ckEevGsTPR4+oCJ1vmBq8foBX70pWSi6WRriqvr1g+zUSm4S0hdtwaWK6d?=
+ =?iso-8859-1?Q?3xk5ouiDdFwl1g0FlVLYyAbGPSXhfEzxumJEliGxYsWwGovV/9ImdsqaiZ?=
+ =?iso-8859-1?Q?5lJ7uWL6JBlQDhP2ChkYTZgVQ3+cXs6sZckaY9VJtYQVXLExAvLLVg+kvA?=
+ =?iso-8859-1?Q?l0m6JxDq3XmRm4MNGpUoWY7NKp7qikXx5E5b21Syi8M6jQhMSA+AOZ0bSk?=
+ =?iso-8859-1?Q?Z9BCSQ6d2Z0i/joNeEtf79I1wW5KVdAoDHke07ZU6YpP8cSBf9IsdjwOwd?=
+ =?iso-8859-1?Q?N5Fzv3o+ipyyKyF48ZJ3aIj7y9WRLmFR6O+xbQKaIeirD1M4Q06ZprHhlV?=
+ =?iso-8859-1?Q?7NprKXmcSBEZC2sCyjW/cfyHwrqdTnKM1RH7UxvPHB0eU//NZQldIRXAmK?=
+ =?iso-8859-1?Q?TcJ2kYjB3nbDBZv+OM82UlBOVGTRfa1v4z22G/rjLKUZbYSk00tX1f9CyD?=
+ =?iso-8859-1?Q?St9JLialFyLOvKirpJ0S64UUixLl1MTGIWV4L19UnSN1rLxK7neZ3cYDqh?=
+ =?iso-8859-1?Q?yNQkRizv7rZUldBABnNHysG41wYszRH+k+l/RC+CaMXQgIckGTIw3FpefM?=
+ =?iso-8859-1?Q?kTrCqAtpFDdkGu7rHDXaDu8G01LVYN7dzBIBCeNfCLrWCcBOFIF2Y414u4?=
+ =?iso-8859-1?Q?9E2EjtXZLR+vQXlp51+F2m6GO2gDMCUIDCUVoTiTxs8bHVKHn4ZPzDB9ud?=
+ =?iso-8859-1?Q?iwPn5y651JainGKCL41vHj+S7L03g2nFnqJ7bRaVO1otymE0J5vDRs7bdU?=
+ =?iso-8859-1?Q?hQoR12fvgxpBKCqjxB9rPw0irTmAyQU9aO+ndLnpz0eUJY9mGENXsxurlM?=
+ =?iso-8859-1?Q?DFuOmDRLqalVkfygUL2fT4moNm9X50XLC4yGHQi1iwxTMFFWDyI6TdcQPe?=
+ =?iso-8859-1?Q?6d6kHjWD0vGgN17dAggxmFsfZOkpdf1+lVb+S6+5V4qprma7TSolA4yiGT?=
+ =?iso-8859-1?Q?0m2HyRmsznd1wknqnbtV1MgZUCqO6+y/4c0guG2QMddX1xZeAVgaw0br2N?=
+ =?iso-8859-1?Q?08uNOlUxSAfBK1zo+Z4QXQJFRufSLYPr4F53vxT13RfhvsVYjo6imczmGr?=
+ =?iso-8859-1?Q?PH7SkKKjlHXXFYPs1SIbOrYIQigYrxtEh1OqMiZqmeZz4ckLMcolP+4u3t?=
+ =?iso-8859-1?Q?fxu7KHUj3w7Q0DQ212YZzQHIth0cxEpd0B9BZn7EqdtVGlmOmxyAs+PH73?=
+ =?iso-8859-1?Q?O+6QnM7RgqFBIhJYsEgHUUJPXFw0weuzC/se3IJHEzAX7COvNXbzUN2elP?=
+ =?iso-8859-1?Q?siGZMCPSgJgNlIJEkdA6N6gIx6AHZuX7qcYXyF0PQBpQNBac/GbN4WFg?=
+ =?iso-8859-1?Q?=3D=3D?=
+Content-Type: multipart/related;
+	boundary="_006_BY5PR19MB4726A21F9A8EBDF8CDB52FC9CE452BY5PR19MB4726namp_";
+	type="multipart/alternative"
+MIME-Version: 1.0
+X-OriginatorOrg: redsalud.gob.cl
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR19MB4726.namprd19.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1811bef5-1dc9-42cc-d575-08dced389958
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2024 16:44:12.6063
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 7444d57c-04c8-42de-a081-dd899af2922e
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: EGjRoSBnr8wpKZPdMYxXuX6FHKybCeT3ero3FmZbB/JCLettvmJjx0aOgd/eB++TUdD+RF3mlwBUDduu9gjibVjba4VV1sHNNIHZdA8rseFOSLonGR4BI+TtecgwqYpl
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR19MB4342
+
+--_006_BY5PR19MB4726A21F9A8EBDF8CDB52FC9CE452BY5PR19MB4726namp_
+Content-Type: multipart/alternative;
+	boundary="_000_BY5PR19MB4726A21F9A8EBDF8CDB52FC9CE452BY5PR19MB4726namp_"
+
+--_000_BY5PR19MB4726A21F9A8EBDF8CDB52FC9CE452BY5PR19MB4726namp_
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+
+Estimado:
+
+Junto con saludar, me permito solicitar a Ud., favor bloquear accesos corre=
+spondientes a credencial de D. Maria Gloria Chavez Seguero Run: 19.619.506-=
+8.
+
+Esperando contar con una acogida favorable.
+
+Saluda atte.
+
+Josebek Carrasco Vicencio
+
+Encargada Proceso de Credencial
+Encargada del Ingreso y Re-Ingreso a la Administraci=F3n P=FAblica
+Unidad de Personal
+Hospital San Martin de Quillota
+Futuro Hospital Biprovincial Quillota Petorca
+Servicio de Salud Vi=F1a del Mar - Quillota
+
+
+--_000_BY5PR19MB4726A21F9A8EBDF8CDB52FC9CE452BY5PR19MB4726namp_
+Content-Type: text/html; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:dt=3D"uuid:C2F41010-65B3-11d1-A29F-00AA00C14882" xmlns:m=3D"http://sc=
+hemas.microsoft.com/office/2004/12/omml" xmlns=3D"http://www.w3.org/TR/REC-=
+html40">
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859-=
+1">
+<meta name=3D"Microsoft Theme 2.00" content=3D"Watermar 011">
+<meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">
+<!--[if !mso]><style>v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style><![endif]--><style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	font-size:12.0pt;
+	font-family:"Arial",sans-serif;
+	color:black;
+	mso-ligatures:standardcontextual;
+	mso-fareast-language:EN-US;}
+span.EstiloCorreo17
+	{mso-style-type:personal-compose;
+	color:black;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	mso-fareast-language:EN-US;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:70.85pt 3.0cm 70.85pt 3.0cm;}
+div.WordSection1
+	{page:WordSection1;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1027" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]-->
+</head>
+<body bgcolor=3D"white" background=3D"cid:image001.gif@01DB1F08.4FB6C8A0" l=
+ang=3D"ES-CL" link=3D"#3333CC" vlink=3D"#999999" style=3D"word-wrap:break-w=
+ord">
+<img src=3D"cid:image001.gif@01DB1F08.4FB6C8A0" v:src=3D"cid:image001.gif@0=
+1DB1F08.4FB6C8A0" v:shapes=3D"_x0000_Mail" width=3D"0" height=3D"0" class=
+=3D"shape" style=3D"display:none;width:0;height:0"><!--[if gte mso 9]><xml>
+<v:background id=3D"_x0000_s1025" o:bwmode=3D"white" o:targetscreensize=3D"=
+1024,768">
+<v:fill src=3D"cid:image001.gif@01DB1F08.4FB6C8A0" o:title=3D"watbkgnd" typ=
+e=3D"frame" />
+</v:background></xml><![endif]-->
+<div class=3D"WordSection1">
+<p class=3D"MsoNormal">Estimado:<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">Junto con saludar, me permito solicitar a Ud., favor=
+ bloquear accesos correspondientes a credencial de D. Maria Gloria Chavez S=
+eguero Run: 19.619.506-8.<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">Esperando contar con una acogida favorable.<o:p></o:=
+p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">Saluda atte.<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal"><!--[if gte vml 1]><v:shapetype id=3D"_x0000_t75" co=
+ordsize=3D"21600,21600" o:spt=3D"75" o:preferrelative=3D"t" path=3D"m@4@5l@=
+4@11@9@11@9@5xe" filled=3D"f" stroked=3D"f">
+<v:stroke joinstyle=3D"miter" />
+<v:formulas>
+<v:f eqn=3D"if lineDrawn pixelLineWidth 0" />
+<v:f eqn=3D"sum @0 1 0" />
+<v:f eqn=3D"sum 0 0 @1" />
+<v:f eqn=3D"prod @2 1 2" />
+<v:f eqn=3D"prod @3 21600 pixelWidth" />
+<v:f eqn=3D"prod @3 21600 pixelHeight" />
+<v:f eqn=3D"sum @0 0 1" />
+<v:f eqn=3D"prod @6 1 2" />
+<v:f eqn=3D"prod @7 21600 pixelWidth" />
+<v:f eqn=3D"sum @8 21600 0" />
+<v:f eqn=3D"prod @7 21600 pixelHeight" />
+<v:f eqn=3D"sum @10 21600 0" />
+</v:formulas>
+<v:path o:extrusionok=3D"f" gradientshapeok=3D"t" o:connecttype=3D"rect" />
+<o:lock v:ext=3D"edit" aspectratio=3D"t" />
+</v:shapetype><v:shape id=3D"Imagen_x0020_1" o:spid=3D"_x0000_s1026" type=
+=3D"#_x0000_t75" style=3D'position:absolute;margin-left:0;margin-top:15.55p=
+t;width:138.55pt;height:3.55pt;z-index:251659264;visibility:visible;mso-wra=
+p-style:square;mso-width-percent:0;mso-height-percent:0;mso-wrap-distance-l=
+eft:9pt;mso-wrap-distance-top:0;mso-wrap-distance-right:9pt;mso-wrap-distan=
+ce-bottom:0;mso-position-horizontal:left;mso-position-horizontal-relative:m=
+argin;mso-position-vertical:absolute;mso-position-vertical-relative:text;ms=
+o-width-percent:0;mso-height-percent:0;mso-width-relative:page;mso-height-r=
+elative:page'>
+<v:imagedata src=3D"cid:image002.png@01DB1F08.4FB6C8A0" o:title=3D"" cropto=
+p=3D"-31f" cropbottom=3D"63280f" cropleft=3D"21074f" cropright=3D"19279f" /=
+>
+<w:wrap anchorx=3D"margin"/>
+</v:shape><![endif]--><![if !vml]><span style=3D"mso-ignore:vglayout;positi=
+on:absolute;z-index:251659264;margin-left:0px;margin-top:20px;width:185px;h=
+eight:5px"><img width=3D"185" height=3D"5" style=3D"width:1.927in;height:.0=
+52in" src=3D"cid:image003.jpg@01DB1F08.4FB6C8A0" v:shapes=3D"Imagen_x0020_1=
+"></span><![endif]><b><span style=3D"font-size:11.0pt;font-family:&quot;Cal=
+ibri&quot;,sans-serif;mso-fareast-language:ES-CL">Josebek
+ Carrasco Vicencio<o:p></o:p></span></b></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;font-family:&quot;Ca=
+libri&quot;,sans-serif;mso-fareast-language:ES-CL"><img width=3D"185" heigh=
+t=3D"5" style=3D"width:1.927in;height:.052in" id=3D"Imagen_x0020_1" src=3D"=
+cid:image003.jpg@01DB1F08.4FB6C8A0"><o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;font-family:&quot;Ca=
+libri&quot;,sans-serif;mso-fareast-language:ES-CL">Encargada Proceso de Cre=
+dencial<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;font-family:&quot;Ca=
+libri&quot;,sans-serif;mso-fareast-language:ES-CL">Encargada del Ingreso y =
+Re&#8211;Ingreso a la Administraci=F3n P=FAblica<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;font-family:&quot;Ca=
+libri&quot;,sans-serif;mso-fareast-language:ES-CL">Unidad de Personal<o:p><=
+/o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;font-family:&quot;Ca=
+libri&quot;,sans-serif;mso-fareast-language:ES-CL">Hospital San Martin de Q=
+uillota<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;font-family:&quot;Ca=
+libri&quot;,sans-serif;mso-fareast-language:ES-CL">Futuro Hospital Biprovin=
+cial Quillota Petorca<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:11.0pt;font-family:&quot;Ca=
+libri&quot;,sans-serif;mso-fareast-language:ES-CL">Servicio de Salud Vi=F1a=
+ del Mar &#8211; Quillota
+</span><span style=3D"font-size:11.0pt;font-family:&quot;Calibri&quot;,sans=
+-serif;mso-fareast-language:ES-CL"><o:p></o:p></span></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+</body>
+</html>
+
+--_000_BY5PR19MB4726A21F9A8EBDF8CDB52FC9CE452BY5PR19MB4726namp_--
+
+--_006_BY5PR19MB4726A21F9A8EBDF8CDB52FC9CE452BY5PR19MB4726namp_
+Content-Type: image/gif; name="image001.gif"
+Content-Description: image001.gif
+Content-Disposition: inline; filename="image001.gif"; size=2310;
+	creation-date="Tue, 15 Oct 2024 16:44:11 GMT";
+	modification-date="Tue, 15 Oct 2024 16:44:11 GMT"
+Content-ID: <image001.gif@01DB1F08.4FB6C8A0>
+Content-Transfer-Encoding: base64
+
+R0lGODlhZABkAPcAAP//////zP//mf//Zv//M///AP/M///MzP/Mmf/MZv/MM//MAP+Z//+ZzP+Z
+mf+ZZv+ZM/+ZAP9m//9mzP9mmf9mZv9mM/9mAP8z//8zzP8zmf8zZv8zM/8zAP8A//8AzP8Amf8A
+Zv8AM/8AAMz//8z/zMz/mcz/Zsz/M8z/AMzM/8zMzMzMmczMZszMM8zMAMyZ/8yZzMyZmcyZZsyZ
+M8yZAMxm/8xmzMxmmcxmZsxmM8xmAMwz/8wzzMwzmcwzZswzM8wzAMwA/8wAzMwAmcwAZswAM8wA
+AJn//5n/zJn/mZn/Zpn/M5n/AJnM/5nMzJnMmZnMZpnMM5nMAJmZ/5mZzJmZmZmZZpmZM5mZAJlm
+/5lmzJlmmZlmZplmM5lmAJkz/5kzzJkzmZkzZpkzM5kzAJkA/5kAzJkAmZkAZpkAM5kAAGb//2b/
+zGb/mWb/Zmb/M2b/AGbM/2bMzGbMmWbMZmbMM2bMAGaZ/2aZzGaZmWaZZmaZM2aZAGZm/2ZmzGZm
+mWZmZmZmM2ZmAGYz/2YzzGYzmWYzZmYzM2YzAGYA/2YAzGYAmWYAZmYAM2YAADP//zP/zDP/mTP/
+ZjP/MzP/ADPM/zPMzDPMmTPMZjPMMzPMADOZ/zOZzDOZmTOZZjOZMzOZADNm/zNmzDNmmTNmZjNm
+MzNmADMz/zMzzDMzmTMzZjMzMzMzADMA/zMAzDMAmTMAZjMAMzMAAAD//wD/zAD/mQD/ZgD/MwD/
+AADM/wDMzADMmQDMZgDMMwDMAACZ/wCZzACZmQCZZgCZMwCZAABm/wBmzABmmQBmZgBmMwBmAAAz
+/wAzzAAzmQAzZgAzMwAzAAAA/wAAzAAAmQAAZgAAMwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACwAAAAAZABkAEAI/wABCBxI
+sKDBgwgTKlzIsKHDgyQMPDwoEUBFACoCqEAocSPGEgNBGvRoMCIJACdJrBh4EiXDlAQvCtxIcqLA
+lhYBHECIkyVEAwEM4MQpU6FJn0cRblxJdObLkgV7Nmy50qVNgRUjjmRZlafRm1GdVuxo9WrNhT21
+hsXo9SBJqTbhxpxYE2hCmGWRXn0ody9UhF1LSux71udTqzX7FiyMF2LevCpaKv5KsGphg0XZ+jW4
+MyfaxQ0LX9TIMgBYuJP/hnSs0IDIxwk9Sh1KkURk0HtV0rZ6NLXnsIqFChXpGwDpuyCLE8QbOPNW
+h5JhT1R8Njp0ylmFEzQ9kKxj7YZnc/+0SfLy4aQoL57cOBjseLp4revlbX59UMlC3bY1/vnves2q
+naRefiztJJNaa4H1lnPnSYcfVrs1BuBUfC0XF2+buSSVek51GJuGFv6GlYK1ZWhQV6iZmKBhbKXo
+Xkw9mcdRWiBSOFB1KtK1WUsyvgZAYF8xaOFRxOm1kVwM2nfSa+KxthljSiUo40IEKpRYaximd5CP
+BQlJ44tZmhgfizm+eORAQLp0YH407lYimeFJByacciLE3YU2rtilfrD1VeVpZUYZ6GMB/PeebKex
+CeheJN3JH0EyCulQpMXVB9x0i/olYYtU4nZXnCo2VtSUn4Y2H5WoJanpjYv+aaKlX2r/+ZCkXjV6
+Gwk+liBRmqWOWNdj7f3UF4JPxfrXgXLqOplUgQ3lKmTLPTvsoHN2GqKs14q5n4iqeUQqlgm6StVz
+HiYk0gE9SUqacixV+WdPQH7pXZ0vSnhctpjVq5Cj2xqLJ72auXlbmDA9y+qPB3dpElmbKsbjhNSu
+WievGAa3lreYtfQuxB9et+elHX88J2EuIYoTabw2+dKZoLqY24yOacUyT15yC2h+BE6WGbEF8Rty
+tQB3ty/GLLIbNNAWf7rsQIXSaTO+HH+LsNM+DSYtmLGSGh0JTUso41tC9wZWVpiq1ppWXNYIYaZl
+rlTUl0iKt+lLqhrWWYiMCWVprxYl/1UUh0OeavTRUCm20+B9CqQs0P6V2dfdeiY071eIhzg31Nuu
+iBPkj4l2cOVYvyp0h25GnGF55f51GXulsgm46YO+nilZ/NLK6HZ8mpi2m4aSZ7rUTpIrEMXdIQ5l
+f54yPTq3qUb3tk1BJZ9wzMvriezLixmNuMFkpuhRCazfxH3mcoH+EEk7V6w2jIQGL1iYT1pe4MMc
+a/5SZw2z1hevWmfu//k+QhdKLOMeRBFOOddLz2TSBr+2rKd8sPvVVhpDtBMpLoEzgclJ7qU9qwiw
+JXdKEVNcsyoJsQtJkqPIdPx0GAUGi290Sled8JMuGf5mScsRIIOmdDx92c9agSpMmv9SIqTdVQhz
+7/GdmmCYI7wYcCK2M1vwnre0I1Itig25Wgrnk5pvZUdAeTGNj3wGu7yojIhWSh2gxoRENcIMd0dL
+DV6w2KfxBa5Oq/vQkYYYIKuApGbIg5N8NFY26VSlbmakTCI7GJW/mQ9hDmOcIs34Qj5t5HDzChbw
+vHI5kQXKYD0soxSFdplRSU+UqLqKzijpmU2qSFef4dpPIvcUj3COLa4cyb0eFTLnwCtDj/TKgDop
+E4nkTItgUoEAWUU8p1nHN3QEzxbd4y/W2DFAGbnMtJD3RBYpSmXguh2a3iQVJpXFUDwbSURE8sdz
+DoRz3xzRNNtIGfrtCGmKrFww6zfrSeEp8Wf5UmG7CMcQnIUFlimqIkEBAMuz+FJchpEUreBGNW1h
+hV8uk+QqIcYlOo4yoFncZ9XoJh+/oMuYQHMVFsG4yUGyiSb8jBI0CbJMDKqyaLSU51yUwp2a5BIs
+puGaShZazVNycj+dZIgB5SapxaUQkBqsqJNEWpDkQPImTUNJCdgY0X5Wb6c5FSinBnjKkl4KJyyL
+ZiEdgkHlzBFOLDMrKgFzwzuSC2yT+elN/SmcZ7pxr+wrnMdMF9VrGY8tYzlqIJcYFpheE5HoLNlf
+s7i2stySfU1K3/DsOqmbbGh64QTV2XIavoIEBAA7
+
+--_006_BY5PR19MB4726A21F9A8EBDF8CDB52FC9CE452BY5PR19MB4726namp_
+Content-Type: image/png; name="image002.png"
+Content-Description: image002.png
+Content-Disposition: inline; filename="image002.png"; size=268;
+	creation-date="Tue, 15 Oct 2024 16:44:11 GMT";
+	modification-date="Tue, 15 Oct 2024 16:44:11 GMT"
+Content-ID: <image002.png@01DB1F08.4FB6C8A0>
+Content-Transfer-Encoding: base64
+
+iVBORw0KGgoAAAANSUhEUgAAAaUAAAB4CAMAAABl2x3ZAAAAMFBMVEX///8Ab7PlP0Dw9vrlPT4A
+c7bmQkP99PQAbLJZeanrPDnlOToAa7HlPD1ae6rrQD0UZBYXAAAAl0lEQVR4nO3RixXBUBAFwA0P
++SD9dytoInfPTAtTNU+9zMt6aWVsVZbOzlICSwksJbCUwFICSwksJbCUwFICSwksJbCUwFICSwks
+JbCUwFICSwksJfgtPZs1HUujldd3abo1897vvYxj6drOo5sCAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAADg7wOfpUxoVPZb5QAAAABJRU5ErkJggg==
+
+--_006_BY5PR19MB4726A21F9A8EBDF8CDB52FC9CE452BY5PR19MB4726namp_
+Content-Type: image/jpeg; name="image003.jpg"
+Content-Description: image003.jpg
+Content-Disposition: inline; filename="image003.jpg"; size=860;
+	creation-date="Tue, 15 Oct 2024 16:44:12 GMT";
+	modification-date="Tue, 15 Oct 2024 16:44:12 GMT"
+Content-ID: <image003.jpg@01DB1F08.4FB6C8A0>
+Content-Transfer-Encoding: base64
+
+/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0a
+HBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIy
+MjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAAFALkDASIA
+AhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQA
+AAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3
+ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWm
+p6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEA
+AwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSEx
+BhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElK
+U1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3
+uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDlNq/3
+F/75FG1f7i/98iiivrz4kNq/3F/75FG1f7i/98iiigA2r/cX/vkUbV/uL/3yKKKADav9xf8AvkUb
+V/uL/wB8iiigA2r/AHF/75FG1f7i/wDfIoooAs2Kr9o+4v3T/CK0tif3E/75FFFfJZ9/vEfT9Wfp
+/BX+4z/xP8kGxP7if98ijYn9xP8AvkUUV4h9hYNif3E/75FGxP7if98iiigLBsT+4n/fIo2J/cT/
+AL5FFFAWDYn9xP8AvkUbE/uJ/wB8iiigLBsT+4n/AHyKNif3E/75FFFAWDYn9xP++RRsT+4n/fIo
+ooCx/9k=
+
+--_006_BY5PR19MB4726A21F9A8EBDF8CDB52FC9CE452BY5PR19MB4726namp_--

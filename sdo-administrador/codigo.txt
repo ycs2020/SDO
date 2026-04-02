@@ -1,0 +1,410 @@
+<div class="mobile">
+                                        <form action="../sdo-funciones/encargados-modificar.php" method="post">
+                                            <div class="table-responsive">
+                                                <table id="encargadosMobile" class="table table-bordered table-hover">
+                                                    <thead class="bg-secondary">
+                                                        <tr>
+                                                            <th>
+                                                                <center>N°</center>
+                                                            </th>
+                                                            <th>
+                                                                <center>Nombre<center>
+                                                            </th>
+                                                            <th>
+                                                                <center>Modificar<center>
+                                                            </th>
+                                                            <th>
+                                                                <center>Eliminar<center>
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                        <?php
+                                                        $query = 'SELECT * FROM encargados_reportes ORDER BY nomEncargado ASC';
+
+                                                        $res = mysqli_query($conexion, $query);
+
+                                                        $numReporte = 1;
+
+                                                        while ($row = $res->fetch_assoc()) {
+                                                        ?>
+                                                            <tr>
+                                                                <td style="vertical-align:middle;">
+                                                                    <center><?php echo $numReporte; ?></center>
+                                                                </td>
+                                                                <td nowrap="nowrap" style="vertical-align:middle;" align="justify">
+                                                                    <?php
+                                                                    $nuevoNom = mb_strtoupper($row['nomEncargado']);
+                                                                    $nuevoNom = ucwords(strtolower($nuevoNom));
+                                                                    echo $nuevoNom;
+
+                                                                    ?>
+                                                                </td>
+                                                                <td style="vertical-align:middle;">
+                                                                    <center>
+                                                                        <?php
+                                                                        $idEncargado = $row['idEncargado'];
+                                                                        $idEncargado = trim($idEncargado);
+                                                                        if ($idEncargado == 0 || $idEncargado == "" || $idEncargado == " " || $idEncargado == "  ") {
+                                                                        ?>
+                                                                            <center><?php echo "Error al Cargar Datos."; ?></center>
+                                                                        <?php
+                                                                        } else {
+
+                                                                        ?>
+
+                                                                            <form style="margin: 0; text-align: center;" class="" action="../sdo-funciones/encargados-modificar.php" method="post">
+
+                                                                                <input type="hidden" name="idEncargado" value="<?php echo $idEncargado; ?>">
+                                                                                <button type="button" data-toggle="modal" data-target="#modalMEncargado<?php echo $idEncargado; ?>" id="inputMozi" class="btn btn-block btn-warning"><i class="fa fa-pen"></i></button>
+
+                                                                                <!-- Modal -->
+                                                                                <div class="modal fade" id="modalMEncargado<?php echo $idEncargado; ?>" name="modalMEncargado<?php echo $idEncargado; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                                                    <div class="modal-dialog" role="document">
+                                                                                        <div class="modal-content">
+                                                                                            <div class="modal-header bg-primary">
+                                                                                                <h5 class="modal-title" id="exampleModalLabel">Encargado: <?php echo $nuevoNom; ?></h5>
+                                                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                                    <span aria-hidden="true">&times;</span>
+                                                                                                </button>
+                                                                                            </div>
+                                                                                            <?php
+
+                                                                                            $datosEncargadoMobile = array();
+                                                                                            $datosEncargadoMobile = getDatosEncargado($idEncargado);
+
+                                                                                            $nomEncargado = $row['nomEncargado'];
+                                                                                            $userEncargado = $row['userEncargado'];
+                                                                                            $passEncargado = $row['passEncargado'];
+                                                                                            $activoEncargado = $row['activoEncargado'];
+
+
+                                                                                            ?>
+                                                                                            <div class="modal-body">
+                                                                                                <div style="text-align:left;" class="form-group">
+                                                                                                    <label for="exampleInputBorder">Nombre: <code>*</code></label>
+                                                                                                    <input type="text" class="form-control form-control-border" id="modNombre" name="modNombre" placeholder="Nombre de Encargado" value="<?php echo $nomEncargado; ?>" required>
+                                                                                                </div>
+                                                                                                <div style="text-align:left;" class="form-group">
+                                                                                                    <label for="exampleInputBorder">Usuario: <code>*</code></label>
+                                                                                                    <input style="text-align:left;" type="text" style="text-align:center;" class="form-control form-control-border" id="modUser" name="modUser" placeholder="Usuario de Encargado" value="<?php echo $userEncargado; ?>" required>
+                                                                                                </div>
+                                                                                                <div style="text-align:left;" class="form-group">
+                                                                                                    <label for="exampleInputBorder">Contrase&ntilde;a: <code>*</code></label>
+                                                                                                    <input style="text-align:left;" type="text" style="text-align:center;" class="form-control form-control-border" id="modPassword" name="modPassword" placeholder="Contrase&ntilde;a de Encargado" value="<?php echo $passEncargado; ?>" required>
+                                                                                                </div>
+                                                                                                <div style="text-align:left;" class="form-group">
+                                                                                                    <label for="exampleInputBorder">Estado: <code>*</code></label>
+                                                                                                    <?php
+                                                                                                    if ($activoEncargado) {
+                                                                                                    ?>
+                                                                                                        <div class="form-check">
+                                                                                                            <input class="form-check-input" type="radio" value="false" name="modEstado">
+                                                                                                            <label class="form-check-label">Pendiente</label>
+                                                                                                        </div>
+                                                                                                        <div class="form-check">
+                                                                                                            <input checked class="form-check-input" type="radio" value="true" name="modEstado">
+                                                                                                            <label class="form-check-label">Activo</label>
+                                                                                                        </div>
+                                                                                                    <?php
+                                                                                                    } else {
+                                                                                                    ?>
+                                                                                                        <div class="form-check">
+                                                                                                            <input checked class="form-check-input" type="radio" value="false" name="modEstado">
+                                                                                                            <label class="form-check-label">Pendiente</label>
+                                                                                                        </div>
+                                                                                                        <div class="form-check">
+                                                                                                            <input class="form-check-input" type="radio" value="true" name="modEstado">
+                                                                                                            <label class="form-check-label">Activo</label>
+                                                                                                        </div>
+                                                                                                    <?php
+                                                                                                    }
+                                                                                                    ?>
+
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="modal-footer">
+                                                                                                <input type="hidden" name="idEncargado" id="idEncargado" value="<?php echo $idEncargado; ?>">
+                                                                                                <button type="submit" class="btn btn-primary">Modificar</button>
+                                                                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                            </form>
+
+                                                                        <?php
+
+                                                                        }
+                                                                        ?>
+
+
+                                                                    </center>
+                                                                </td>
+                                                                <td style="vertical-align:middle;">
+                                                                    <center>
+                                                                        <?php
+                                                                        $idEncargado = $row['idEncargado'];
+                                                                        $idEncargado = trim($idEncargado);
+                                                                        if ($idEncargado == 0 || $idEncargado == "" || $idEncargado == " " || $idEncargado == "  ") {
+                                                                        ?>
+                                                                            <center><?php echo "Error al Cargar Datos."; ?></center>
+                                                                        <?php
+                                                                        } else {
+
+                                                                        ?>
+
+                                                                            <form style="margin: 0; text-align: center;" class="" action="../sdo-funciones/encargados-eliminar.php" method="post">
+
+                                                                                <input type="hidden" name="idEncargado" value="<?php echo $idEncargado; ?>">
+                                                                                <button type="submit" id="inputMozi" class="btn btn-block btn-danger"><i class="fa fa-trash"></i></button>
+
+                                                                            </form>
+
+                                                                        <?php
+
+                                                                        }
+                                                                        ?>
+
+
+                                                                    </center>
+                                                                </td>
+
+                                                            </tr>
+                                                        <?php
+
+                                                            $numReporte = $numReporte + 1;
+                                                        }
+                                                        ?>
+
+
+
+                                                    </tbody>
+                                                    <tfoot class="bg-secondary">
+                                                        <tr>
+                                                            <th>
+                                                                <center>N°</center>
+                                                            </th>
+                                                            <th>
+                                                                <center>Nombre<center>
+                                                            </th>
+                                                            <th>
+                                                                <center>Modificar<center>
+                                                            </th>
+                                                            <th>
+                                                                <center>Eliminar<center>
+                                                            </th>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="mobile1">
+                                        <form action="../sdo-funciones/encargados-modificar.php" method="post">
+                                            <div class="table-responsive">
+                                                <table id="encargadosMobile1" class="table table-bordered table-hover">
+                                                    <thead class="bg-secondary">
+                                                        <tr>
+                                                            <th>
+                                                                <center>N°</center>
+                                                            </th>
+                                                            <th>
+                                                                <center>Nombre<center>
+                                                            </th>
+                                                            <th>
+                                                                <center>Modificar<center>
+                                                            </th>
+                                                            <th>
+                                                                <center>Eliminar<center>
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                        <?php
+                                                        $query = 'SELECT * FROM encargados_reportes ORDER BY nomEncargado ASC';
+
+                                                        $res = mysqli_query($conexion, $query);
+
+                                                        $numReporte = 1;
+
+                                                        while ($row = $res->fetch_assoc()) {
+                                                        ?>
+                                                            <tr>
+                                                                <td style="vertical-align:middle;">
+                                                                    <center><?php echo $numReporte; ?></center>
+                                                                </td>
+                                                                <td nowrap="nowrap" style="vertical-align:middle;" align="justify">
+                                                                    <?php
+                                                                    $nuevoNom = mb_strtoupper($row['nomEncargado']);
+                                                                    $nuevoNom = ucwords(strtolower($nuevoNom));
+                                                                    echo $nuevoNom;
+
+                                                                    ?>
+                                                                </td>
+                                                                <td style="vertical-align:middle;">
+                                                                    <center>
+                                                                        <?php
+                                                                        $idEncargado = $row['idEncargado'];
+                                                                        $idEncargado = trim($idEncargado);
+                                                                        if ($idEncargado == 0 || $idEncargado == "" || $idEncargado == " " || $idEncargado == "  ") {
+                                                                        ?>
+                                                                            <center><?php echo "Error al Cargar Datos."; ?></center>
+                                                                        <?php
+                                                                        } else {
+
+                                                                        ?>
+
+                                                                            <form style="margin: 0; text-align: center;" class="" action="../sdo-funciones/encargados-modificar.php" method="post">
+
+                                                                                <input type="hidden" name="idEncargado" value="<?php echo $idEncargado; ?>">
+                                                                                <button type="button" data-toggle="modal" data-target="#modalM1Encargado<?php echo $idEncargado; ?>" id="inputMozi" class="btn btn-block btn-warning"><i class="fa fa-pen"></i></button>
+
+                                                                                <!-- Modal -->
+                                                                                <div class="modal fade" id="modalM1Encargado<?php echo $idEncargado; ?>" name="modalM1Encargado<?php echo $idEncargado; ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                                                    <div class="modal-dialog" role="document">
+                                                                                        <div class="modal-content">
+                                                                                            <div class="modal-header bg-primary">
+                                                                                                <h5 class="modal-title" id="exampleModalLabel">Encargado: <?php echo $nuevoNom; ?></h5>
+                                                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                                    <span aria-hidden="true">&times;</span>
+                                                                                                </button>
+                                                                                            </div>
+                                                                                            <?php
+
+                                                                                            $datosEncargadoMobile = array();
+                                                                                            $datosEncargadoMobile = getDatosEncargado($idEncargado);
+
+                                                                                            $nomEncargado = $row['nomEncargado'];
+                                                                                            $userEncargado = $row['userEncargado'];
+                                                                                            $passEncargado = $row['passEncargado'];
+                                                                                            $activoEncargado = $row['activoEncargado'];
+
+
+                                                                                            ?>
+                                                                                            <div class="modal-body">
+                                                                                                <div style="text-align:left;" class="form-group">
+                                                                                                    <label for="exampleInputBorder">Nombre: <code>*</code></label>
+                                                                                                    <input type="text" class="form-control form-control-border" id="modNombre" name="modNombre" placeholder="Nombre de Encargado" value="<?php echo $nomEncargado; ?>" required>
+                                                                                                </div>
+                                                                                                <div style="text-align:left;" class="form-group">
+                                                                                                    <label for="exampleInputBorder">Usuario: <code>*</code></label>
+                                                                                                    <input style="text-align:left;" type="text" style="text-align:center;" class="form-control form-control-border" id="modUser" name="modUser" placeholder="Usuario de Encargado" value="<?php echo $userEncargado; ?>" required>
+                                                                                                </div>
+                                                                                                <div style="text-align:left;" class="form-group">
+                                                                                                    <label for="exampleInputBorder">Contrase&ntilde;a: <code>*</code></label>
+                                                                                                    <input style="text-align:left;" type="text" style="text-align:center;" class="form-control form-control-border" id="modPassword" name="modPassword" placeholder="Contrase&ntilde;a de Encargado" value="<?php echo $passEncargado; ?>" required>
+                                                                                                </div>
+                                                                                                <div style="text-align:left;" class="form-group">
+                                                                                                    <label for="exampleInputBorder">Estado: <code>*</code></label>
+                                                                                                    <?php
+                                                                                                    if ($activoEncargado) {
+                                                                                                    ?>
+                                                                                                        <div class="form-check">
+                                                                                                            <input class="form-check-input" type="radio" value="false" name="modEstado">
+                                                                                                            <label class="form-check-label">Pendiente</label>
+                                                                                                        </div>
+                                                                                                        <div class="form-check">
+                                                                                                            <input checked class="form-check-input" type="radio" value="true" name="modEstado">
+                                                                                                            <label class="form-check-label">Activo</label>
+                                                                                                        </div>
+                                                                                                    <?php
+                                                                                                    } else {
+                                                                                                    ?>
+                                                                                                        <div class="form-check">
+                                                                                                            <input checked class="form-check-input" type="radio" value="false" name="modEstado">
+                                                                                                            <label class="form-check-label">Pendiente</label>
+                                                                                                        </div>
+                                                                                                        <div class="form-check">
+                                                                                                            <input class="form-check-input" type="radio" value="true" name="modEstado">
+                                                                                                            <label class="form-check-label">Activo</label>
+                                                                                                        </div>
+                                                                                                    <?php
+                                                                                                    }
+                                                                                                    ?>
+
+                                                                                                </div>
+                                                                                            </div>
+                                                                                            <div class="modal-footer">
+                                                                                                <input type="hidden" name="idEncargado" id="idEncargado" value="<?php echo $idEncargado; ?>">
+                                                                                                <button type="submit" class="btn btn-primary">Modificar</button>
+                                                                                                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+
+                                                                            </form>
+
+                                                                        <?php
+
+                                                                        }
+                                                                        ?>
+
+
+                                                                    </center>
+                                                                </td>
+                                                                <td style="vertical-align:middle;">
+                                                                    <center>
+                                                                        <?php
+                                                                        $idEncargado = $row['idEncargado'];
+                                                                        $idEncargado = trim($idEncargado);
+                                                                        if ($idEncargado == 0 || $idEncargado == "" || $idEncargado == " " || $idEncargado == "  ") {
+                                                                        ?>
+                                                                            <center><?php echo "Error al Cargar Datos."; ?></center>
+                                                                        <?php
+                                                                        } else {
+
+                                                                        ?>
+
+                                                                            <form style="margin: 0; text-align: center;" class="" action="../sdo-funciones/encargados-eliminar.php" method="post">
+
+                                                                                <input type="hidden" name="idEncargado" value="<?php echo $idEncargado; ?>">
+                                                                                <button type="submit" id="inputMozi" class="btn btn-block btn-danger"><i class="fa fa-trash"></i></button>
+
+                                                                            </form>
+
+                                                                        <?php
+
+                                                                        }
+                                                                        ?>
+
+
+                                                                    </center>
+                                                                </td>
+
+                                                            </tr>
+                                                        <?php
+
+                                                            $numReporte = $numReporte + 1;
+                                                        }
+                                                        ?>
+
+
+
+                                                    </tbody>
+                                                    <tfoot class="bg-secondary">
+                                                        <tr>
+                                                            <th>
+                                                                <center>N°</center>
+                                                            </th>
+                                                            <th>
+                                                                <center>Nombre<center>
+                                                            </th>
+                                                            <th>
+                                                                <center>Modificar<center>
+                                                            </th>
+                                                            <th>
+                                                                <center>Eliminar<center>
+                                                            </th>
+                                                        </tr>
+                                                    </tfoot>
+                                                </table>
+
+                                            </div>
+                                        </form>
+                                    </div>
