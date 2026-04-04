@@ -353,7 +353,7 @@ if (session_status() == PHP_SESSION_NONE) {
             }).then((result) => {
                 if (result.isConfirmed) {
 
-                    $.post('../sdo-includes/vehiculos/vehiculos-listado-eliminar.php', { id: id }, function(response) {
+                    $.post('../sdo-includes/vehiculos/vehiculos_listado_eliminar.php', { id: id }, function(response) {
                         // Parseamos la respuesta JSON del PHP
                         let res = JSON.parse(response);
 

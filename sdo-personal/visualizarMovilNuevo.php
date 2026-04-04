@@ -153,16 +153,6 @@ if ($idMovil) {
                     </div>
                 </div>
 
-                <div class="row mb-4">
-                    <div class="col-xl-3 col-lg-4 col-md-6 col-12">
-                        <form action="../sdo-pdf/SDO-Hoja-Vida-Movil-Nuevo.php" target="_blank" method="POST">
-                            <input type="hidden" value="<?php echo $idMovil; ?>" name="idMovil">
-                            <button type="submit" class="btn btn-outline-primary btn-block shadow-sm font-weight-bold">
-                                <i class="fas fa-file-pdf mr-2"></i> Visualizar Hoja de Vida
-                            </button>
-                        </form>
-                    </div>
-                </div>
 
                 <div class="card shadow-sm border-0">
                     <div class="card-header bg-dark p-0 border-bottom-0">
@@ -194,155 +184,151 @@ if ($idMovil) {
                         <div class="tab-content">
 
                             <div class="tab-pane fade show active" id="tabInformacion">
-                                <div class="row mb-3">
+                                <div class="row mb-3 mt-2">
                                     <div class="col-12 text-center">
-                                        <h4 class="text-secondary font-weight-bold mb-3">Información General</h4>
+                                        <h4 class="text-secondary font-weight-bold mb-1">Gestión de Información General</h4>
+                                        <br>
+                                        <div class="mt-2 mb-3">
+                                            <form action="../sdo-pdf/SDO-Hoja-Vida-Movil-Nuevo.php" target="_blank" method="POST" class="d-inline">
+                                                <input type="hidden" value="<?php echo $idMovil; ?>" name="idMovil">
+                                                <button type="submit" class="btn btn-success shadow-sm font-weight-bold">
+                                                    <i class="fas fa-file-pdf mr-1"></i> Visualizar Hoja de Vida del Vehículo
+                                                </button>
+                                            </form>
+                                        </div>
                                     </div>
+
                                     <div class="col-12 d-flex justify-content-end mb-3">
                                         <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
                                             <input type="checkbox" class="custom-control-input" id="customSwitch1">
-                                            <label class="custom-control-label text-muted" style="cursor:pointer;" for="customSwitch1">
-                                                Habilitar Edición
+                                            <label class="custom-control-label text-muted font-weight-normal" style="cursor:pointer;" for="customSwitch1">
+                                                <i class="fas fa-edit mr-1"></i> Habilitar Edición de Datos
                                             </label>
                                         </div>
                                     </div>
                                 </div>
 
                                 <form id="formDatosVehiculo">
-                                    <fieldset id="fielset" class="border p-4 shadow-sm bg-light rounded" disabled>
-                                        <div class="form-row">
-                                            <div class="form-group col-md-6">
-                                                <label>ID:<span class="text-danger">*</span></label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend"><span class="input-group-text"><i class="far fa-id-card"></i></span></div>
-                                                    <input type="text" class="form-control" required id="idVehiculo" name="idVehiculo" value="<?php echo $idVehiculo; ?>">
-                                                </div>
+                                    <fieldset id="fielset" class="border-0 p-0" disabled>
+
+                                        <div class="card card-outline card-primary shadow-sm mb-4">
+                                            <div class="card-header d-flex align-items-center justify-content-between">
+                                                <h3 class="card-title font-weight-bold mb-0">
+                                                    <i class="fas fa-car mr-2 text-primary"></i> Datos del Vehículo
+                                                </h3>
+
                                             </div>
-                                            <div class="form-group col-md-6">
-                                                <label>Nombre:<span class="text-danger">*</span></label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-car"></i></span></div>
-                                                    <input type="text" class="form-control" required id="nomVehiculo" name="nomVehiculo" value="<?php echo $nomVehiculo; ?>">
+                                            <div class="card-body">
+                                                <div class="form-row">
+                                                    <div class="form-group col-md-4">
+                                                        <label>ID Interno:<span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control" required id="idVehiculo" name="idVehiculo" value="<?php echo $idVehiculo; ?>">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label>Nombre / Alias:<span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control" required id="nomVehiculo" name="nomVehiculo" value="<?php echo $nomVehiculo; ?>">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label>Patente:<span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control" required id="patenteVehiculo" name="patenteVehiculo" value="<?php echo $patenteVehiculo; ?>">
+                                                    </div>
+                                                </div>
+                                                <div class="form-row">
+                                                    <div class="form-group col-md-4">
+                                                        <label>Marca:<span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control" required id="marcaVehiculo" name="marcaVehiculo" value="<?php echo $marcaVehiculo; ?>">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label>Modelo:</label>
+                                                        <input type="text" class="form-control" id="modeloVehiculo" name="modeloVehiculo" value="<?php echo $modeloVehiculo; ?>">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label>Servicio:<span class="text-danger">*</span></label>
+                                                        <select name="servicioVehiculo" id="servicioVehiculo" class="form-control" required>
+                                                            <?php
+                                                            $sqlServicios = "SELECT nomServicio FROM servicios";
+                                                            $resServicios = mysqli_query($conexion, $sqlServicios);
+                                                            while ($rowServicios = $resServicios->fetch_assoc()) {
+                                                                $nomServicio = htmlspecialchars($rowServicios['nomServicio']);
+                                                                $selected = ($servicioVehiculo === $nomServicio) ? 'selected' : '';
+                                                                echo "<option value=\"$nomServicio\" $selected>$nomServicio</option>";
+                                                            }
+                                                            ?>
+                                                        </select>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div class="form-row">
-                                            <div class="form-group col-md-4">
-                                                <label>Patente:<span class="text-danger">*</span></label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-fingerprint"></i></span></div>
-                                                    <input type="text" class="form-control" required id="patenteVehiculo" name="patenteVehiculo" value="<?php echo $patenteVehiculo; ?>">
-                                                </div>
+                                        <div class="card card-outline card-secondary shadow-sm mb-4">
+                                            <div class="card-header">
+                                                <h3 class="card-title font-weight-bold"><i class="fas fa-fingerprint mr-2 text-secondary"></i> Identificación Técnica</h3>
                                             </div>
-                                            <div class="form-group col-md-4">
-                                                <label>Marca:<span class="text-danger">*</span></label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-copyright"></i></span></div>
-                                                    <input type="text" class="form-control" required id="marcaVehiculo" name="marcaVehiculo" value="<?php echo $marcaVehiculo; ?>">
+                                            <div class="card-body">
+                                                <div class="form-row">
+                                                    <div class="form-group col-md-4">
+                                                        <label>N° de Inventario:</label>
+                                                        <input type="text" class="form-control" id="numInventario" name="numInventario" value="<?php echo $numInventario; ?>">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label>N° de Chasis:</label>
+                                                        <input type="text" class="form-control" id="numChasis" name="numChasis" value="<?php echo $numChasis; ?>">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label>N° de Motor:</label>
+                                                        <input type="text" class="form-control" id="numMotor" name="numMotor" value="<?php echo $numMotor; ?>">
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            <div class="form-group col-md-4">
-                                                <label>Modelo:</label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-car-side"></i></span></div>
-                                                    <input type="text" class="form-control" id="modeloVehiculo" name="modeloVehiculo" value="<?php echo $modeloVehiculo; ?>">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-row">
-                                            <div class="form-group col-md-4">
-                                                <label>N° de Inventario:</label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-box"></i></span></div>
-                                                    <input type="text" class="form-control" id="numInventario" name="numInventario" value="<?php echo $numInventario; ?>">
-                                                </div>
-                                            </div>
-                                            <div class="form-group col-md-4">
-                                                <label>Servicio:<span class="text-danger">*</span></label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend"><span class="input-group-text"><i class="far fa-hospital"></i></span></div>
-                                                    <select name="servicioVehiculo" id="servicioVehiculo" class="form-control" required>
-                                                        <?php
-                                                        $sqlServicios = "SELECT nomServicio FROM servicios";
-                                                        $resServicios = mysqli_query($conexion, $sqlServicios);
-                                                        while ($rowServicios = $resServicios->fetch_assoc()) {
-                                                            $nomServicio = htmlspecialchars($rowServicios['nomServicio']);
-                                                            $selected = ($servicioVehiculo === $nomServicio) ? 'selected' : '';
-                                                            echo "<option value=\"$nomServicio\" $selected>$nomServicio</option>";
-                                                        }
-                                                        ?>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="form-group col-md-4">
-                                                <label>N° de Chasis:</label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-cogs"></i></span></div>
-                                                    <input type="text" class="form-control" id="numChasis" name="numChasis" value="<?php echo $numChasis; ?>">
+                                                <div class="form-row">
+                                                    <div class="form-group col-md-4">
+                                                        <label>Fabricante:</label>
+                                                        <input type="text" class="form-control" id="frabricante" name="frabricante" value="<?php echo $fabricante; ?>">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label>Vida Útil (Años):</label>
+                                                        <input type="text" class="form-control" id="vidaUtil" name="vidaUtil" value="<?php echo $vidaUtil; ?>">
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div class="form-row">
-                                            <div class="form-group col-md-4">
-                                                <label>N° de Motor:</label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-wrench"></i></span></div>
-                                                    <input type="text" class="form-control" id="numMotor" name="numMotor" value="<?php echo $numMotor; ?>">
-                                                </div>
+                                        <div class="card card-outline card-success shadow-sm mb-4">
+                                            <div class="card-header">
+                                                <h3 class="card-title font-weight-bold"><i class="fas fa-file-invoice-dollar mr-2 text-success"></i> Información de Compra y Valor</h3>
                                             </div>
-                                            <div class="form-group col-md-4">
-                                                <label>Fabricante:</label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-industry"></i></span></div>
-                                                    <input type="text" class="form-control" id="frabricante" name="frabricante" value="<?php echo $fabricante; ?>">
-                                                </div>
-                                            </div>
-                                            <div class="form-group col-md-4">
-                                                <label>Vida Útil:</label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-heartbeat"></i></span></div>
-                                                    <input type="text" class="form-control" id="vidaUtil" name="vidaUtil" value="<?php echo $vidaUtil; ?>">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-row">
-                                            <div class="form-group col-md-6">
-                                                <label>Fecha de Compra:</label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-calendar-alt"></i></span></div>
-                                                    <input type="date" class="form-control" id="fechaCompra" name="fechaCompra" value="<?php echo $fechaCompra; ?>">
-                                                </div>
-                                            </div>
-                                            <div class="form-group col-md-6">
-                                                <label>Orden de Compra:</label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend"><span class="input-group-text"><i class="fas fa-file-invoice"></i></span></div>
-                                                    <input type="text" class="form-control" id="ordenCompra" name="ordenCompra" value="<?php echo $ordenCompra; ?>">
+                                            <div class="card-body">
+                                                <div class="form-row">
+                                                    <div class="form-group col-md-4">
+                                                        <label>Fecha de Compra:</label>
+                                                        <input type="date" class="form-control" id="fechaCompra" name="fechaCompra" value="<?php echo $fechaCompra; ?>">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label>Orden de Compra:</label>
+                                                        <input type="text" class="form-control" id="ordenCompra" name="ordenCompra" value="<?php echo $ordenCompra; ?>">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label class="text-success font-weight-bold">Valor Total con IVA ($):</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text bg-success text-white border-0"><i class="fas fa-dollar-sign"></i></span>
+                                                            </div>
+                                                            <input type="number" class="form-control font-weight-bold border-success text-success" id="valorConIva" name="valorConIva" value="<?php echo $valorConIva; ?>">
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div class="form-row justify-content-center mt-3">
-                                            <div class="form-group col-md-6">
-                                                <label>Valor con IVA ($):</label>
-                                                <div class="input-group input-group-lg">
-                                                    <div class="input-group-prepend"><span class="input-group-text text-success"><i class="fas fa-money-bill-wave"></i></span></div>
-                                                    <input type="number" class="form-control font-weight-bold" id="valorConIva" name="valorConIva" value="<?php echo $valorConIva; ?>">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="text-center mt-4">
+                                        <div class="text-center mt-3 mb-5">
                                             <input type="hidden" name="idMovil" value="<?php echo $idMovil; ?>">
-                                            <button type="submit" class="btn btn-success btn-lg px-5 shadow"><i class="fas fa-save mr-2"></i> Guardar Cambios</button>
+                                            <button type="submit" class="btn btn-success btn-lg px-5 shadow rounded-pill">
+                                                <i class="fas fa-save mr-2"></i> Guardar Todos los Cambios
+                                            </button>
                                         </div>
                                     </fieldset>
                                 </form>
                             </div>
+
 
                             <div class="tab-pane fade" id="tabEstados">
                                 <div class="text-center mb-4">
@@ -362,32 +348,6 @@ if ($idMovil) {
                                         </tr>
                                         </thead>
                                         <tbody class="text-center align-middle">
-                                        <?php
-                                        $sqlHistEstados = "SELECT * FROM historial_estados_moviles WHERE idMovil = ? ORDER BY fechaReporte DESC";
-                                        $stmtEst = $conexion->prepare($sqlHistEstados);
-                                        $stmtEst->bind_param('i', $idMovil);
-                                        $stmtEst->execute();
-                                        $resHistEstados = $stmtEst->get_result();
-
-                                        while ($rowHistEstados = $resHistEstados->fetch_assoc()) {
-                                            $fecha = date('d/m/Y H:i', strtotime($rowHistEstados['fechaReporte']));
-                                            $estado = htmlspecialchars(strtoupper($rowHistEstados['estadoMovil']));
-                                            $motivo = htmlspecialchars(strtoupper($rowHistEstados['motivo']));
-
-                                            // Badges dinámicos para el estado
-                                            $badgeClass = 'badge-secondary';
-                                            if(strpos(strtolower($estado), 'operativ') !== false) $badgeClass = 'badge-success';
-                                            if(strpos(strtolower($estado), 'preventiva') !== false) $badgeClass = 'badge-warning';
-                                            if(strpos(strtolower($estado), 'correctiva') !== false) $badgeClass = 'badge-danger';
-
-                                            echo "<tr>
-                                                        <td>{$fecha}</td>
-                                                        <td><span class='badge {$badgeClass} p-2' style='font-size: 0.9em'>{$estado}</span></td>
-                                                        <td>{$motivo}</td>
-                                                      </tr>";
-                                        }
-                                        $stmtEst->close();
-                                        ?>
                                         </tbody>
                                     </table>
                                 </div>
@@ -483,7 +443,7 @@ if ($idMovil) {
                 <h5 class="modal-title font-weight-bold"><i class="fas fa-clipboard-check mr-2"></i> Nuevo Estado</h5>
                 <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
             </div>
-            <form action="../sdo-funciones/guardar-estado-moviles.php" method="POST">
+            <form id="formNuevoEstado">
                 <div class="modal-body bg-light">
                     <input type="hidden" name="idMovil" value="<?php echo $idMovil; ?>">
                     <div class="form-group">
@@ -624,56 +584,13 @@ if ($idMovil) {
 
 <script src="../dist/sweetalert2/dist/sweetalert2.all.min.js"></script>
 <script src="../dist/js/adminlte.min.js"></script>
+<script src="js/dark-mode.js"></script>
 
 <script>
     $(document).ready(function () {
-        // 1. Iniciar inputs personalizados
         bsCustomFileInput.init();
 
-        // 2. Lógica del Switch para habilitar/deshabilitar el formulario
-        $('#customSwitch1').change(function() {
-            $('#fielset').prop('disabled', !this.checked);
-        });
-
-        // 3. Envío AJAX del formulario de Información (Mucho más limpio con FormData automático)
-        $('#formDatosVehiculo').submit(function (e) {
-            e.preventDefault();
-
-            // Al usar FormData(this), captura automáticamente todos los inputs que tengan el atributo "name"
-            let formData = new FormData(this);
-
-            fetch('../sdo-funciones/editar-moviles.php', {
-                method: 'POST',
-                body: formData
-            })
-                .then(response => {
-                    if (response.ok) {
-                        // Deshabilitar formulario nuevamente
-                        $('#customSwitch1').prop('checked', false);
-                        $('#fielset').prop('disabled', true);
-
-                        Swal.fire({
-                            title: '¡Éxito!',
-                            text: 'La modificación se ha guardado correctamente.',
-                            icon: 'success',
-                            confirmButtonColor: '#28a745'
-                        });
-                    } else {
-                        throw new Error('Error en la respuesta de red');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    Swal.fire({
-                        title: '¡Problemas!',
-                        text: 'Error al intentar guardar la modificación.',
-                        icon: 'error',
-                        confirmButtonColor: '#d33'
-                    });
-                });
-        });
-
-        // 4. Configuración común para DataTables
+        // Configuración base de DataTables
         const dataTableConfig = {
             paging: true,
             lengthChange: true,
@@ -693,10 +610,65 @@ if ($idMovil) {
             }
         };
 
-        // Inicializar Tablas Estáticas
-        $('#table_kilometro, #table_estado').DataTable(dataTableConfig);
+        // --- TABLA ESTADOS (AJAX) ---
+        const tableEstado = $('#table_estado').DataTable($.extend({}, dataTableConfig, {
+            ajax: {
+                url: "../sdo-includes/vehiculos/vehiculos_estado_listado.php", // Asegúrate que esta ruta devuelva JSON
+                type: "POST",
+                data: function (d) { d.idMovilAjax = $('#idMovilAjax').val(); },
+                dataSrc: ""
+            },
+            columns: [
+                { "data": "fechaFormateada" },
+                {
+                    "data": "estadoMovil",
+                    "render": function(data) {
+                        let estado = data.toUpperCase();
+                        let badgeClass = 'badge-secondary';
+                        if(estado.includes('OPERATIV')) badgeClass = 'badge-success';
+                        else if(estado.includes('PREVENTIVA')) badgeClass = 'badge-warning';
+                        else if(estado.includes('CORRECTIVA')) badgeClass = 'badge-danger';
+                        return `<span class='badge ${badgeClass} p-2' style='font-size: 0.9em'>${estado}</span>`;
+                    }
+                },
+                {
+                    "data": "motivo",
+                    "render": function(data) { return data ? data.toUpperCase() : 'SIN MOTIVO'; }
+                }
+            ]
+        }));
 
-        // Inicializar Tabla AJAX (Petróleo)
+        // Guardar Nuevo Estado y Refrescar Tabla
+        $('#formNuevoEstado').submit(function (e) {
+            e.preventDefault();
+            let formData = new FormData(this);
+
+            fetch('../sdo-includes/vehiculos/vehiculos_estado_modificar.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        $('#estadoModal').modal('hide');
+                        $('#formNuevoEstado')[0].reset();
+                        Swal.fire({
+                            title: '¡Éxito!',
+                            text: data.message,
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        // RECARGA LA TABLA SIN REFRESCAR PÁGINA
+                        tableEstado.ajax.reload(null, false);
+                    } else {
+                        Swal.fire({ title: '¡Error!', text: data.message, icon: 'error' });
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+
+        // --- TABLA GASOLINA (AJAX) ---
         $('#table_gasolina').DataTable($.extend({}, dataTableConfig, {
             ajax: {
                 url: "../sdo-ajax/movilizacion_petroleo.php",
@@ -715,44 +687,50 @@ if ($idMovil) {
                 {
                     "data": null,
                     "render": function (data, type, row) {
-                        if (row.idPetroleo > 0) {
-                            return `<button class="btn btn-warning btn-sm btn-modificar-petroleo shadow-sm"
-                                        data-id="${row.idPetroleo}" data-fecha="${row.fechaRegistro}"
-                                        data-guia="${row.numGuia}" data-litros="${row.cantidadLitros}"
-                                        data-valorunit="${row.valorUnitario}">
-                                    <i class="fas fa-pen"></i>
-                                </button>`;
-                        }
-                        return '<span class="badge badge-secondary">Deshabilitado</span>';
+                        return `<button class="btn btn-warning btn-sm btn-modificar-petroleo shadow-sm"
+                                    data-id="${row.idPetroleo}" data-fecha="${row.fechaRegistro}"
+                                    data-guia="${row.numGuia}" data-litros="${row.cantidadLitros}"
+                                    data-valorunit="${row.valorUnitario}">
+                                <i class="fas fa-pen"></i></button>`;
                     }
-                },
-                {"data": "idPetroleo", "visible": false} // Oculto el ID pero lo mantengo accesible
+                }
             ]
         }));
 
-        // 5. Cargar datos en el Modal de Edición de Petróleo
-        $(document).on('click', '.btn-modificar-petroleo', function () {
-            $('#fechaReporteMod').val($(this).data('fecha'));
-            $('#numGuiaMod').val($(this).data('guia'));
-            $('#cantidadLitrosMod').val($(this).data('litros'));
-            $('#valorUnitMod').val($(this).data('valorunit'));
+        // --- TABLA KILOMETRAJE (ESTÁTICA POR AHORA) ---
+        $('#table_kilometro').DataTable(dataTableConfig);
 
-            $('#btnGuardarEdicionPetroleo').data('id', $(this).data('id'));
-            $('#modalEditarPetroleo').modal('show');
+        // Switch de edición
+        $('#customSwitch1').change(function() {
+            $('#fielset').prop('disabled', !this.checked);
+        });
+
+        // AJAX: Guardar Información General
+        $('#formDatosVehiculo').submit(function (e) {
+            e.preventDefault();
+            let formData = new FormData(this);
+            fetch('../sdo-includes/vehiculos/vehiculos_detalle_modificar.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        $('#customSwitch1').prop('checked', false).change();
+                        Swal.fire({ title: '¡Éxito!', text: data.message, icon: 'success' });
+                    } else {
+                        Swal.fire({ title: 'Atención', text: data.message, icon: 'warning' });
+                    }
+                });
         });
     });
 
-    // Función global para inyectar datos en el Modal de Kilometraje (para no crear un modal por fila)
+    // Funciones Globales para Kilometraje
     function editarKilometraje(idKm, fecha, km) {
         $('#idKilometrajeEditar').val(idKm);
         $('#fechaReporteKmMod').val(fecha);
         $('#numKilometrajeMod').val(km);
         $('#editarRegistroKm').modal('show');
-    }
-
-    function eliminarKilometraje(idKm) {
-        // Aquí puedes agregar tu alerta SweetAlert2 para confirmar la eliminación
-        console.log("Intentando eliminar ID: " + idKm);
     }
 </script>
 </body>

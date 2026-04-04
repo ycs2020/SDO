@@ -32,6 +32,7 @@ if (isset($_POST['id']) && !empty($_POST['id'])) {
         exit;
     }
 
+
     // 3. Si las tablas están vacías, procedemos a eliminar de la tabla principal
     $sqlPrincipal = "DELETE FROM moviles_movilizacion WHERE idMovil = '$idMovil'";
 
