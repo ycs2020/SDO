@@ -116,7 +116,8 @@ $turnoAsignado = trim((string)($_POST['turnoAsignado'] ?? ''));
 $funcionarioAsignado = trim((string)($_POST['funcionarioMPIVAV'] ?? ''));
 $fechaInicio = trim((string)($_POST['inicioPlanTareaP'] ?? ''));
 //$observacion = trim((string)($_POST['observacion'] ?? ''));
-$nomCreadorTareaP = trim((string)($_POST['nomCreadorTareaP'] ?? 'Jorge Cantillano'));
+//$nomCreadorTareaP = trim((string)($_POST['nomCreadorTareaP'] ?? 'Jorge Cantillano'));
+$nomCreadorTareaP = "Yorgo Casimis Subiabre";
 $deptoCreadorTareaP = isset($_POST['deptoCreadorTareaP']) ? (int)$_POST['deptoCreadorTareaP'] : 1;
 $esEquipamiento = isset($_POST['esEquipamiento']) ? (int)$_POST['esEquipamiento'] : 0;
 
@@ -382,6 +383,7 @@ try {
     if (!mysqli_stmt_execute($stmtChecklist)) {
         throw new Exception('No se pudo crear el checklist: ' . mysqli_stmt_error($stmtChecklist));
     }
+
 
     $str = obtenerSiglaDepartamento($deptoCreadorTareaP);
     $idRecepcion2 = formatearCorrelativoOT($idTG);
