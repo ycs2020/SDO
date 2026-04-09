@@ -18,10 +18,13 @@ while ($row = $res->fetch_assoc()) {
             $badgeEstado = '<span class="badge badge-success"><i class="fas fa-check"></i>&nbsp;&nbsp;OPERATIVA</span>';
             break;
         case 'MANTENCION PREVENTIVA':
-            $badgeEstado = '<span class="badge badge-warning"><i class="fas fa-exclamation-triangle"></i>&nbsp;&nbsp;MANTENCION PREVENTIVA</span>';
+            $badgeEstado = '<span class="badge badge-info"><i class="fas fa-exclamation-triangle"></i>&nbsp;&nbsp;MANTENCION PREVENTIVA</span>';
             break;
         case 'MANTENCION CORRECTIVA':
-            $badgeEstado = '<span class="badge badge-danger"><i class="fas fa-exclamation-triangle"></i>&nbsp;&nbsp;MANTENCION CORRECTIVA</span>';
+            $badgeEstado = '<span class="badge badge-warning"><i class="fas fa-exclamation-triangle"></i>&nbsp;&nbsp;MANTENCION CORRECTIVA</span>';
+            break;
+        case 'DEBAJA':
+            $badgeEstado = '<span class="badge badge-danger"><i class="fas fa-skull-crossbones"></i>&nbsp;&nbsp;DE BAJA</span>';
             break;
         default:
             $badgeEstado = '<span class="badge badge-secondary"><i class="fas fa-question"></i>&nbsp;&nbsp;'.$estadoVehiculo.'</span>';

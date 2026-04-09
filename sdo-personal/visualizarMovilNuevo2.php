@@ -1,0 +1,960 @@
+<?php
+
+include '../sdo-funciones/conexion.php';
+include '../sdo-funciones/funciones.php';
+
+date_default_timezone_set('America/Santiago');
+
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Validar sesión de usuario
+if (!isset($_SESSION['idUsuario'], $_SESSION['idDepartamento'], $_SESSION['rolUsuario'])) {
+    header('Location: ../sdo-flujo/login_index.php?errorSesion=true');
+    exit();
+}
+
+$idUsuario = $_SESSION['idUsuario'];
+$idDepartamento = $_SESSION['idDepartamento'];
+$rolUsuario = $_SESSION['rolUsuario'];
+
+// Asignar departamento a 1 si es Administrador
+if ($rolUsuario == 'Administrador') {
+    $idDepartamento = 1;
+}
+
+// Función para obtener datos del vehículo
+function obtenerDatosMovil($conexion, $idMovil)
+{
+    $datos = [];
+    $sql = "SELECT * FROM moviles_movilizacion WHERE idMovil = ?";
+    $stmt = $conexion->prepare($sql);
+    $stmt->bind_param('i', $idMovil);
+    $stmt->execute();
+    $res = $stmt->get_result();
+
+    if ($res->num_rows > 0) {
+        $datos = $res->fetch_assoc();
+    }
+
+    $stmt->close();
+    return $datos;
+}
+
+$idMovil = null;
+
+if (isset($_POST['idMovil'])) {
+    $idMovil = trim($_POST['idMovil']);
+    if (empty($idMovil)) {
+        header('Location: administrar-moviles.php?noId=true');
+        exit();
+    } else {
+        $_SESSION['idMovil'] = $idMovil;
+    }
+} elseif (isset($_SESSION['idMovil'])) {
+    $idMovil = trim($_SESSION['idMovil']);
+    if (empty($idMovil)) {
+        header('Location: administrar-moviles.php?noId=true');
+        exit();
+    }
+}
+
+if ($idMovil) {
+    $datos = obtenerDatosMovil($conexion, $idMovil);
+    if (empty($datos)) {
+        header('Location: administrar-moviles.php?noData=true');
+        exit();
+    }
+
+    // SANITIZACIÓN DE DATOS (Seguridad XSS para los inputs)
+    $idMovil = htmlspecialchars($datos['idMovil'] ?? '');
+    $idVehiculo = htmlspecialchars($datos['idUnico'] ?? '');
+    $nomVehiculo = htmlspecialchars($datos['nomVehiculo'] ?? '');
+    $patenteVehiculo = htmlspecialchars($datos['patenteVehiculo'] ?? '');
+    $marcaVehiculo = htmlspecialchars($datos['marcaVehiculo'] ?? '');
+    $modeloVehiculo = htmlspecialchars($datos['modeloVehiculo'] ?? '');
+    $servicioVehiculo = htmlspecialchars($datos['servicioVehiculo'] ?? '');
+    $valorConIva = htmlspecialchars($datos['valorConIva'] ?? '');
+    $estadoVehiculo = htmlspecialchars($datos['estadoVehiculo'] ?? '');
+    $numInventario = htmlspecialchars($datos['numInventario'] ?? '');
+    $numChasis = htmlspecialchars($datos['numChasis'] ?? '');
+    $numMotor = htmlspecialchars($datos['numMotor'] ?? '');
+    $vidaUtil = htmlspecialchars($datos['vidaUtil'] ?? '');
+    $fabricante = htmlspecialchars($datos['frabricante'] ?? ''); // Mantenido 'frabricante' de la BD
+    $fechaCompra = htmlspecialchars($datos['fechaCompra'] ?? '');
+    $ordenCompra = htmlspecialchars($datos['ordenCompra'] ?? '');
+
+    $nombreArchivo = $nomVehiculo . ' - ' . $idVehiculo;
+} else {
+    header('Location: administrar-moviles.php?noId=true');
+    exit();
+}
+
+?>
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Visualizar Vehículo | SDO</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
+
+    <link rel="stylesheet" href="../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="../plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <link rel="stylesheet" href="../plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
+
+    <link rel="stylesheet" href="../dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="../dist/css/modelo.css">
+    <link rel="stylesheet" href="../dist/sweetalert2/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="css/dark-mode.css">
+
+    <style>
+        .nav-pills .nav-link {
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .nav-pills .nav-link.active {
+            background-color: #007bff !important;
+            box-shadow: 0 4px 6px rgba(0, 123, 255, .3);
+        }
+
+        .nav-pills .nav-link:not(.active):hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .input-group-text {
+            background-color: #f8f9fa;
+            color: #6c757d;
+        }
+
+        .table th {
+            vertical-align: middle !important;
+        }
+    </style>
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed layout-footer-fixed">
+<div class="wrapper">
+
+    <?php include '../sdo-templates/user-sidebar.php'; ?>
+
+    <div class="content-wrapper">
+        <section class="content-header">
+        </section>
+
+        <section class="content">
+            <div class="container-fluid">
+
+                <div class="row mb-3">
+                    <div class="col-xl-9 col-lg-8 col-md-7 col-12 mb-2 mb-md-0">
+                        <div class="card h-100 mb-0 shadow-sm border-0">
+                            <div class="card-header bg-primary text-white d-flex align-items-center">
+                                <h5 class="mb-0 w-100 font-weight-bold">
+                                    <i class="fas fa-car mr-2"></i> Vehículo: <?php echo $nombreArchivo; ?>
+                                </h5>
+                                <input type="hidden" name="idMovilAjax" id="idMovilAjax" value="<?php echo $idMovil; ?>">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-5 col-12">
+                        <a href="administrar-moviles.php" class="btn btn-danger btn-block h-100 d-flex align-items-center justify-content-center shadow-sm">
+                            <i class="fa fa-chevron-left mr-2"></i> Volver Atrás
+                        </a>
+                    </div>
+                </div>
+
+
+                <div class="card shadow-sm border-0">
+                    <div class="card-header bg-dark p-0 border-bottom-0">
+                        <ul class="nav nav-pills nav-fill p-2">
+                            <li class="nav-item">
+                                <a class="nav-link text-white active rounded" href="#tabInformacion" data-toggle="tab">
+                                    <i class="fas fa-info-circle mr-1"></i> Información
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white rounded" href="#tabEstados" data-toggle="tab">
+                                    <i class="fas fa-clipboard-list mr-1"></i> Estados
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white rounded" href="#tabPetroleo" data-toggle="tab">
+                                    <i class="fas fa-gas-pump mr-1"></i> Petróleo
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-white rounded" href="#tabKilometraje" data-toggle="tab">
+                                    <i class="fas fa-tachometer-alt mr-1"></i> Kilometraje
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="tab-content">
+
+                            <div class="tab-pane fade show active" id="tabInformacion">
+                                <div class="row mb-3 mt-2">
+                                    <div class="col-12 text-center">
+                                        <h4 class="text-secondary font-weight-bold mb-1">Gestión de Información General</h4>
+                                        <br>
+                                        <div class="mt-2 mb-3">
+                                            <form action="../sdo-pdf/SDO-Hoja-Vida-Movil-Nuevo.php" target="_blank" method="POST" class="d-inline">
+                                                <input type="hidden" value="<?php echo $idMovil; ?>" name="idMovil">
+                                                <button type="submit" class="btn btn-success shadow-sm font-weight-bold">
+                                                    <i class="fas fa-file-pdf mr-1"></i> Visualizar Hoja de Vida del Vehículo
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-12 d-flex justify-content-end mb-3">
+                                        <div class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                            <input type="checkbox" class="custom-control-input" id="customSwitch1">
+                                            <label class="custom-control-label text-muted font-weight-normal" style="cursor:pointer;" for="customSwitch1">
+                                                <i class="fas fa-edit mr-1"></i> Habilitar Edición de Datos
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <form id="formDatosVehiculo">
+                                    <fieldset id="fielset" class="border-0 p-0" disabled>
+
+                                        <div class="card card-outline card-primary shadow-sm mb-4">
+                                            <div class="card-header d-flex align-items-center justify-content-between">
+                                                <h3 class="card-title font-weight-bold mb-0">
+                                                    <i class="fas fa-car mr-2 text-primary"></i> Datos del Vehículo
+                                                </h3>
+
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="form-row">
+                                                    <div class="form-group col-md-4">
+                                                        <label>ID Interno:<span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control" required id="idVehiculo" name="idVehiculo" value="<?php echo $idVehiculo; ?>">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label>Nombre / Alias:<span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control" required id="nomVehiculo" name="nomVehiculo" value="<?php echo $nomVehiculo; ?>">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label>Patente:<span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control" required id="patenteVehiculo" name="patenteVehiculo" value="<?php echo $patenteVehiculo; ?>">
+                                                    </div>
+                                                </div>
+                                                <div class="form-row">
+                                                    <div class="form-group col-md-4">
+                                                        <label>Marca:<span class="text-danger">*</span></label>
+                                                        <input type="text" class="form-control" required id="marcaVehiculo" name="marcaVehiculo" value="<?php echo $marcaVehiculo; ?>">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label>Modelo:</label>
+                                                        <input type="text" class="form-control" id="modeloVehiculo" name="modeloVehiculo" value="<?php echo $modeloVehiculo; ?>">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label>Servicio:<span class="text-danger">*</span></label>
+                                                        <select name="servicioVehiculo" id="servicioVehiculo" class="form-control" required>
+                                                            <?php
+                                                            $sqlServicios = "SELECT nomServicio FROM servicios";
+                                                            $resServicios = mysqli_query($conexion, $sqlServicios);
+                                                            while ($rowServicios = $resServicios->fetch_assoc()) {
+                                                                $nomServicio = htmlspecialchars($rowServicios['nomServicio']);
+                                                                $selected = ($servicioVehiculo === $nomServicio) ? 'selected' : '';
+                                                                echo "<option value=\"$nomServicio\" $selected>$nomServicio</option>";
+                                                            }
+                                                            ?>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="card card-outline card-secondary shadow-sm mb-4">
+                                            <div class="card-header">
+                                                <h3 class="card-title font-weight-bold">
+                                                    <i class="fas fa-fingerprint mr-2 text-secondary"></i> Identificación Técnica
+                                                </h3>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="form-row">
+                                                    <div class="form-group col-md-4">
+                                                        <label>N° de Inventario:</label>
+                                                        <input type="text" class="form-control" id="numInventario" name="numInventario" value="<?php echo $numInventario; ?>">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label>N° de Chasis:</label>
+                                                        <input type="text" class="form-control" id="numChasis" name="numChasis" value="<?php echo $numChasis; ?>">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label>N° de Motor:</label>
+                                                        <input type="text" class="form-control" id="numMotor" name="numMotor" value="<?php echo $numMotor; ?>">
+                                                    </div>
+                                                </div>
+                                                <div class="form-row">
+                                                    <div class="form-group col-md-4">
+                                                        <label>Fabricante:</label>
+                                                        <input type="text" class="form-control" id="frabricante" name="frabricante" value="<?php echo $fabricante; ?>">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label>Vida Útil (Años):</label>
+                                                        <input type="text" class="form-control" id="vidaUtil" name="vidaUtil" value="<?php echo $vidaUtil; ?>">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="card card-outline card-success shadow-sm mb-4">
+                                            <div class="card-header">
+                                                <h3 class="card-title font-weight-bold">
+                                                    <i class="fas fa-file-invoice-dollar mr-2 text-success"></i> Información de Compra y Valor
+                                                </h3>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="form-row">
+                                                    <div class="form-group col-md-4">
+                                                        <label>Fecha de Compra:</label>
+                                                        <input type="date" class="form-control" id="fechaCompra" name="fechaCompra" value="<?php echo $fechaCompra; ?>">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label>Orden de Compra:</label>
+                                                        <input type="text" class="form-control" id="ordenCompra" name="ordenCompra" value="<?php echo $ordenCompra; ?>">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label class="text-success font-weight-bold">Valor Total con IVA ($):</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text bg-success text-white border-0"><i class="fas fa-dollar-sign"></i></span>
+                                                            </div>
+                                                            <input type="number" class="form-control font-weight-bold border-success text-success" id="valorConIva" name="valorConIva" value="<?php echo $valorConIva; ?>">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="text-center mt-3 mb-5">
+                                            <input type="hidden" name="idMovil" value="<?php echo $idMovil; ?>">
+                                            <button type="submit" class="btn btn-success btn-lg px-5 shadow rounded-pill">
+                                                <i class="fas fa-save mr-2"></i> Guardar Todos los Cambios
+                                            </button>
+                                        </div>
+                                    </fieldset>
+                                </form>
+                            </div>
+
+
+                            <div class="tab-pane fade" id="tabEstados">
+                                <div class="text-center mb-4">
+                                    <h4 class="text-secondary font-weight-bold">Registro de Estados</h4>
+                                    <button class="btn btn-success mt-2 shadow-sm" data-toggle="modal" data-target="#estadoModal">
+                                        <i class="fas fa-plus mr-1"></i> Añadir Nuevo Estado
+                                    </button>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-bordered w-100 table-valign-middle table-sm" id="table_estado">
+                                        <thead class="bg-dark text-white text-center">
+                                        <tr>
+                                            <th>Fecha</th>
+                                            <th>Estado</th>
+                                            <th>Motivo</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody class="text-center align-middle">
+                                        </tbody>
+                                        <tfoot class="bg-dark text-white text-center">
+                                        <tr>
+                                            <th>Fecha</th>
+                                            <th>Estado</th>
+                                            <th>Motivo</th>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="tabPetroleo">
+                                <div class="text-center mb-4">
+                                    <h4 class="text-secondary font-weight-bold">Registro de Combustible</h4>
+                                    <button class="btn btn-warning mt-2 shadow-sm font-weight-bold text-dark" data-toggle="modal" data-target="#gasolinaModal">
+                                        <i class="fas fa-gas-pump mr-1"></i> Registrar Carga
+                                    </button>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-bordered w-100 table-valign-middle table-sm" id="table_gasolina">
+                                        <thead class="bg-warning text-dark text-center">
+                                        <tr>
+                                            <th>Fecha</th>
+                                            <th>N° Guía</th>
+                                            <th>Litros</th>
+                                            <th>V. Unitario</th>
+                                            <th>Total (Sin IVA)</th>
+                                            <th>IVA</th>
+                                            <th>Total</th>
+                                            <th>Modificar</th>
+                                            <th>Eliminar</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody class="text-center align-middle">
+                                        </tbody>
+                                        <tfoot class="bg-warning text-dark text-center">
+                                        <tr>
+                                            <th>Fecha</th>
+                                            <th>N° Guía</th>
+                                            <th>Litros</th>
+                                            <th>V. Unitario</th>
+                                            <th>Total (Sin IVA)</th>
+                                            <th>IVA</th>
+                                            <th>Total</th>
+                                            <th>Modificar</th>
+                                            <th>Eliminar</th>
+                                        </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="tabKilometraje">
+                                <div class="text-center mb-4">
+                                    <h4 class="text-secondary font-weight-bold">Registro de Kilometraje</h4>
+                                </div>
+
+                                <div class="alert alert-info mb-4 shadow-sm border-0">
+                                    <i class="fas fa-info-circle"></i>
+                                    <strong>Colores para Identificar:</strong><br>
+                                    <span class="badge text-dark p-2 mt-2" style="background-color: #ffff00;">Fila Amarilla</span> = Inicio Próximo Mantenimiento
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-bordered w-100" id="table_kilometro">
+                                        <thead class="bg-secondary text-white text-center">
+                                        <tr>
+                                            <th>Fecha Registro</th>
+                                            <th>Kilometraje</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody class="text-center align-middle">
+                                        <?php
+                                        $sqlHistKilometro = "SELECT * FROM historial_kilometraje_moviles WHERE idMovil = ? ORDER BY fechaRegistro DESC";
+                                        $stmtKm = $conexion->prepare($sqlHistKilometro);
+                                        $stmtKm->bind_param('i', $idMovil);
+                                        $stmtKm->execute();
+                                        $resHistKilometros = $stmtKm->get_result();
+
+                                        while ($row = $resHistKilometros->fetch_assoc()) {
+                                            $idKm = $row['idKilometraje'];
+                                            $fechaKm = date('d/m/Y', strtotime($row['fechaRegistro']));
+                                            $cantKm = number_format($row['cantKilometraje'], 0, ",", ".");
+                                            $mantenimiento = $row['registroMantenimiento'];
+
+                                            $bgStyle = ($mantenimiento == 1) ? 'background-color: #fff9c4; font-weight:bold;' : '';
+
+                                            echo "<tr style='{$bgStyle}'>
+                                                        <td>{$fechaKm}</td>
+                                                        <td>{$cantKm} Km</td>
+                                                        <td>
+                                                            <button class='btn btn-warning btn-sm shadow-sm' onclick='editarKilometraje({$idKm}, \"{$row['fechaRegistro']}\", {$row['cantKilometraje']})'><i class='fas fa-pen'></i></button>
+                                                            <button class='btn btn-danger btn-sm shadow-sm' onclick='eliminarKilometraje({$idKm})'><i class='fas fa-trash'></i></button>
+                                                        </td>
+                                                      </tr>";
+                                        }
+                                        $stmtKm->close();
+                                        ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+</div>
+
+<div class="modal fade" id="estadoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title font-weight-bold">
+                    <i class="fas fa-clipboard-check mr-2"></i> Nuevo Estado
+                </h5>
+                <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+            </div>
+            <form id="formNuevoEstado">
+                <div class="modal-body bg-light">
+                    <input type="hidden" name="idMovil" value="<?php echo $idMovil; ?>">
+                    <div class="form-group">
+                        <label>Fecha Reporte:</label>
+                        <input type="date" class="form-control" readonly id="fechaReporteEstado" value="<?php echo date('Y-m-d'); ?>" name="fechaReporte">
+                    </div>
+                    <div class="form-group">
+                        <label>Estado:<span class="text-danger">*</span></label>
+                        <select class="form-control" required name="estadoMovil">
+                            <option value="" disabled selected>-- Seleccione --</option>
+                            <option value="Operativa">Operativa</option>
+                            <option value="Mantencion Preventiva">Mantención Preventiva</option>
+                            <option value="Mantencion Correctiva">Mantención Correctiva</option>
+                            <option value="Debaja">Debaja</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Motivo:</label>
+                        <textarea rows="4" class="form-control" name="motivo" placeholder="Explique el motivo del nuevo estado..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="gasolinaModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title font-weight-bold text-dark">
+                    <i class="fas fa-gas-pump mr-2"></i> Registro de Petróleo
+                </h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form id="formCargaGasolina">
+                <div class="modal-body bg-light">
+                    <input type="hidden" name="idMovil" value="<?php echo $idMovil; ?>">
+                    <div class="form-group">
+                        <label>Fecha Reporte:<span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" required value="<?php echo date('Y-m-d'); ?>" name="fechaReporte">
+                    </div>
+                    <div class="form-group">
+                        <label>N° Guía:<span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" required name="numGuia">
+                    </div>
+                    <div class="form-group">
+                        <label>Litros:<span class="text-danger">*</span></label>
+                        <input type="number" step="any" class="form-control" required name="litros">
+                    </div>
+                    <div class="form-group">
+                        <label>Valor Unitario:<span class="text-danger">* (SIN IVA)</span></label>
+                        <input type="number" step="any" class="form-control" required name="valorUnitario">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-warning font-weight-bold">
+                        <i class="fas fa-save"></i> Guardar Carga
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalEditarPetroleo" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title font-weight-bold">
+                    <i class="fas fa-pen mr-2"></i> Editar Registro
+                </h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body bg-light">
+                <form id="formEditarPetroleo">
+                    <div class="form-group">
+                        <label>Fecha Reporte</label>
+                        <input type="date" class="form-control" id="fechaReporteMod" name="fechaReporteMod">
+                    </div>
+                    <div class="form-group">
+                        <label>Número de Guía</label>
+                        <input type="text" class="form-control" id="numGuiaMod" name="numGuiaMod">
+                    </div>
+                    <div class="form-group">
+                        <label>Cantidad de Litros</label>
+                        <input type="number" step="any" class="form-control" id="cantidadLitrosMod" name="cantidadLitrosMod">
+                    </div>
+                    <div class="form-group">
+                        <label>Valor Unitario (Neto)</label>
+                        <input type="number" class="form-control" id="valorUnitMod" name="valorUnitMod">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" id="btnGuardarEdicionPetroleo">
+                    <i class="fas fa-save"></i> Guardar Cambios
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editarRegistroKm" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title font-weight-bold text-dark">
+                    <i class="fas fa-tachometer-alt mr-2"></i> Editar Kilometraje
+                </h5>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <form action="../sdo-funciones/guardar-edicion-kilometraje.php" method="POST">
+                <div class="modal-body bg-light">
+                    <input type="hidden" name="idKilometraje" id="idKilometrajeEditar">
+                    <input type="hidden" name="idMovil" value="<?php echo $idMovil; ?>">
+                    <div class="form-group">
+                        <label>Fecha Reporte:<span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" required id="fechaReporteKmMod" name="fechaReporte">
+                    </div>
+                    <div class="form-group">
+                        <label>Kilometraje:<span class="text-danger">*</span></label>
+                        <input type="number" step="1" class="form-control" required id="numKilometrajeMod" name="numKilometraje">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-warning font-weight-bold">
+                        <i class="fas fa-save"></i> Guardar
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="../plugins/jquery/jquery.min.js"></script>
+<script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="../plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+
+<script src="../plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+<script src="../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+<script src="../plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+
+<script src="../dist/sweetalert2/dist/sweetalert2.all.min.js"></script>
+<script src="../dist/js/adminlte.min.js"></script>
+<script src="js/dark-mode.js"></script>
+
+<script>
+    $(document).ready(function () {
+        bsCustomFileInput.init();
+
+        // Configuración base de DataTables
+        const dataTableConfig = {
+            paging: true,
+            lengthChange: false,
+            searching: true,
+            ordering: false,
+            info: true,
+            autoWidth: false,
+            responsive: true,
+            language: {
+                lengthMenu: "Visualizando _MENU_ Registros",
+                zeroRecords: "No se encontraron registros.",
+                info: "Página _PAGE_ de _PAGES_",
+                infoEmpty: "No existen registros.",
+                search: "Buscar:",
+                infoFiltered: "(Filtrado de _MAX_ registros)",
+                paginate: {
+                    previous: "Anterior",
+                    next: "Siguiente"
+                }
+            }
+        };
+
+        // --- TABLA ESTADOS (AJAX) ---
+        const tableEstado = $('#table_estado').DataTable($.extend({}, dataTableConfig, {
+            ajax: {
+                url: "../sdo-includes/vehiculos/vehiculos_estado_listado.php", // Asegúrate que esta ruta devuelva JSON
+                type: "POST",
+                data: function (d) {
+                    d.idMovilAjax = $('#idMovilAjax').val();
+                },
+                dataSrc: ""
+            },
+            columns: [
+                {"data": "fechaFormateada"},
+                {
+                    "data": "estadoVehiculoBadge"
+                },
+                {
+                    "data": "motivo",
+                    "render": function (data) {
+                        return data ? data.toUpperCase() : 'SIN MOTIVO';
+                    }
+                }
+            ]
+        }));
+
+        // Guardar Nuevo Estado y Refrescar Tabla
+        $('#formNuevoEstado').submit(function (e) {
+            e.preventDefault();
+            let formData = new FormData(this);
+
+            fetch('../sdo-includes/vehiculos/vehiculos_estado_modificar.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        $('#estadoModal').modal('hide');
+                        $('#formNuevoEstado')[0].reset();
+                        Swal.fire({
+                            title: '¡Éxito!',
+                            text: data.message,
+                            icon: 'success',
+                            timer: 1500,
+                            showConfirmButton: false
+                        });
+                        // RECARGA LA TABLA SIN REFRESCAR PÁGINA
+                        tableEstado.ajax.reload(null, false);
+                    } else {
+                        Swal.fire({
+                            title: '¡Error!',
+                            text: data.message,
+                            icon: 'error'
+                        });
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+
+        // --- TABLA GASOLINA (AJAX) ---
+        const tableGasolina = $('#table_gasolina').DataTable($.extend({}, dataTableConfig, {
+            ajax: {
+                url: "../sdo-includes/vehiculos/vehiculos_petroleo_listado.php", // Asegúrate que esta ruta devuelva JSON
+                type: "POST",
+                data: function (d) {
+                    d.idMovilAjax = $('#idMovilAjax').val();
+                },
+                dataSrc: ""
+            },
+            columns: [
+                {"data": "fechaFormateada"},
+                {"data": "numGuiaFormateada"},
+                {"data": "cantidadLitrosFormateada"},
+                {"data": "valorUnitarioFormateada"},
+                {"data": "totalSinIvaFormateada"},
+                {"data": "IvaCalculadoFormateada"},
+                {"data": "totalConIvaFormateada"},
+                {"data": "btnModificar"},
+                {"data": "btnEliminar"},
+            ]
+        }));
+
+        // 2. Evento Submit del Formulario
+        $('#formCargaGasolina').on('submit', function (e) {
+            e.preventDefault();
+
+            // Bloquear botón para evitar doble clic
+            const btnSubmit = $(this).find('button[type="submit"]');
+            btnSubmit.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Guardando...');
+
+            let formData = new FormData(this);
+
+            fetch('../sdo-includes/vehiculos/vehiculos_petroleo_agregar.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        $('#gasolinaModal').modal('hide');
+                        $('#formCargaGasolina')[0].reset();
+
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Registrado!',
+                            text: data.message,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+
+                        // RECARGA LA TABLA SIN REFRESCAR PÁGINA
+                        tableGasolina.ajax.reload(null, false);
+                    } else {
+                        Swal.fire('Error', data.message, 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error detallado:', error); // Esto te dirá si es un 404 o un error de sintaxis
+                    Swal.fire('Error', 'No se pudo conectar con el servidor: ' + error.message, 'error');
+                })
+                .finally(() => {
+                    // Restaurar botón
+                    btnSubmit.prop('disabled', false).html('<i class="fas fa-save"></i> Guardar Carga');
+                });
+        });
+
+        // 3. Modificar Registro de Petróleo (delegación de eventos para botones dinámicos)
+        // 1. Al hacer clic en el botón de la tabla, abrir modal y cargar datos
+        $(document).on('click', '.btn-mod-petro', function() {
+            const idPetroleo = $(this).data('id');
+            const fila = $(this).closest('tr');
+            const data = $('#table_gasolina').DataTable().row(fila).data();
+
+            // Cargamos los datos crudos (sin formato de moneda) en el modal
+            $('#fechaReporteMod').val(data.fechaRegistro); // YYYY-MM-DD
+            $('#numGuiaMod').val(data.numGuia);
+            $('#cantidadLitrosMod').val(data.cantidadLitros);
+            $('#valorUnitMod').val(data.valorUnitario);
+
+            // Guardamos el ID en el botón de guardar
+            $('#btnGuardarEdicionPetroleo').data('id', idPetroleo);
+            $('#modalEditarPetroleo').modal('show');
+        });
+
+        // 2. Acción de Guardar con Recálculo en el Servidor
+        $('#btnGuardarEdicionPetroleo').on('click', function() {
+            const btn = $(this);
+            const idPetroleo = btn.data('id');
+
+            const datos = {
+                idPetroleo: idPetroleo,
+                fechaReporte: $('#fechaReporteMod').val(),
+                numGuia: $('#numGuiaMod').val(),
+                cantidadLitros: $('#cantidadLitrosMod').val(),
+                valorUnitario: $('#valorUnitMod').val()
+            };
+
+            btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Procesando...');
+
+            $.ajax({
+                url: '../sdo-includes/vehiculos/vehiculos_petroleo_modificar.php',
+                type: 'POST',
+                data: datos,
+                dataType: 'json',
+                success: function(res) {
+                    if (res.success) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Recalculado!',
+                            text: 'Los valores y el IVA se actualizaron correctamente.',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                        $('#modalEditarPetroleo').modal('hide');
+                        $('#table_gasolina').DataTable().ajax.reload(null, false);
+                    } else {
+                        Swal.fire('Error', res.message, 'error');
+                    }
+                },
+                error: function() {
+                    Swal.fire('Error', 'Error crítico en el servidor.', 'error');
+                },
+                complete: function() {
+                    btn.prop('disabled', false).html('<i class="fas fa-save"></i> Guardar Cambios');
+                }
+            });
+        });
+
+        // Función para eliminar registro de petróleo
+        $(document).on('click', '.btn-delete-petro', function() {
+            const idPetroleo = $(this).data('id'); // ID del registro
+            const fila = $(this).closest('tr');
+
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "Esta acción no se puede deshacer y el registro de combustible será eliminado.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Ejecutar AJAX de eliminación
+                    $.ajax({
+                        url: '../sdo-includes/vehiculos/vehiculos_petroleo_eliminar.php',
+                        type: 'POST',
+                        data: { idPetroleo: idPetroleo },
+                        dataType: 'json',
+                        success: function(res) {
+                            if (res.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Eliminado',
+                                    text: res.message,
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
+                                // Recargar la tabla sin refrescar la página
+                                $('#table_gasolina').DataTable().ajax.reload(null, false);
+                            } else {
+                                Swal.fire('Error', res.message, 'error');
+                            }
+                        },
+                        error: function() {
+                            Swal.fire('Error', 'No se pudo procesar la eliminación en el servidor.', 'error');
+                        }
+                    });
+                }
+            });
+        });
+
+        // --- TABLA KILOMETRAJE (ESTÁTICA POR AHORA) ---
+        $('#table_kilometro').DataTable(dataTableConfig);
+
+        // Switch de edición
+        $('#customSwitch1').change(function () {
+            $('#fielset').prop('disabled', !this.checked);
+        });
+
+        // AJAX: Guardar Información General
+        $('#formDatosVehiculo').submit(function (e) {
+            e.preventDefault();
+            let formData = new FormData(this);
+            fetch('../sdo-includes/vehiculos/vehiculos_detalle_modificar.php', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        $('#customSwitch1').prop('checked', false).change();
+                        Swal.fire({
+                            title: '¡Éxito!',
+                            text: data.message,
+                            icon: 'success'
+                        });
+                    } else {
+                        Swal.fire({
+                            title: 'Atención',
+                            text: data.message,
+                            icon: 'warning'
+                        });
+                    }
+                });
+        });
+    });
+
+    // Funciones Globales para Kilometraje
+    function editarKilometraje(idKm, fecha, km) {
+        $('#idKilometrajeEditar').val(idKm);
+        $('#fechaReporteKmMod').val(fecha);
+        $('#numKilometrajeMod').val(km);
+        $('#editarRegistroKm').modal('show');
+    }
+</script>
+</body>
+</html>
