@@ -15,7 +15,14 @@ $datos = [];
 while ($fila = $resultado->fetch_assoc()) {
     $id = $fila['id'];
 
-    // FORMATEOS
+// 🔽 GUARDAR VALORES SIN FORMATO
+    $fila['metrosConsumidos_raw'] = $fila['metrosConsumidos'];
+    $fila['precioUnitario_raw']   = $fila['precioUnitario'];
+    $fila['valorTotal_raw']       = $fila['valorTotal'];
+    $fila['valorTotalConIVA_raw'] = $fila['valorTotalConIVA'];
+    $fila["fecha_raw"] = date("Y-m", strtotime($fila["fecha"]));
+
+// 🔽 FORMATEOS (para mostrar)
     $fila["fecha"] = date("m/Y", strtotime($fila["fecha"]));
     $fila['metrosConsumidos'] = number_format($fila['metrosConsumidos'], 0, ',', '.');
     $fila['precioUnitario'] = '$'.number_format($fila['precioUnitario'], 0, ',', '.');
@@ -24,7 +31,7 @@ while ($fila = $resultado->fetch_assoc()) {
 
     $fila['now'] = date('Y-m-d H:i:s');
 
-    // 🔽 CONSULTA DE OBSERVACIONES
+// 🔽 CONSULTA DE OBSERVACIONES
     $obsQuery = $conexion->prepare("SELECT fecha, obs FROM criogenico_obs WHERE idConsumo = ?");
     $obsQuery->bind_param("i", $id);
     $obsQuery->execute();

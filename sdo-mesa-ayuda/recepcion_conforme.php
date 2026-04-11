@@ -7,6 +7,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 $nomUsuario = trim($_SESSION['nomUsuario']);
+$idUsuario = trim($_SESSION['idUsuario']);
 
 ?>
 
@@ -179,7 +180,14 @@ $nomUsuario = trim($_SESSION['nomUsuario']);
                                                             <select name="nombreCategoriaAntigua" id="nombreCategoriaAntigua" class="form-control form-control-sm">
                                                                 <option value="" selected disabled>Seleccione.....</option>
                                                                 <?php
-                                                                $sqlCategorias = "SELECT * FROM `categorias_recepcion_conforme` ORDER BY id DESC";
+                                                                if($idUsuario == 5){
+                                                                    $sqlCategorias = "SELECT * FROM `categorias_recepcion_conforme` WHERE nomCreador = 'Marcela Rojas Perez' ORDER BY id DESC";
+                                                                }else if($idUsuario == 1){
+                                                                    $sqlCategorias = "SELECT * FROM categorias_recepcion_conforme WHERE nomCreador = 'Carola Avila' ORDER BY id DESC";
+                                                                }else{
+                                                                    $sqlCategorias = "SELECT * FROM categorias_recepcion_conforme ORDER BY id DESC";
+                                                                }
+
                                                                 $resCategorias = mysqli_query($conexion, $sqlCategorias);
                                                                 while ($rowCategorias = $resCategorias->fetch_assoc()) {
                                                                     $idCategoria = $rowCategorias['id'];
@@ -215,7 +223,14 @@ $nomUsuario = trim($_SESSION['nomUsuario']);
                                     <div class="card-header p-0 pt-1">
                                         <ul class="nav nav-tabs" id="myTab" role="tablist">
                                             <?php
-                                            $sql = "SELECT * FROM categorias_recepcion_conforme ORDER BY id DESC";
+                                            if($idUsuario == 5){
+                                                $sql = "SELECT * FROM categorias_recepcion_conforme WHERE nomCreador = 'Marcela Rojas Perez' ORDER BY id DESC";
+                                            }else if($idUsuario == 1){
+                                                $sql = "SELECT * FROM categorias_recepcion_conforme WHERE nomCreador = 'Carola Avila' ORDER BY id DESC";
+                                            }else{
+                                                $sql = "SELECT * FROM categorias_recepcion_conforme ORDER BY id DESC";
+                                            }
+
                                             $res = mysqli_query($conexion, $sql);
                                             $first = true;
 

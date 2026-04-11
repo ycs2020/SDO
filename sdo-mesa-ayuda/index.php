@@ -191,7 +191,7 @@ if ($horaActual >= '08' && $horaActual <= '11') {
                                 <!-- /.card-header -->
                                 <div class="card-body">
                                     <?php
-                                        if($idUsuario == 4 || $idUsuario == 2){
+                                        if($idUsuario == 4 || $idUsuario == 2 || $idUsuario == 5){
                                             ?>
                                             <h5><b>Recepcion Conforme</b></h5>
                                             <br>
@@ -216,14 +216,22 @@ if ($horaActual >= '08' && $horaActual <= '11') {
                                             <?php
                                         }
                                     ?>
-                                    <h5><b>Licitaciones</b></h5>
-                                    <br>
-                                    <div class="row">
-                                        <div class="col-lg-3 col-12">
-                                            <a href="licitaciones_admin.php" class="btn btn-block bg-gradient-primary btn-lg"><i class="fas fa-list"></i><br> Listado de Licitaciones</a>
+                                    <?php
+                                    if($idUsuario == 5){
+                                    }else{
+                                        ?>
+                                        <h5><b>Licitaciones</b></h5>
+                                        <br>
+                                        <div class="row">
+                                            <div class="col-lg-3 col-12">
+                                                <a href="licitaciones_admin.php" class="btn btn-block bg-gradient-primary btn-lg"><i class="fas fa-list"></i><br> Listado de Licitaciones</a>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <hr>
+                                        <hr>
+                                        <?php
+                                    }
+                                    ?>
+
                                     <?php
 
                                     if($idUsuario == 2){
@@ -294,33 +302,51 @@ if ($horaActual >= '08' && $horaActual <= '11') {
                                                 ?>
                                             </div>
                                             <hr>
-                                            <h5><b>Sistema de Solicitudes de Compra</b></h5>
-                                            <div class="row">
-                                                <div class="col-lg-3 col-12">
-                                                    <a href="soliCompra_pm_administracion.php" class="btn btn-block bg-gradient-primary btn-lg"><i class="fas fa-book"></i><br> Visualizar SC- Puesta en Marcha</a>
+                                            <?php
+                                            if($idUsuario == 5){
 
-                                                </div>
-                                                <div class="col-lg-3 col-12">
-                                                    <!-- small box -->
-                                                    <a href="soliCompra_sdo_administracion.php" class="btn btn-block bg-gradient-secondary btn-lg"><i class="fas fa-list"></i><br> Visualizar SC - SDO</a>
-                                                </div>
+                                            }else{
+                                                ?>
+                                                <h5><b>Sistema de Solicitudes de Compra</b></h5>
+                                                <div class="row">
+                                                    <div class="col-lg-3 col-12">
+                                                        <a href="soliCompra_pm_administracion.php" class="btn btn-block bg-gradient-primary btn-lg"><i class="fas fa-book"></i><br> Visualizar SC- Puesta en Marcha</a>
 
-                                                <div class="col-lg-3 col-12">
-                                                    <!-- small box -->
-                                                    <a href="soliCompra_sdo_resumen.php" class="btn btn-block bg-gradient-info btn-lg"><i class="fas fa-book"></i><br> Visualizar SC - SDO - Resumen</a>
-                                                </div>
+                                                    </div>
+                                                    <div class="col-lg-3 col-12">
+                                                        <!-- small box -->
+                                                        <a href="soliCompra_sdo_administracion.php" class="btn btn-block bg-gradient-secondary btn-lg"><i class="fas fa-list"></i><br> Visualizar SC - SDO</a>
+                                                    </div>
 
-                                            </div><!--ROW CLASS 2-->
+                                                    <div class="col-lg-3 col-12">
+                                                        <!-- small box -->
+                                                        <a href="soliCompra_sdo_resumen.php" class="btn btn-block bg-gradient-info btn-lg"><i class="fas fa-book"></i><br> Visualizar SC - SDO - Resumen</a>
+                                                    </div>
 
-                                            <hr>
-                                            <h5><b>Solicitudes Telefonicas</b></h5>
-                                            <div class="row">
-                                                <div class="col-lg-3 col-12">
-                                                    <!-- small box -->
+                                                </div><!--ROW CLASS 2-->
+                                                <hr>
+
+                                                <?php
+                                            }
+                                            ?>
+                                            <?php
+                                            if($idUsuario == 5){
+
+                                            }else{
+                                                ?>
+                                                <h5><b>Solicitudes Telefonicas</b></h5>
+                                                <div class="row">
+                                                    <div class="col-lg-3 col-12">
+                                                        <!-- small box -->
                                                         <a href="solicitudes_telefonicas.php" class="btn btn-block bg-gradient-primary btn-lg"><i class="fas fa-phone-square"></i><br>Visualizar Solicitudes Telefonicas</a>
 
+                                                    </div>
                                                 </div>
-                                            </div>
+                                                <hr>
+                                                <?php
+                                            }
+                                            ?>
+
                                             <!--
                                             <hr>
                                             <h5><b>Combustible </b></h5>
@@ -331,7 +357,7 @@ if ($horaActual >= '08' && $horaActual <= '11') {
                                                 </div>
                                             </div>
                                             -->
-                                            <hr>
+
                                             <h5><b>Consumos Basicos</b></h5>
                                             <br>
                                             <div class="row">

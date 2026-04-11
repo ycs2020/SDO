@@ -522,19 +522,45 @@ date_default_timezone_set('America/Santiago');
         <div class="modal fade" id="modificar${row.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+              <div class="modal-header bg-warning">
+                <h5 class="modal-title" id="exampleModalLabel">Editar Registros ${row.id}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
+              <form action="../sdo-funciones/editar_registros_criogenico.php" method="POST">
               <div class="modal-body">
-                ...
-              </div>
+                <label>Fecha: </label>
+                <br>
+                 <input type="month" class="form-control" value="${row.fecha_raw}" name="fecha" id="fecha" required>
+                <br>
+                <label>OC: </label>
+                <br>
+                <input type="text" class="form-control" value="${row.oc}" name="oc" id="oc" required>
+                <br>
+                <label>N° Factura: </label>
+                <br>
+                <input type="text" class="form-control" value="${row.nFactura}" name="nFactura" id="nFactura" required>
+                <br>
+                <label>M<sup>3</sup> Consumidos: <code>*</code></label>
+                <input class="form-control" required id="mConsumidos" value="${row.metrosConsumidos_raw}" placeholder="Metros Cubicos Consumidos" type="text" name="mConsumidos" />
+                <br>
+                <label>Precio Unitario: <code>*</code></label>
+                <input class="form-control" required id="precioUnitario" value="${row.precioUnitario_raw}" placeholder="Precio Unitario" type="number" name="precioUnitario" />
+                <br>
+                <label>Valor Total Neto: <code>*</code></label>
+                <input class="form-control" required id="valorTotalNeto" value="${row.valorTotal_raw}" placeholder="Valor Total Neto" type="number" name="valorTotalNeto" />
+                <br>
+                <label>Valor Total con IVA: <code>*</code></label>
+                <input class="form-control" required id="valorTotalIVA" value="${row.valorTotalConIVA_raw}" placeholder="Valor Total con IVA" type="number" name="valorTotalIVA" />
+</div>
               <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
+                <input type="hidden" name="idConsumo" value="${row.id}">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="submit" class="btn btn-success">Modificar</button>
               </div>
+              </form>
+
             </div>
           </div>
         </div>

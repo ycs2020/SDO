@@ -62,7 +62,7 @@ if(isset($_POST['fecha'])){
     $valorTotalIVA = $_POST['valorTotalIVA'];
 
     $sql = "INSERT INTO `criogenico_datos`(`id`, `fecha`, `oc`, `nFactura`, `metrosConsumidos`, `precioUnitario`, `valorTotal`, `valorTotalConIVA`) 
-    VALUES (NULL,'$fecha','$oc',$nFactura,$mConsumidos,$precioUnitario,$valorTotalNeto,$valorTotalIVA)";
+    VALUES (NULL,'$fecha','$oc','$nFactura',$mConsumidos,$precioUnitario,$valorTotalNeto,$valorTotalIVA)";
     $res = mysqli_query($conexion,$sql);
 
     if($res){
@@ -76,5 +76,4 @@ if(isset($_POST['fecha'])){
     header('Location:../'.$rutaDireccion.'/criogenico_datos.php?errorGeneral=true');
     exit();
 }
-
 

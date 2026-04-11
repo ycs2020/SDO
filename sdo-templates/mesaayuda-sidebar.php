@@ -178,48 +178,56 @@ if (isset($_SESSION['nomUsuario']) && $_SESSION['userUsuario'] && $_SESSION['idU
                         <p>Tickets Cancelados</p>
                     </a>
                 </li>
+                <?php
+                if ($idUsuario == 5) {
 
-                <li class="nav-header"></li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link">
-                        <i class="nav-icon fas fa-shopping-bag"></i>
-                        <p>
-                            Solicitudes de Compra
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview">
+                }else{
+                    ?>
+                    <li class="nav-header"></li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-shopping-bag"></i>
+                            <p>
+                                Solicitudes de Compra
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
 
-                        <li class="nav-item">
-                            <a href="../sdo-mesa-ayuda/soliCompra_pm_administracion.php" class="nav-link">
-                                <i class="nav-icon fas fa-shopping-bag"></i>
-                                <p>SC - Puesta en Marcha
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                        </li>
+                            <li class="nav-item">
+                                <a href="../sdo-mesa-ayuda/soliCompra_pm_administracion.php" class="nav-link">
+                                    <i class="nav-icon fas fa-shopping-bag"></i>
+                                    <p>SC - Puesta en Marcha
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                            </li>
 
-                        <li class="nav-item">
-                            <a href="../sdo-mesa-ayuda/soliCompra_sdo_administracion.php" class="nav-link">
-                                <i class="nav-icon fas fa-shopping-bag"></i>
-                                <p>
-                                    SC - SDO
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="../sdo-mesa-ayuda/soliCompra_sdo_resumen.php" class="nav-link">
-                                <i class="nav-icon fas fa-shopping-bag"></i>
-                                <p>
-                                    SC - SDO - Resumen
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                        </li>
+                            <li class="nav-item">
+                                <a href="../sdo-mesa-ayuda/soliCompra_sdo_administracion.php" class="nav-link">
+                                    <i class="nav-icon fas fa-shopping-bag"></i>
+                                    <p>
+                                        SC - SDO
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="../sdo-mesa-ayuda/soliCompra_sdo_resumen.php" class="nav-link">
+                                    <i class="nav-icon fas fa-shopping-bag"></i>
+                                    <p>
+                                        SC - SDO - Resumen
+                                        <i class="right fas fa-angle-left"></i>
+                                    </p>
+                                </a>
+                            </li>
 
-                    </ul>
-                </li>
+                        </ul>
+                    </li>
+                    <?php
+                }
+                ?>
+
 
 
                 <li class="nav-header"></li>
