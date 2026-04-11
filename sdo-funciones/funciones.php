@@ -5819,19 +5819,31 @@ function obtenerRutaHTFirmada($idOrden)
 function obtenerUltimoRegistroMantenimiento($idVehiculo)
 {
     include 'conexion.php';
-    $sql = "SELECT cantKilometraje FROM historial_kilometraje_moviles WHERE idMovil = " . $idVehiculo . " AND registroMantenimiento = 1 ORDER BY fechaRegistro DESC LIMIT 1";
+    // Ordenamos primero por fecha y luego por ID descendente (el más nuevo arriba)
+    $sql = "SELECT cantKilometraje FROM historial_kilometraje_moviles 
+            WHERE idMovil = " . intval($idVehiculo) . " AND registroMantenimiento = 1 
+            ORDER BY fechaRegistro DESC, idKilometraje DESC LIMIT 1";
+
     $res = mysqli_query($conexion, $sql);
     $dato = mysqli_fetch_assoc($res);
-    return $dato['cantKilometraje'];
+
+    // Si no hay datos, retornamos 0 para evitar errores en el cálculo
+    return ($dato) ? $dato['cantKilometraje'] : 0;
 }
 
 function obtenerUltimoRegistroKilometraje($idVehiculo)
 {
     include 'conexion.php';
-    $sql = "SELECT cantKilometraje FROM historial_kilometraje_moviles WHERE idMovil = " . $idVehiculo . " ORDER BY fechaRegistro DESC LIMIT 1";
+    // Mismo criterio: Fecha más reciente e ID más alto
+    $sql = "SELECT cantKilometraje FROM historial_kilometraje_moviles 
+            WHERE idMovil = " . intval($idVehiculo) . " 
+            ORDER BY fechaRegistro DESC, idKilometraje DESC LIMIT 1";
+
     $res = mysqli_query($conexion, $sql);
     $dato = mysqli_fetch_assoc($res);
-    return $dato['cantKilometraje'];
+
+    // Retornamos 0 si la tabla está vacía para ese móvil
+    return ($dato) ? $dato['cantKilometraje'] : 0;
 }
 
 function getIDCategoriaSistemaCCTV()

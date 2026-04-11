@@ -24,7 +24,7 @@
     </div>
 
     <div class="table-responsive">
-        <table class="table table-hover table-bordered w-100 shadow-sm" id="table_kilometro">
+        <table class="table table-hover table-bordered w-100 table-valign-middle table-sm" id="table_kilometro">
             <thead class="bg-secondary text-white text-center">
             <tr>
                 <th>Fecha Registro</th>
@@ -102,6 +102,47 @@
                     <button type="button" class="btn btn-outline-secondary font-weight-bold" data-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-success font-weight-bold shadow-sm" id="btnGuardarKms">
                         <i class="fas fa-save mr-1"></i> Guardar Registro
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editarRegistroKm" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg border-0">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title font-weight-bold">
+                    <i class="fas fa-edit mr-2"></i>Modificar Registro
+                </h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="formEditarKilometraje">
+                <div class="modal-body">
+                    <input type="hidden" id="idKilometrajeEditar" name="idKilometraje">
+
+                    <div class="form-group">
+                        <label class="small font-weight-bold">Fecha del Reporte:</label>
+                        <input type="date" class="form-control" id="fechaReporteKmMod" name="fechaRegistro" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="small font-weight-bold">Kilometraje:</label>
+                        <div class="input-group">
+                            <input type="number" class="form-control" id="numKilometrajeMod" name="cantKilometraje" required>
+                            <div class="input-group-append">
+                                <span class="input-group-text">KM</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="submit" class="btn btn-warning font-weight-bold">
+                        <i class="fas fa-sync-alt mr-1"></i> Actualizar Cambios
                     </button>
                 </div>
             </form>

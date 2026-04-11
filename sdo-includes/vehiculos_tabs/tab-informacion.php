@@ -27,7 +27,7 @@
     </div>
 
     <form id="formDatosVehiculo">
-        <fieldset id="fielset" class="border-0 p-0" disabled>
+        <fieldset id="fieldset" class="border-0 p-0" disabled style="opacity: 0.7; transition: opacity 0.3s ease;">
 
             <div class="card card-outline card-primary shadow-sm mb-4">
                 <div class="card-header d-flex align-items-center justify-content-between">

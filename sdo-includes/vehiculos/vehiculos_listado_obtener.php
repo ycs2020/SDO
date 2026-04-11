@@ -26,6 +26,9 @@ while ($row = $res->fetch_assoc()) {
         case 'DEBAJA':
             $badgeEstado = '<span class="badge badge-danger"><i class="fas fa-skull-crossbones"></i>&nbsp;&nbsp;DE BAJA</span>';
             break;
+        case 'OTRO':
+            $badgeEstado = '<span class="badge badge-dark"><i class="fas fa-cog"></i>&nbsp;&nbsp;OTRO</span>';
+            break;
         default:
             $badgeEstado = '<span class="badge badge-secondary"><i class="fas fa-question"></i>&nbsp;&nbsp;'.$estadoVehiculo.'</span>';
     }

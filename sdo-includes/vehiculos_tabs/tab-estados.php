@@ -62,6 +62,7 @@
                             <option value="Mantencion Preventiva">Mantención Preventiva</option>
                             <option value="Mantencion Correctiva">Mantención Correctiva</option>
                             <option value="Debaja">Debaja</option>
+                            <option value="Otro">Otro</option>
                         </select>
                     </div>
 

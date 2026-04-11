@@ -1,18 +1,11 @@
 <?php
-
-include '../sdo-funciones/conexion.php';
-include '../sdo-funciones/funciones.php';
+include_once '../sdo-funciones/conexion.php';
+include_once '../sdo-funciones/funciones.php';
 
 date_default_timezone_set('America/Santiago');
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
-
-$ipPermitida = '10.69.250.151'; // Reemplaza con la IP permitida
-//
-// Obtén la IP del cliente
-$ipCliente = $_SERVER['REMOTE_ADDR'];
-
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -20,673 +13,383 @@ $ipCliente = $_SERVER['REMOTE_ADDR'];
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Administrar Equipos</title>
-    <link rel="icon" href="../dist/img/ss-vina-quillota.png" type="image/icon type">
-    <!-- Google Font: Source Sans Pro -->
+    <title>Administrar Equipos | Vamoos SpA</title>
+
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-
-
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
-    <!-- Theme style -->
     <link rel="stylesheet" href="../dist/css/adminlte.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.2/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="css/dark-mode.css">
 
-    <script src="../sdo-canvasdraw1/jquery.min.js"></script>
-    <script src="../sdo-canvasdraw1/signature_pad.js"></script>
-    <script src="../sdo-funciones/jquery-3.2.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <!-- Popper JS-->
     <style>
-        #tooltip {
-            background: #8000ff;
-            color: white;
+        .form-section-title {
+            font-size: 14px;
             font-weight: bold;
-            padding: 4px 8px;
-            font-size: 13px;
-            border-radius: 4px;
-            display: none;
+            color: #6f42c1;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            text-transform: uppercase;
+        }
+        .form-group label { font-size: 12px; margin-bottom: 2px; }
+        .bg-purple { background-color: #6f42c1 !important; color: white; }
+
+        /* Centrado vertical y horizontal para todas las celdas de la tabla */
+        #tablaVehiculos th,
+        #tablaVehiculos td {
+            vertical-align: middle !important;
+            text-align: center !important;
         }
 
-        #tooltip[data-show] {
-            display: block;
+        /* Ajuste para los botones de acción para que no se vean gigantes */
+        .btn-xs {
+            display: inline-block;
+            width: 100%;
+            min-width: 40px;
+            margin: 0 auto;
         }
 
-        #arrow,
-        #arrow::before {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: inherit;
-        }
-
-        #arrow {
-            visibility: hidden;
-        }
-
-        #arrow::before {
-            visibility: visible;
-            content: '';
-            transform: rotate(45deg);
-        }
-
-        #tooltip[data-popper-placement^='top']>#arrow {
-            bottom: -4px;
-        }
-
-        #tooltip[data-popper-placement^='bottom']>#arrow {
-            top: -4px;
-        }
-
-        #tooltip[data-popper-placement^='left']>#arrow {
-            right: -4px;
-        }
-
-        #tooltip[data-popper-placement^='right']>#arrow {
-            left: -4px;
+        /* Opcional: Estilo para los badges de estado para que se vean uniformes */
+        .badge {
+            display: inline-block;
+            padding: 0.5em 0.8em;
+            font-size: 85%;
         }
     </style>
-
 </head>
 
-<body class="hold-transition sidebar-mini layout-fixed layout-footer-fixed">
-    <div class="preloader  flex-column justify-content-center align-items-center">
-        <img class="animation__shake" src="../dist/img/ssvq1.png" alt="logo">
-        <br>
-        <div class="spinner-border text-danger" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
-    </div>
-    <div class="wrapper">
-        <?php
-        include '../sdo-templates/user-sidebar.php';
+<body class="hold-transition sidebar-mini layout-fixed">
+<div class="wrapper">
+    <?php include '../sdo-templates/user-sidebar.php'; ?>
 
-        ?>
-        <!-- Content Wrapper. Contains page content -->
-        <div class="content-wrapper">
-            <!-- Content Header (Page header) -->
-            <br>
-            <!-- AVISOS -->
-            <?php
-
-            function mostrarMensaje($tipo, $titulo, $texto)
-            {
-                echo
-                <<<EOL
-                                        <script>
-                                            Swal.fire({
-                                                icon: '$tipo',
-                                                title: '$titulo',
-                                                text: '$texto'
-                                            });
-                                        </script>
-                                EOL;
-            }
-
-            $mensajes = [
-                'exitoGuardar' => ['success', 'Éxito', 'Información de Vehiculo Guardada.'],
-                'errorGuardar' => ['error', 'Error', 'Error al Guardar Información de Vehiculo. Reintente.'],
-
-            ];
-
-            foreach ($mensajes as $param => $mensaje) {
-                if (isset($_GET[$param])) {
-                    mostrarMensaje(...$mensaje);
-                }
-            }
-            ?>
-            <!-- Main content -->
-            <section class="content">
-                <div class="container-fluid">
-                    <!-- general form elements -->
-                    <div class="card card-primary">
-                        <div class="card-header">
-                            <h1 class="card-title"> <b> Listado de Vehiculos Ingresados</b></h1>
-                        </div>
-                        <div class="row">
-                            <!-- left column -->
-                            <div class="col-md-12">
-                                <!-- /.card-header -->
-                                <div class="card-body">
-                                    <a href="index.php" style="float: right;" class="btn btn-danger"><i class="fa fa-chevron-left"></i>&nbsp;&nbsp; <b>Volver Atras</b> </a>
-                                    <br>
-                                    <br>
-                                    <button class="btn  bg-purple" aria-describedby="tooltip" data-toggle="modal" data-target="#exampleModal" id="agregar"><i class="fas fa-plus"></i><b> Vehiculo</b> </button>
-                                    <div id="tooltip" role="tooltip">
-                                        <b>Agregar un nuevo Vehiculo</b>
-                                        <div id="arrow" data-popper-arrow></div>
-                                    </div>
-                                    <br>
-                                    <br>
-
-                                    <!-- Modal -->
-                                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div class="modal-dialog modal-lg">
-                                            <div class="modal-content">
-                                                <div class="modal-header bg-purple">
-                                                    <h5 class="modal-title" id="exampleModalLabel">Llene los campos solicitados</h5>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <form id="form" method="POST" action="../sdo-funciones/guardar-moviles.php">
-                                                        <fieldset id="fielset" class="border p-3 shadow p-3 mb-5  rounded ">
-                                                            <div class="form-row">
-                                                            <div class="form-group  col-12 col-md-12">
-                                                                    <label for="codigoBarra" style="font-size:12px">ID:<code>*</code></label>
-                                                                    <div class="input-group mb-3 ">
-                                                                        <div class="input-group-prepend">
-                                                                            <span class="input-group-text"><i class="fas fa-fingerprint"></i></span>
-                                                                        </div>
-                                                                        <input type="text" class="form-control form-control-sm " required id="idVehiculo" name="idVehiculo" placeholder="Escriba el id unico del vehiculo">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="form-group  col-12 col-md-12">
-                                                                    <label for="codigoBarra" style="font-size:12px">Nombre:<code>*</code></label>
-                                                                    <div class="input-group mb-3 ">
-                                                                        <div class="input-group-prepend">
-                                                                            <span class="input-group-text"><i class="far fa-id-card"></i></span>
-                                                                        </div>
-                                                                        <input type="text" class="form-control form-control-sm " required id="nomVehiculo" name="nomVehiculo" placeholder="Escriba el nombre">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-row">
-
-                                                                <div class="form-group col-md-4">
-                                                                    <label for="codigoBarra" style="font-size:12px">Patente:<code>*</code></label>
-                                                                    <div class="input-group mb-3 ">
-                                                                        <div class="input-group-prepend">
-                                                                            <span class="input-group-text"><i class="fas fa-fingerprint"></i></span>
-                                                                        </div>
-                                                                        <input type="text" class="form-control form-control-sm" required id="patenteVehiculo" name="patenteVehiculo" placeholder="Escriba la patente">
-                                                                    </div>
-                                                                </div>
-
-                                                                <div class="form-group col-md-4">
-                                                                    <label for="codigoBarra" style="font-size:12px">Marca:<code>*</code></label>
-                                                                    <div class="input-group mb-3">
-                                                                        <div class="input-group-prepend">
-                                                                            <span class="input-group-text"><i class="fas fa-car-alt"></i></span>
-                                                                        </div>
-                                                                        <input type="text" class="form-control form-control-sm" required id="nomVehiculo" name="marcaVehiculo" placeholder="Escriba la marca">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="form-group col-md-4">
-                                                                    <label for="codigoBarra" style="font-size:12px">Modelo:</label>
-                                                                    <div class="input-group mb-3">
-                                                                        <div class="input-group-prepend">
-                                                                            <span class="input-group-text"><i class="fas fa-car-alt"></i></span>
-                                                                        </div>
-                                                                        <input type="text" class="form-control form-control-sm" id="nomVehiculo" name="modeloVehiculo" placeholder="Escriba el modelo">
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-row">
-
-                                                                <div class="form-group col-md-4">
-                                                                    <label for="codigoBarra" style="font-size:12px">N° de Inventario:</label>
-                                                                    <div class="input-group mb-3">
-                                                                        <div class="input-group-prepend">
-                                                                            <span class="input-group-text"><i class="fas fa-box"></i></span>
-                                                                        </div>
-                                                                        <input type="text" class="form-control form-control-sm" id="numInventario" name="numInventario" placeholder="Escriba la marca">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="form-group col-md-4">
-                                                                    <label for="codigoBarra" style="font-size:12px">Servicio:<code>*</code></label>
-                                                                    <div class="input-group mb-3">
-                                                                        <div class="input-group-prepend">
-                                                                            <span class="input-group-text"><i class="far fa-hospital"></i></span>
-                                                                        </div>
-                                                                        <select name="servicioVehiculo" id="servicioVehiculo" class="form-control form-control-sm">
-
-                                                                            <?php
-
-                                                                            $sqlServicios = "SELECT * FROM servicios";
-                                                                            $resServicios = mysqli_query($conexion, $sqlServicios);
-
-                                                                            while ($rowServicios = $resServicios->fetch_assoc()) {
-                                                                                $datosServicios = [];
-                                                                                $datosServicios['idServicio'] = $rowServicios['idServicio'];
-                                                                                $datosServicios['nomServicio'] = $rowServicios['nomServicio'];
-                                                                                $idServicio = $datosServicios['idServicio'];
-                                                                                $nomServicio = $datosServicios['nomServicio'];
-
-                                                                            ?>
-
-                                                                                <option value="<?php echo $nomServicio ?>"><?php echo $nomServicio ?></option>
-
-                                                                            <?php
-                                                                            }
-
-                                                                            ?>
-
-
-                                                                        </select>
-
-                                                                    </div>
-                                                                </div>
-                                                                <div class="form-group col-md-4">
-                                                                    <label for="codigoBarra" style="font-size:12px">N° de Chasis:</label>
-                                                                    <div class="input-group mb-3">
-                                                                        <div class="input-group-prepend">
-                                                                            <span class="input-group-text"><i class="fas fa-exclamation-circle"></i></span>
-                                                                        </div>
-                                                                        <input type="text" class="form-control form-control-sm" id="numChasis" name="numChasis" placeholder="Escriba N° Chasis">
-                                                                    </div>
-                                                                </div>
-
-
-                                                            </div>
-                                                            <div class="form-row">
-
-                                                                <div class="form-group col-md-4">
-                                                                    <label for="codigoBarra" style="font-size:12px">N° de Motor:</label>
-                                                                    <div class="input-group mb-3">
-                                                                        <div class="input-group-prepend">
-                                                                            <span class="input-group-text"><i class="fas fa-exclamation-circle"></i></span>
-                                                                        </div>
-                                                                        <input type="text" class="form-control form-control-sm" id="numMotor" name="numMotor" placeholder="Escriba N° Motor">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="form-group col-md-4">
-                                                                    <label for="codigoBarra" style="font-size:12px">Fabricante:</label>
-                                                                    <div class="input-group mb-3">
-                                                                        <div class="input-group-prepend">
-                                                                            <span class="input-group-text"><i class="fas fa-exclamation-circle"></i></span>
-                                                                        </div>
-                                                                        <input type="text" class="form-control form-control-sm" id="frabricante" name="frabricante" placeholder="Escriba nombre fabricante">
-                                                                    </div>
-                                                                </div>
-
-
-                                                            </div>
-                                                            <div class="form-row">
-
-                                                                <div class="form-group col-md-4">
-                                                                    <label for="codigoBarra" style="font-size:12px">Fecha de Compra:</label>
-                                                                    <div class="input-group mb-3">
-                                                                        <div class="input-group-prepend">
-                                                                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                                                                        </div>
-                                                                        <input type="date" class="form-control form-control-sm" id="fechaCompra" name="fechaCompra">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="form-group col-md-4">
-                                                                    <label for="codigoBarra" style="font-size:12px">Orden de Compra:</label>
-                                                                    <div class="input-group mb-3">
-                                                                        <div class="input-group-prepend">
-                                                                            <span class="input-group-text"><i class="fas fa-file-alt"></i></span>
-                                                                        </div>
-                                                                        <input type="text" class="form-control form-control-sm" id="ordenCompra" name="ordenCompra" placeholder="Escriba orden de compra">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="form-group col-md-4">
-                                                                    <label for="codigoBarra" style="font-size:12px">Vida Útil:</label>
-                                                                    <div class="input-group mb-3">
-                                                                        <div class="input-group-prepend">
-                                                                            <span class="input-group-text"><i class="fas fa-heartbeat"></i></span>
-                                                                        </div>
-                                                                        <input type="text" class="form-control form-control-sm" id="vidaUtil" name="vidaUtil" placeholder="Indique la vida útil">
-                                                                    </div>
-                                                                </div>
-
-
-                                                            </div>
-                                                            <div class="form-row justify-content-center">
-
-                                                                <div class="form-group col-md-6">
-                                                                    <label for="codigoBarra" style="font-size:12px">Valor con IVA $:</label>
-                                                                    <div class="input-group mb-3">
-                                                                        <div class="input-group-prepend">
-                                                                            <span class="input-group-text"><i class="fas fa-money-bill-alt"></i></span>
-                                                                        </div>
-                                                                        <input type="number" class="form-control form-control-sm" id="valorConIva" name="valorConIva">
-                                                                    </div>
-                                                                </div>
-
-                                                            </div>
-                                                        </fieldset>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-danger" data-dismiss="modal"> <b>Cerrar Modal</b> </button>
-                                                    <button type="submit" class="btn btn-success"> <b>Guardar Vehiculo</b> </button>
-                                                    </form>
-
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-                                    <table id="table_equipos" class="table table-bordered table-hover">
-                                        <thead class="bg-secondary">
-                                            <tr>
-                                                <th scope="col" class="text-center">ID</th>
-                                                <th scope="col" class="text-center">Nombre</th>
-                                                <th scope="col" class="text-center">Patente</th>
-                                                <th scope="col" class="text-center">Marca</th>
-                                                <th scope="col" class="text-center">Modelo</th>
-                                                <th scope="col" class="text-center">Servicio</th>
-                                                <th scope="col" class="text-center">Valor Iva</th>
-                                                <th scope="col" class="text-center">Estado</th>
-                                                <th scope="col" class="text-center"><i class="fas fa-exclamation"></i></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <?php
-                                            $sql = "SELECT `idUnico`, `idMovil`, `folio`, `nomVehiculo`, `patenteVehiculo`, `marcaVehiculo`, `modeloVehiculo`, `numInventario`, `servicioVehiculo`, `numChasis`, `numMotor`, `frabricante`, `fechaCompra`, `ordenCompra`, `valorConIva`, `estadoVehiculo`, `fechaRegistro` FROM `moviles_movilizacion` ";
-                                            $res = mysqli_query($conexion, $sql);
-                                            while ($row = $res->fetch_assoc()) {
-                                                $datos = [];
-                                                $datos['idUnico'] = $row['idUnico'];
-                                                $datos['nomVehiculo'] = $row['nomVehiculo'];
-                                                $datos['patenteVehiculo'] = $row['patenteVehiculo'];
-                                                $datos['marcaVehiculo'] = $row['marcaVehiculo'];
-                                                $datos['modeloVehiculo'] = $row['modeloVehiculo'];
-                                                $datos['servicioVehiculo'] = $row['servicioVehiculo'];
-                                                $datos['valorConIva'] = $row['valorConIva'];
-                                                $datos['estadoVehiculo'] = $row['estadoVehiculo'];
-                                                $datos['idMovil'] = $row['idMovil'];
-                                                $folio = $datos['idUnico'];
-                                                $nomVehiculo = $datos['nomVehiculo'];
-                                                $patenteVehiculo = $datos['patenteVehiculo'];
-                                                $marcaVehiculo = $datos['marcaVehiculo'];
-                                                $modeloVehiculo = $datos['modeloVehiculo'];
-                                                $servicioVehiculo = $datos['servicioVehiculo'];
-                                                $valorConIva = $datos['valorConIva'];
-                                                $estadoVehiculo = $datos['estadoVehiculo'];
-                                                $idMovil = $datos['idMovil'];
-                                            ?>
-                                                <tr>
-                                                    <td class="text-center font-weight-bold" style="font-size:12px;"><?php echo $folio ?> </td>
-                                                    <td class="text-center font-weight-bold" style="font-size:12px;"><?php echo $nomVehiculo ?></td>
-                                                    <td class="text-center font-weight-bold" style="font-size:12px;"><?php echo $patenteVehiculo ?></td>
-                                                    <td class="text-center font-weight-bold" style="font-size:12px;"><?php echo $marcaVehiculo ?></td>
-                                                    <td class="text-center font-weight-bold" style="font-size:12px;">
-                                                    <?php 
-                                                    
-                                                    if (empty($modeloVehiculo)) {
-
-                                                        echo '-';
-                                                    } else {
-                                                        echo $modeloVehiculo;
-                                                    }
-
-                                                    
-                                                    
-                                                    ?>
-                                                    </td>
-                                                    <td class="text-center font-weight-bold" style="font-size:12px;"><?php echo $servicioVehiculo ?></td>
-                                                    <td class="text-center font-weight-bold" style="font-size:12px;">
-                                                        <?php 
-                                                            
-                                                            if(empty($valorConIva)){
-
-                                                                echo '-';
-                                                            }else{
-                                                                $valorConIva = moneda_chilena($valorConIva);
-                                                                echo $valorConIva;
-                                                            }
-                                                        
-                                                        ?>
-                                                
-                                                    </td>
-                                                    <?php
-
-                                                    if ($estadoVehiculo == 'OPERATIVA') {
-                                                    ?>
-                                                        <td class="text-center font-weight-bold  text-success" style="font-size: 12px"><?php echo '<i class="fas fa-check"></i> ' .  strtoupper($estadoVehiculo) ?></td>
-                                                    <?php
-                                                    } else if ($estadoVehiculo == 'MANTENCION PREVENTIVA' || $estadoVehiculo == 'mantencion preventiva') {
-                                                    ?>
-                                                        <td class="text-center font-weight-bold text-warning  " style="font-size: 12px"><?php echo '<i class="fas fa-exclamation-triangle"></i> ' .  strtoupper($estadoVehiculo) ?></td>
-                                                    <?php
-                                                    } else if($estadoVehiculo == 'Debaja') {
-                                                    ?>
-                                                        <td class=" text-center font-weight-bold text-danger " style="font-size: 12px"><?php echo '<i class="fas fa-times-circle"></i> ' .  strtoupper($estadoVehiculo) ?></td>
-                                                    <?php
-                                                    } else {
-                                                        ?>
-                                                        <td class=" text-center font-weight-bold text-danger " style="font-size: 12px"><?php echo '<i class="fas fa-question"></i> ' .  strtoupper($estadoVehiculo) ?></td>
-                                                        <?php
-                                                    }
-
-                                                    if($ipCliente == $ipPermitida){
-                                                        $rutaVisualizar = 'visualizarMovilNuevo.php';
-                                                    }else{
-                                                        $rutaVisualizar = 'visualizarMovil.php';
-                                                    }
-
-                                                    ?>
-                                                    <td class="text-center" style="font-size:12px;">
-
-                                                        <form action="<?php echo $rutaVisualizar ?>" method="POST" style="display: inline;">
-                                                            <input type="hidden" id="idMovil" name="idMovil" value="<?php echo $idMovil ?>">
-                                                            <button type="submit" class="btn btn-info btn-sm"><i class="fas fa-eye"></i></button>
-                                                        </form>
-                                                        <button class="btn btn-danger btn-sm eliminar" id="<?php echo $idMovil ?>"><i class="fas fa-trash"></i></button>
-
-                                                    </td>
-                                                </tr>
-                                            <?php
-                                            }
-                                            ?>
-                                        </tbody>
-                                        <tfoot class="bg-secondary">
-                                            <tr>
-                                                <th scope="col" class="text-center">ID</th>
-                                                <th scope="col" class="text-center">Nombre</th>
-                                                <th scope="col" class="text-center">Patente</th>
-                                                <th scope="col" class="text-center">Marca</th>
-                                                <th scope="col" class="text-center">Modelo</th>
-                                                <th scope="col" class="text-center">Servicio</th>
-                                                <th scope="col" class="text-center">Valor Iva</th>
-                                                <th scope="col" class="text-center">Estado</th>
-                                                <th scope="col" class="text-center"><i class="fas fa-exclamation"></i></th>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-                                </div><!-- .tabla-responsive -->
+    <div class="content-wrapper">
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-3">
+                    <div class="col-md-10 col-9">
+                        <div class="card bg-primary text-white shadow-sm mb-0">
+                            <div class="card-body py-2 text-center">
+                                <h5 class="mb-0"><i class="fas fa-industry mr-2"></i> Gestión de Vehículos - Movilización</h5>
                             </div>
                         </div>
-                        <!-- /.card-body -->
                     </div>
-                    <!-- /.card -->
+                    <div class="col-md-2 col-3">
+                        <a href="index.php" class="btn btn-danger btn-block shadow-sm font-weight-bold">
+                            <i class="fa fa-chevron-left"></i> VOLVER
+                        </a>
+                    </div>
                 </div>
-                <!--/.col  -->
-        </div>
-        <!-- /.row -->
+            </div>
         </section>
-        <!-- /.content -->
-        <!-- /.content-wrapper -->
-        <footer class="main-footer">
-            <strong>Copyright &copy; 2022 - ∞. Derechos Reservados</strong>
-        </footer>
 
-        <!-- Control Sidebar -->
-        <aside class="control-sidebar control-sidebar-dark">
-            <!-- Control sidebar content goes here -->
-        </aside>
-        <!-- /.control-sidebar -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row justify-content-center">
+                    <div class="col-md-4 mb-4">
+                        <button class="btn btn-block bg-purple shadow-lg py-2" data-toggle="modal" data-target="#modalVehiculo">
+                            <i class="fas fa-plus-circle mr-2"></i><b>AGREGAR NUEVO VEHÍCULO</b>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm">
+                    <div class="card-header bg-gradient-primary">
+                        <h3 class="card-title font-weight-bold">Lista de Equipos Registrados</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover table-sm text-center" id="tablaVehiculos">
+                                <thead class="bg-gradient-secondary">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>NOMBRE</th>
+                                    <th>PATENTE</th>
+                                    <th>MARCA</th>
+                                    <th>MODELO</th>
+                                    <th>SERVICIO</th>
+                                    <th>VALOR C/IVA</th>
+                                    <th>ESTADO</th>
+                                    <th>VISUALIZAR</th>
+                                    <th>ELIMINAR</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                                <tfoot class="bg-gradient-secondary">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>NOMBRE</th>
+                                    <th>PATENTE</th>
+                                    <th>MARCA</th>
+                                    <th>MODELO</th>
+                                    <th>SERVICIO</th>
+                                    <th>VALOR C/IVA</th>
+                                    <th>ESTADO</th>
+                                    <th>VISUALIZAR</th>
+                                    <th>ELIMINAR</th>
+                                </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="modal fade" id="modalVehiculo" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content shadow-lg border-0">
+                    <div class="modal-header bg-purple text-white">
+                        <h5 class="modal-title font-weight-bold"><i class="fas fa-car-side mr-2"></i> Registro Detallado de Vehículo</h5>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form id="formVehiculo" method="POST" action="../sdo-includes/vehiculos/vehiculos_listado_agregar.php">
+                        <div class="modal-body p-4">
+
+                            <div class="form-section-title"><i class="fas fa-id-card mr-2"></i> Identificación del Vehículo</div>
+                            <div class="row">
+                                <div class="form-group col-md-6">
+                                    <label>ID Único <code>*</code></label>
+                                    <input type="text" class="form-control form-control-sm" name="idVehiculo" required placeholder="ID de sistema">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label>Nombre del Vehículo <code>*</code></label>
+                                    <input type="text" class="form-control form-control-sm" name="nomVehiculo" required placeholder="Nombre descriptivo">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label>Patente <code>*</code></label>
+                                    <input type="text" class="form-control form-control-sm" name="patenteVehiculo" required placeholder="ABCD-12">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label>Marca <code>*</code></label>
+                                    <input type="text" class="form-control form-control-sm" name="marcaVehiculo" required placeholder="Marca">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label>Modelo</label>
+                                    <input type="text" class="form-control form-control-sm" name="modeloVehiculo" placeholder="Modelo">
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label>Servicio Asignado <code>*</code></label>
+                                    <select name="servicioVehiculo" class="form-control form-control-sm" required>
+                                        <option value="">Seleccione Servicio...</option>
+                                        <?php
+                                        $resServicios = mysqli_query($conexion, "SELECT nomServicio FROM servicios ORDER BY nomServicio ASC");
+                                        while ($rowS = $resServicios->fetch_assoc()) {
+                                            echo "<option value='{$rowS['nomServicio']}'>{$rowS['nomServicio']}</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label>N° de Inventario</label>
+                                    <input type="text" class="form-control form-control-sm" name="numInventario" placeholder="N° de serie interna">
+                                </div>
+                            </div>
+
+                            <div class="form-section-title mt-3"><i class="fas fa-tools mr-2"></i> Especificaciones Técnicas</div>
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label>N° de Chasis</label>
+                                    <input type="text" class="form-control form-control-sm" name="numChasis" placeholder="Chasis">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label>N° de Motor</label>
+                                    <input type="text" class="form-control form-control-sm" name="numMotor" placeholder="Motor">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label>Fabricante</label>
+                                    <input type="text" class="form-control form-control-sm" name="frabricante" placeholder="Nombre del fabricante">
+                                </div>
+                            </div>
+
+                            <div class="form-section-title mt-3"><i class="fas fa-file-invoice-dollar mr-2"></i> Compra y Vida Útil</div>
+                            <div class="row">
+                                <div class="form-group col-md-4">
+                                    <label>Fecha de Compra</label>
+                                    <input type="date" class="form-control form-control-sm" name="fechaCompra">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label>Orden de Compra</label>
+                                    <input type="text" class="form-control form-control-sm" name="ordenCompra" placeholder="Ej: OC-1234">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label>Vida Útil (Años/KM)</label>
+                                    <input type="text" class="form-control form-control-sm" name="vidaUtil" placeholder="Indique vida útil">
+                                </div>
+                                <div class="form-group col-md-12">
+                                    <label>Valor con IVA ($)</label>
+                                    <div class="input-group input-group-sm">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text bg-light text-success font-weight-bold">$</span>
+                                        </div>
+                                        <input type="number" class="form-control" name="valorConIva" placeholder="0">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer bg-light justify-content-between">
+                            <button type="button" class="btn btn-outline-danger font-weight-bold" data-dismiss="modal">CERRAR</button>
+                            <button type="submit" class="btn btn-success px-4 font-weight-bold">
+                                <i class="fas fa-save mr-1"></i> GUARDAR VEHÍCULO
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- jQuery -->
-    <script src="../plugins/jquery/jquery.min.js"></script>
-    <!-- Bootstrap 4 -->
-    <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <!-- bs-custom-file-input -->
-    <script src="../plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
-    <!-- AdminLTE App -->
-    <script src="../dist/js/adminlte.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.2/js/dataTables.bootstrap4.min.js"></script>
+    <footer class="main-footer">
+        <strong>Copyright &copy; 2026. Vamoos SpA.</strong>
+    </footer>
+</div>
 
-    <!-- Page specific script -->
-    <script>
-        $(function() {
-            bsCustomFileInput.init();
+<script src="../plugins/jquery/jquery.min.js"></script>
+<script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="../dist/js/adminlte.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="../plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        // 1. Inicializar DataTable
+        var tablaVehiculos = $('#tablaVehiculos').DataTable({
+            "ajax": {
+                "url": "../sdo-includes/vehiculos/vehiculos_listado_obtener.php",
+                "dataSrc": ""
+            },
+            "columns": [
+                { "data": "idUnico" },
+                { "data": "nomVehiculo" },
+                { "data": "patenteVehiculo" },
+                { "data": "marcaVehiculo" },
+                { "data": "modeloVehiculo" },
+                { "data": "servicioVehiculo" },
+                { "data": "valorConIva" },
+                { "data": "estadoVehiculo" },
+                { "data": "acciones" },
+                { "data": "eliminar" }
+            ],
+            "paging": true,
+            "iDisplayLength": 25,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": false,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+            "language": {
+                "lengthMenu": "Visualizando _MENU_ Registros por P&aacute;gina",
+                "zeroRecords": "No se han encontrado Registros.",
+                "info": "Mostrando p&aacute;gina _PAGE_ de _PAGES_",
+                "infoEmpty": "Sin registros para mostrar.",
+                "search": "Buscar:",
+                "infoFiltered": "(Filtrado desde _MAX_ Registros Totales)",
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            },
+            // ESTO ASEGURA EL CENTRADO EN EL CUERPO DE LA TABLA
+            "columnDefs": [
+                { "className": "dt-center", "targets": "_all" }
+            ],
         });
-    </script>
-    <script src="js/dark-mode.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#table_equipos').DataTable({
-                "paging": true,
-                "iDisplayLength": 50,
-                "lengthChange": true,
-                "searching": true,
-                "ordering": false,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-                "language": {
-                    "lengthMenu": "Visualizando _MENU_ Registros por P&aacute;gina",
-                    "zeroRecords": "No se han encontrado Registros.",
-                    "info": "Mostrando p&aacute;gina _PAGE_ de _PAGES_",
-                    "infoEmpty": "Sin registros para mostrar.",
-                    "search": "Buscar:",
-                    "infoFiltered": "(Filtrado desde _MAX_ Registros Totales)",
-                    "paginate": {
-                        "previous": "Anterior",
-                        "next": "Siguiente"
+
+        // 2. PROCESAMIENTO AJAX (SOLO ESTE BLOQUE)
+        $('#formVehiculo').on('submit', function(e) {
+            e.preventDefault();
+
+            let btnGuardar = $(this).find('button[type="submit"]');
+            btnGuardar.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Guardando...');
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                dataType: 'json',
+                success: function(response) {
+                    if(response && response.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Registro Exitoso!',
+                            text: response.message,
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            $('#modalVehiculo').modal('hide');
+                            $('#formVehiculo')[0].reset();
+                            tablaVehiculos.ajax.reload();
+                        });
+                    } else {
+                        // Aquí capturamos si el PHP mandó un error
+                        Swal.fire('Error', 'No se pudo guardar: ' + (response.message || 'Error desconocido'), 'error');
                     }
                 },
-                // initComplete: function() {
-                //     this.api().columns([3]).every(function() {
-                //         var column = this;
-                //         var select = $('<select style="width: 40%;"><option value="">Servicio</option></select>')
-                //             .appendTo($(column.header()).empty())
-                //             .on('change', function() {
-                //                 var val = $.fn.dataTable.util.escapeRegex(
-                //                     $(this).val()
-                //                 );
-
-                //                 column
-                //                     .search(val ? '^' + val + '$' : '', true, false)
-                //                     .draw();
-                //             });
-
-                //         column.data().unique().sort().each(function(d, j) {
-                //             select.append('<option value="' + d + '">' + d + '</option>')
-                //         });
-                //     });
-                // }
+                error: function(jqXHR, textStatus, errorThrown) {
+                    // Si el JSON viene mal formado o el PHP tiró un error 500
+                    console.log("Error detallado:", jqXHR.responseText);
+                    Swal.fire('Error', 'Error crítico en el servidor o respuesta inválida.', 'error');
+                },
+                complete: function() {
+                    btnGuardar.prop('disabled', false).html('<i class="fas fa-save mr-1"></i> GUARDAR VEHÍCULO');
+                }
             });
         });
-    </script>
-    <script>
-        $(document).ready(
-            $('.eliminar').click(function(e) {
-                e.preventDefault();
-                let id = $(this).attr('id');
-                var dataString = 'id=' + id;
-                Swal.fire({
-                    icon: 'question',
-                    title: '¿Eliminar este vehículo?',
-                    text: 'Esta acción no se puede revertir',
-                    showConfirmButton: true,
-                    confirmButtonText: 'Si , eliminar',
-                    confirmButtonColor: '#3085d6',
-                    showCancelButton: true,
-                    cancelButtonText: 'No, lo pensare',
-                    cancelButtonColor: '#d33',
-                    buttonsStyling: true
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: '../sdo-funciones/eliminar-moviles.php',
-                            type: 'POST',
-                            data: dataString,
-                            success: function(response) {
-                                console.log('eliminado.. ' + dataString);
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Registro del vehículo eliminado',
-                                    showConfirmButton: false,
-                                    timer: 2000,
-                                })
-                                setTimeout(function() {
-                                    location.reload();
-                                }, 2100)
-                            }
-                        })
-                    }
-                })
-            })
-        )
-    </script>
-    <script src="https://unpkg.com/@popperjs/core@2"></script>
-    <script>
-        const button = document.querySelector('#agregar');
-        const tooltip = document.querySelector('#tooltip');
 
-        const popperInstance = Popper.createPopper(button, tooltip, {
-            placement: 'right',
-            modifiers: [{
-                name: 'offset',
-                options: {
-                    offset: [0, 8],
-                },
-            }, ],
+        // 3. Lógica para Eliminar
+        $(document).on('click', '.btn-eliminar-movil', function() {
+            let id = $(this).attr('id');
+            Swal.fire({
+                title: '¿Eliminar vehículo?',
+                text: "Esta acción solo se realizará si no hay historiales asociados",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    $.post('../sdo-includes/vehiculos/vehiculos_listado_eliminar.php', { id: id }, function(response) {
+                        // Parseamos la respuesta JSON del PHP
+                        let res = JSON.parse(response);
+
+                        if(res.status === 'success') {
+                            Swal.fire('¡Eliminado!', res.message, 'success');
+                            tablaVehiculos.ajax.reload();
+                        } else {
+                            // Aquí mostrará: "No se puede eliminar: Existen registros en..."
+                            Swal.fire('Atención', res.message, 'error');
+                        }
+                    });
+                }
+            });
         });
 
-        function show() {
-            // Make the tooltip visible
-            tooltip.setAttribute('data-show', '');
+        // 4. Lógica para Visualizar vía POST dinámico
+        $(document).on('click', '.btn-ver-movil', function() {
+            let idMovil = $(this).attr('id');
 
-            // Enable the event listeners
-            popperInstance.setOptions((options) => ({
-                ...options,
-                modifiers: [
-                    ...options.modifiers,
-                    {
-                        name: 'eventListeners',
-                        enabled: true
-                    },
-                ],
+            let ruta = 'visualizarMovil.php';
+
+            // Creamos un formulario temporal
+            let form = $('<form>', {
+                'action': ruta,
+                'method': 'POST'
+            }).append($('<input>', {
+                'type': 'hidden',
+                'name': 'idMovil',
+                'value': idMovil
             }));
 
-            // Update its position
-            popperInstance.update();
-        }
-
-        function hide() {
-            // Hide the tooltip
-            tooltip.removeAttribute('data-show');
-
-            // Disable the event listeners
-            popperInstance.setOptions((options) => ({
-                ...options,
-                modifiers: [
-                    ...options.modifiers,
-                    {
-                        name: 'eventListeners',
-                        enabled: false
-                    },
-                ],
-            }));
-        }
-
-        const showEvents = ['mouseenter', 'focus'];
-        const hideEvents = ['mouseleave', 'blur'];
-
-        showEvents.forEach((event) => {
-            button.addEventListener(event, show);
+            // Lo añadimos al cuerpo, enviamos y eliminamos
+            $('body').append(form);
+            form.submit();
         });
-
-        hideEvents.forEach((event) => {
-            button.addEventListener(event, hide);
-        });
-    </script>
-    
-
+    });
+</script>
 </body>
-
 </html>
