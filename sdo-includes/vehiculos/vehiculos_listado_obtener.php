@@ -1,7 +1,47 @@
 <?php
 include_once '../../sdo-funciones/conexion.php';
+include_once '../../sdo-funciones/funciones.php';
 
-$sql = "SELECT idMovil, idUnico, nomVehiculo, patenteVehiculo, marcaVehiculo, modeloVehiculo, servicioVehiculo, valorConIva, estadoVehiculo FROM moviles_movilizacion ORDER BY idMovil DESC";
+function formatearFechaCompletaAJAX($fechaRaw)
+{
+    $fechaCompleta = 'Fecha No Ingresada';
+
+    if (!empty($fechaRaw)) {
+        $timestamp = strtotime(str_replace('/', '-', $fechaRaw));
+
+        if ($timestamp !== false && $timestamp > 0) {
+
+            $inicioFecha = fechaEspañol2($timestamp);
+            $fechaCompleta = $inicioFecha;
+        }
+    }
+
+    return $fechaCompleta;
+}
+
+$sql = "
+        SELECT 
+            m.idMovil, 
+            m.idUnico, 
+            m.nomVehiculo, 
+            m.patenteVehiculo, 
+            m.marcaVehiculo, 
+            m.modeloVehiculo, 
+            m.servicioVehiculo, 
+            m.valorConIva, 
+            m.estadoVehiculo,
+            h.estadoMovil AS ultimoEstado,
+            h.fechaReporte,
+            h.motivo
+        FROM moviles_movilizacion m
+        LEFT JOIN (
+            SELECT idMovil, MAX(idEstadoMovil) as max_id
+            FROM historial_estados_moviles
+            GROUP BY idMovil
+        ) ultimo ON m.idMovil = ultimo.idMovil
+        LEFT JOIN historial_estados_moviles h ON ultimo.max_id = h.idEstadoMovil
+        ORDER BY m.idMovil DESC;
+        ";
 $res = mysqli_query($conexion, $sql);
 
 $datos = array();
@@ -12,6 +52,7 @@ while ($row = $res->fetch_assoc()) {
 
     $estadoVehiculo = $row['estadoVehiculo'];
     $estadoVehiculo2 = mb_strtoupper($estadoVehiculo, 'UTF-8');
+    $fechaReporte = formatearFechaCompletaAJAX($row['fechaReporte']);
 
     switch($estadoVehiculo2){
         case 'OPERATIVA':
@@ -46,7 +87,8 @@ while ($row = $res->fetch_assoc()) {
         "acciones" => '
             <button class="btn btn-block btn-info btn-xs btn-ver-movil" id="'.$row['idMovil'].'"><i class="fas fa-eye"></i></button>',
         "eliminar" => '
-            <button class="btn btn-block btn-danger btn-xs btn-eliminar-movil" id="'.$row['idMovil'].'"><i class="fas fa-trash"></i></button>'
+            <button class="btn btn-block btn-danger btn-xs btn-eliminar-movil" id="'.$row['idMovil'].'"><i class="fas fa-trash"></i></button>',
+        "fechaReporte" => $fechaReporte,
     );
 }
 
