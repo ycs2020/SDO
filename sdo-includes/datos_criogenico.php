@@ -6,6 +6,8 @@ include_once '../sdo-funciones/funciones.php';
 $conexion->set_charset("utf8mb4");
 
 
+$nomUsuario = $_POST['nomUsuario'];
+
 $sql = $conexion->prepare("SELECT * FROM `criogenico_datos` ORDER BY fecha DESC");
 $sql->execute();
 $resultado = $sql->get_result();
@@ -30,6 +32,7 @@ while ($fila = $resultado->fetch_assoc()) {
     $fila['valorTotalConIVA'] = '$'.number_format($fila['valorTotalConIVA'], 0, ',', '.');
 
     $fila['now'] = date('Y-m-d H:i:s');
+    $fila['nomUsuario'] = $nomUsuario;
 
 // 🔽 CONSULTA DE OBSERVACIONES
     $obsQuery = $conexion->prepare("SELECT fecha, obs FROM criogenico_obs WHERE idConsumo = ?");

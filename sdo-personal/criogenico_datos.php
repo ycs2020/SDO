@@ -186,6 +186,54 @@ date_default_timezone_set('America/Santiago');
                 </div><!-- /.container-fluid -->
             </section>
             <section class="content">
+                <?php
+                    if(isset($_GET['exitoEdicion'])){
+                        ?>
+                        <script>
+                            Swal.fire({
+                                title: "Exito!",
+                                text: "Se ha modificado el registro con exito!",
+                                icon: "success"
+                            });
+                        </script>
+                        <?php
+                    }
+
+                    if(isset($_GET['exito'])){
+                        ?>
+                        <script>
+                            Swal.fire({
+                                title: "Exito!",
+                                text: "Se ha ingresado el registro con exito!",
+                                icon: "success"
+                            });
+                        </script>
+                        <?php
+                    }
+
+                    if(isset($_GET['errorEdicion']) || isset($_GET['errorGeneralEdicion'])){
+                        ?>
+                        <script>
+                            Swal.fire({
+                                title: "Error!",
+                                text: "Ha ocurrido un error en la modificacion!",
+                                icon: "error"
+                            });
+                        </script>
+                        <?php
+                    }
+                    if(isset($_GET['error']) || isset($_GET['errorGeneral'])){
+                        ?>
+                        <script>
+                            Swal.fire({
+                                title: "Error!",
+                                text: "Ha ocurrido un error en el ingreso!",
+                                icon: "error"
+                            });
+                        </script>
+                        <?php
+                    }
+                ?>
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-12">
@@ -213,6 +261,7 @@ date_default_timezone_set('America/Santiago');
                                         <?php
                                     }
                                     ?>
+                                    <input type="hidden" id="nomUsuario" name="nomUsuario" value="<?php echo $nomUsuario; ?>">
                                 </div>
                             </div>
                         </div>
@@ -249,9 +298,16 @@ date_default_timezone_set('America/Santiago');
                                                 <th style="vertical-align:middle;">
                                                     <center>Valor Total Con IVA</center>
                                                 </th>
-                                                <th style="vertical-align:middle;">
-                                                    <center>Acciones</center>
-                                                </th>
+                                                <?php
+                                                if($nomUsuario == 'Guillermo Hidalgo' || $nomUsuario == 'Matias Gutierrez' || $nomUsuario == 'Haroll Álvarez Barrera' || $nomUsuario == 'Pablo Sanchez Molina') {
+                                                    ?>
+                                                    <th style="vertical-align:middle;">
+                                                        <center>Acciones</center>
+                                                    </th>
+                                                    <?php
+                                                }
+                                                ?>
+
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -280,9 +336,15 @@ date_default_timezone_set('America/Santiago');
                                                 <th style="vertical-align:middle;">
                                                     <center>Valor Total Con IVA</center>
                                                 </th>
-                                                <th style="vertical-align:middle;">
-                                                    <center>Acciones</center>
-                                                </th>
+                                                <?php
+                                                if($nomUsuario == 'Guillermo Hidalgo' || $nomUsuario == 'Matias Gutierrez' || $nomUsuario == 'Haroll Álvarez Barrera' || $nomUsuario == 'Pablo Sanchez Molina') {
+                                                    ?>
+                                                    <th style="vertical-align:middle;">
+                                                        <center>Acciones</center>
+                                                    </th>
+                                                    <?php
+                                                }
+                                                ?>
                                             </tr>
                                             </tfoot>
                                         </table>
@@ -410,6 +472,9 @@ date_default_timezone_set('America/Santiago');
                 "ajax": {
                     "url": "/sdo-includes/datos_criogenico.php",
                     "type": "POST",
+                    "data": function(d) {
+                        d.nomUsuario = $('#nomUsuario').val();
+                    },
                     "dataSrc": "data"
                 },
 
@@ -424,146 +489,159 @@ date_default_timezone_set('America/Santiago');
                     {
                         "data": null,
                         "render": function (data, type, row) {
+                            const usuariosPermitidos = [
+                                'Guillermo Hidalgo',
+                                'Matias Gutierrez',
+                                'Haroll Álvarez Barrera',
+                                'Pablo Sanchez Molina'
+                            ];
+
+                            let botones = '';
+                            if (usuariosPermitidos.includes(row.nomUsuario)) {
+                                botones = `
+                                    <div class="d-flex justify-content-center">
+                                        <button title="Agregar Observacion" class="btn btn-warning" data-toggle="modal" data-target="#modificar${row.id}">
+                                            <i class="fas fa-pen"></i>
+                                        </button>
+
+                                        <button title="Agregar Observacion" class="btn btn-success" data-toggle="modal" data-target="#exampleModal${row.id}">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+
+                                        <button title="Ver Observacion" class="btn btn-primary" data-toggle="modal" data-target="#listado${row.id}">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </div>
+                                `;
+                            }
                             return `
-<div class="d-flex justify-content-center">
-    <button title="Agregar Observacion" class="btn btn-warning" data-toggle="modal" data-target="#modificar${row.id}">
-            <i class="fas fa-pen"></i>
-    </button>
 
-    <button title="Agregar Observacion" class="btn btn-success" data-toggle="modal" data-target="#exampleModal${row.id}">
-        <i class="fas fa-plus"></i>
-    </button>
+                             ${botones}
 
-    <button title="Ver Observacion" class="btn btn-primary" data-toggle="modal" data-target="#listado${row.id}">
-        <i class="fas fa-eye"></i>
-    </button>
+                            <form action="../sdo-funciones/criogenico_nueva_observacion.php" method="post" enctype="multipart/form-data">
+                        <div class="modal fade" id="exampleModal${row.id}" tabindex="-1" role="dialog">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
 
-</div>
+                                    <div class="modal-header bg-secondary">
+                                        <h5 class="modal-title">Agregar Observación</h5>
+                                        <button type="button" class="close" data-dismiss="modal">
+                                            <span>&times;</span>
+                                        </button>
+                                    </div>
 
-        <form action="../sdo-funciones/criogenico_nueva_observacion.php" method="post" enctype="multipart/form-data">
-    <div class="modal fade" id="exampleModal${row.id}" tabindex="-1" role="dialog">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
+                                    <div class="modal-body">
+                                        <label>Fecha</label>
+                                        <input type="text" class="form-control" name="fecha" value="${row.now}" readonly>
 
-                <div class="modal-header bg-secondary">
-                    <h5 class="modal-title">Agregar Observación</h5>
-                    <button type="button" class="close" data-dismiss="modal">
-                        <span>&times;</span>
-                    </button>
-                </div>
+                                        <br>
 
-                <div class="modal-body">
-                    <label>Fecha</label>
-                    <input type="text" class="form-control" name="fecha" value="${row.now}" readonly>
+                                        <label>Observación</label>
+                                        <textarea class="form-control" name="obs" rows="15" style="resize: none"></textarea>
+                                    </div>
 
-                    <br>
+                                    <div class="modal-footer">
+                                        <input type="hidden" name="idConsumo" value="${row.id}">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                        <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                    </div>
 
-                    <label>Observación</label>
-                    <textarea class="form-control" name="obs" rows="15" style="resize: none"></textarea>
-                </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
 
-                <div class="modal-footer">
-                    <input type="hidden" name="idConsumo" value="${row.id}">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                </div>
+                            <!-- Modal -->
+                            <div class="modal fade" id="listado${row.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                              <div class="modal-dialog modal-xl" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header bg-success">
+                                    <h5 class="modal-title" id="exampleModalLabel">Observaciones</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-body">
+                            <table class="table table-bordered">
+                                <thead class="bg-secondary">
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Observación</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${
+                                                            row.observaciones.length > 0
+                                                                ? row.observaciones.map(obs => `
+                                            <tr>
+                                                <td>${obs.fecha}</td>
+                                                <td>${obs.obs}</td>
+                                            </tr>
+                                        `).join('')
+                                                                : `<tr><td colspan="2" class="text-center">Sin observaciones</td></tr>`
+                                                        }
+                                </tbody>
+                            <tfoot class="bg-secondary">
+                                    <tr>
+                                        <th>Fecha</th>
+                                        <th>Observación</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
 
-            </div>
-        </div>
-    </div>
-</form>
+                                    <!-- Modal -->
+                            <div class="modal fade" id="modificar${row.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                              <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                  <div class="modal-header bg-warning">
+                                    <h5 class="modal-title" id="exampleModalLabel">Editar Registros ${row.id}</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <form action="../sdo-funciones/editar_registros_criogenico.php" method="POST">
+                                  <div class="modal-body">
+                                    <label>Fecha: </label>
+                                    <br>
+                                     <input type="month" class="form-control" value="${row.fecha_raw}" name="fecha" id="fecha" required>
+                                    <br>
+                                    <label>OC: </label>
+                                    <br>
+                                    <input type="text" class="form-control" value="${row.oc}" name="oc" id="oc" required>
+                                    <br>
+                                    <label>N° Factura: </label>
+                                    <br>
+                                    <input type="text" class="form-control" value="${row.nFactura}" name="nFactura" id="nFactura" required>
+                                    <br>
+                                    <label>M<sup>3</sup> Consumidos: <code>*</code></label>
+                                    <input class="form-control" required id="mConsumidos" value="${row.metrosConsumidos_raw}" placeholder="Metros Cubicos Consumidos" type="text" name="mConsumidos" />
+                                    <br>
+                                    <label>Precio Unitario: <code>*</code></label>
+                                    <input class="form-control" required id="precioUnitario" value="${row.precioUnitario_raw}" placeholder="Precio Unitario" type="number" name="precioUnitario" />
+                                    <br>
+                                    <label>Valor Total Neto: <code>*</code></label>
+                                    <input class="form-control" required id="valorTotalNeto" value="${row.valorTotal_raw}" placeholder="Valor Total Neto" type="number" name="valorTotalNeto" />
+                                    <br>
+                                    <label>Valor Total con IVA: <code>*</code></label>
+                                    <input class="form-control" required id="valorTotalIVA" value="${row.valorTotalConIVA_raw}" placeholder="Valor Total con IVA" type="number" name="valorTotalIVA" />
+                    </div>
+                                  <div class="modal-footer">
+                                    <input type="hidden" name="idConsumo" value="${row.id}">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                    <button type="submit" class="btn btn-success">Modificar</button>
+                                  </div>
+                                  </form>
 
-        <!-- Modal -->
-        <div class="modal fade" id="listado${row.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-xl" role="document">
-            <div class="modal-content">
-              <div class="modal-header bg-success">
-                <h5 class="modal-title" id="exampleModalLabel">Observaciones</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div class="modal-body">
-        <table class="table table-bordered">
-            <thead class="bg-secondary">
-                <tr>
-                    <th>Fecha</th>
-                    <th>Observación</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${
-                                        row.observaciones.length > 0
-                                            ? row.observaciones.map(obs => `
-                        <tr>
-                            <td>${obs.fecha}</td>
-                            <td>${obs.obs}</td>
-                        </tr>
-                    `).join('')
-                                            : `<tr><td colspan="2" class="text-center">Sin observaciones</td></tr>`
-                                    }
-            </tbody>
-        <tfoot class="bg-secondary">
-                <tr>
-                    <th>Fecha</th>
-                    <th>Observación</th>
-                </tr>
-            </tfoot>
-        </table>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-                <!-- Modal -->
-        <div class="modal fade" id="modificar${row.id}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header bg-warning">
-                <h5 class="modal-title" id="exampleModalLabel">Editar Registros ${row.id}</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <form action="../sdo-funciones/editar_registros_criogenico.php" method="POST">
-              <div class="modal-body">
-                <label>Fecha: </label>
-                <br>
-                 <input type="month" class="form-control" value="${row.fecha_raw}" name="fecha" id="fecha" required>
-                <br>
-                <label>OC: </label>
-                <br>
-                <input type="text" class="form-control" value="${row.oc}" name="oc" id="oc" required>
-                <br>
-                <label>N° Factura: </label>
-                <br>
-                <input type="text" class="form-control" value="${row.nFactura}" name="nFactura" id="nFactura" required>
-                <br>
-                <label>M<sup>3</sup> Consumidos: <code>*</code></label>
-                <input class="form-control" required id="mConsumidos" value="${row.metrosConsumidos_raw}" placeholder="Metros Cubicos Consumidos" type="text" name="mConsumidos" />
-                <br>
-                <label>Precio Unitario: <code>*</code></label>
-                <input class="form-control" required id="precioUnitario" value="${row.precioUnitario_raw}" placeholder="Precio Unitario" type="number" name="precioUnitario" />
-                <br>
-                <label>Valor Total Neto: <code>*</code></label>
-                <input class="form-control" required id="valorTotalNeto" value="${row.valorTotal_raw}" placeholder="Valor Total Neto" type="number" name="valorTotalNeto" />
-                <br>
-                <label>Valor Total con IVA: <code>*</code></label>
-                <input class="form-control" required id="valorTotalIVA" value="${row.valorTotalConIVA_raw}" placeholder="Valor Total con IVA" type="number" name="valorTotalIVA" />
-</div>
-              <div class="modal-footer">
-                <input type="hidden" name="idConsumo" value="${row.id}">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                <button type="submit" class="btn btn-success">Modificar</button>
-              </div>
-              </form>
-
-            </div>
-          </div>
-        </div>
+                                </div>
+                              </div>
+                            </div>
 
 `;
                         }
