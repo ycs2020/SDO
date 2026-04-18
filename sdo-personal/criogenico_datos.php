@@ -80,19 +80,21 @@ date_default_timezone_set('America/Santiago');
             });
 
             $(".show-verdash").click(function() {
-                $("#rowMenu3").show();
+                $("#verDash").show();
+                $("#rowMenu1").hide();
+                $("#rowMenu2").hide();
                 $("#verDashAC").hide();
-                $("#verDashh").hide();
                 $("#ocultarDashAC").show();
                 $("#ocultarDashh").show();
             });
 
             $(".show-ocultardash").click(function() {
-                $("#rowMenu3").hide();
+                $("#rowMenu1").show();
+                $("#rowMenu2").hide();
                 $("#verDashAC").show();
-                $("#verDashh").show();
                 $("#ocultarDashAC").hide();
                 $("#ocultarDashh").hide();
+                $("#verDash").hide();
             });
         });
     </script>
@@ -258,6 +260,12 @@ date_default_timezone_set('America/Santiago');
                                         ?>
                                         <button class="btn bg-yellow show-realizar" id="registrarAC" name="registrarAC"><i class="fas fa-clipboard"></i>&nbsp;Registrar Consumo del Criogenico</button>
                                         <button class="btn bg-yellow show-listar" id="listarAC" style="display:none;" name="listarAC"><i class="fas fa-list"></i>&nbsp;Ver Consumo del Criogenico</button>
+                                        <button class="btn bg-blue show-verdash" id="verDashAC" name="verDashAC">
+                                            <i class="fas fa-chart-line"></i>&nbsp;Ver Dashboard
+                                        </button>
+                                        <button class="btn bg-blue show-ocultardash" style="display: none" id="ocultarDashAC" name="ocultarDashAC">
+                                            <i class="fas fa-chart-line"></i>&nbsp;Ocultar DashBoard
+                                        </button>
                                         <?php
                                     }
                                     ?>
@@ -433,6 +441,35 @@ date_default_timezone_set('America/Santiago');
                             </div>
                         </div>
                     </div>
+                    <div class="row" id="verDash" style="display: none">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <ul class="nav bg-dark p-2 rounded">
+                                        <?php
+                                        $anioActual = date("Y");
+                                        $sqlBuscarAño = "SELECT DISTINCT YEAR(fecha) AS anio FROM criogenico_datos ORDER BY anio DESC";
+                                        $resBuscarAño = mysqli_query($conexion, $sqlBuscarAño);
+                                        while($rowBuscarAño = mysqli_fetch_assoc($resBuscarAño)){
+                                            $anio = $rowBuscarAño['anio'];
+                                            echo "<li class='nav-item'>
+                                                    <a class='nav-link text-white fw-bold anio-link' 
+                                                       href='#' 
+                                                       data-anio='$anio'>
+                                                       $anio
+                                                    </a>
+                                                  </li>";
+                                        }
+                                        ?>
+                                    </ul>
+                                </div>
+                                <div class="card-body" id="contenido-anio">
+                                    <div id="contenedorDatos">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
         </div>
@@ -458,6 +495,32 @@ date_default_timezone_set('America/Santiago');
     <script src="../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
     <!-- AdminLTE App -->
     <script src="../dist/js/adminlte.min.js"></script>
+    <script>
+        $(document).on("click", ".anio-link", function(e){
+            e.preventDefault();
+
+            let anio = $(this).data("anio");
+
+            // efecto visual activo
+            $(".anio-link").removeClass("active bg-primary");
+            $(this).addClass("active bg-primary");
+
+            $.ajax({
+                url: "/sdo-includes/obtener_datos.php",
+                method: "POST",
+                data: {anio: anio},
+                success: function(response){
+                    console.log(response); // para debug
+
+                    // ejemplo: insertar en un div
+                    $("#contenedorDatos").html(response);
+                },
+                error: function(xhr, status, error){
+                    console.error("Error:", error);
+                }
+            });
+        });
+    </script>
     <script>
         $(function() {
             $('#example2').DataTable({

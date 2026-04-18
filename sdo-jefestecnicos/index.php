@@ -238,6 +238,10 @@ $ipCliente = $_SERVER['REMOTE_ADDR'];
 </script>
 
 <?php
+if (isset($_GET['accesoSoporteDenegado'])) {
+    echo "<script>toastr.error('No se encuentra habilitado para ingresar a esta funcionalidad.');</script>";
+}
+
 if (isset($_GET['exitoMarcajeAsistencia'])) {
     echo "<script>toastr.success('Marcaje registrado correctamente.');</script>";
 }

@@ -322,6 +322,9 @@ date_default_timezone_set('America/Santiago');
                                             <li class="nav-item" role="presentation">
                                                 <button class="nav-link" id="gases-tab" data-toggle="tab" data-target="#gases" type="button" role="tab" aria-controls="gases" aria-selected="false">Gases</button>
                                             </li>
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link" id="criogenico-tab" data-toggle="tab" data-target="#criogenico" type="button" role="tab" aria-controls="criogenico" aria-selected="false">Criogenico</button>
+                                            </li>
                                         </ul>
                                     </div>
                                     <div class="card-body text-center">

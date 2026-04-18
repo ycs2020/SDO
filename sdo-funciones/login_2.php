@@ -37,8 +37,8 @@ if (isset($_POST['usuarioRegistrado'], $_POST['passwordRegistrado'])) {
                 FROM jefes_tecnicos WHERE userActivado = 1
 
                 UNION ALL
-                SELECT idMesaAyuda, nomMesaAyuda, userMesaAyuda, passMesaAyuda, emailMesaAyuda,
-                       'Mesa Ayuda', 'Mesa Ayuda', 0, 0, 'true'
+                SELECT idMesaAyuda, nomMesaAyuda, userMesaAyuda, passMesaAyuda, emailMesaAyuda, 
+                       'Mesa Ayuda', 'Mesa Ayuda', idDepartamento, 0, 'true'
                 FROM mesa_ayuda
 
                 UNION ALL

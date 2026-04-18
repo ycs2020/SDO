@@ -95,6 +95,7 @@ if (isset($_REQUEST['idCategoria'])) {
     <link rel="stylesheet" href="../plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
 
+
     <style>
         .reset {
             all: revert;
@@ -320,6 +321,8 @@ if (isset($_REQUEST['idCategoria'])) {
             });
         });
     </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-footer-fixed">
 <div class="wrapper">
@@ -662,7 +665,7 @@ if (isset($_REQUEST['idCategoria'])) {
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text"><i class="fas fa-pen-alt"></i></span>
                                                     </div>
-                                                    <input type="month" required class="form-control" id="Fecha" name="Fecha" placeholder="Numero del Memo">
+                                                    <input type="text" id="Fecha" name="Fecha" class="form-control" required placeholder="Seleccione Mes y Año">
                                                 </div>
                                             </div>
                                             <div class="form-group col-md-6">
@@ -758,28 +761,14 @@ if (isset($_REQUEST['idCategoria'])) {
                                                 </div>
                                             </div>
                                             <div class="form-group col-md-6">
-                                                <label for="exampleInputTurno">Fecha de Prestación del Servicio:
-                                                    <code>*</code></label>
+                                                <label for="exampleInputTurno">Fecha de Prestación del Servicio: <code>*</code></label>
                                                 <div class="input-group mb-3">
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text"><i class="fas fa-pen-alt"></i></span>
                                                     </div>
-                                                    <?php
-                                                    if ($fechaPrestacionServicio == '') {
-                                                        ?>
-                                                        <input type="month" class="form-control" id="FechaPrestacion"
-                                                                name="FechaPrestacion">
-                                                        <?php
-                                                    } else {
-                                                        ?>
-                                                        <input type="month" class="form-control" id="FechaPrestacion"
-                                                                name="FechaPrestacion"
-                                                                value="<?php echo date('Y-m', strtotime($fechaPrestacionServicio)); ?>">
-                                                        <?php
-                                                    }
-                                                    ?>
-
-
+                                                    <input type="text" class="form-control" id="FechaPrestacion" name="FechaPrestacion"
+                                                            value="<?php echo (!empty($fechaPrestacionServicio)) ? date('Y-m', strtotime($fechaPrestacionServicio)) : ''; ?>"
+                                                            placeholder="Seleccione Mes y Año">
                                                 </div>
                                             </div>
                                             <div class="form-group col-md-6">
@@ -1062,6 +1051,7 @@ if (isset($_REQUEST['idCategoria'])) {
         </section>
     </div>
 </div>
+
 </body>
 <!-- jQuery -->
 <script src="../plugins/jquery/jquery.min.js"></script>
@@ -1188,6 +1178,34 @@ if (isset($_REQUEST['idCategoria'])) {
                 }
             }
         });
+    });
+</script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
+
+<script>
+    // Configuración para el primer campo
+    flatpickr("#Fecha", {
+        disableMobile: "true",
+        plugins: [
+            new monthSelectPlugin({
+                shorthand: true,
+                dateFormat: "Y-m",
+                altFormat: "F Y"
+            })
+        ]
+    });
+
+    // Configuración para el segundo campo
+    flatpickr("#FechaPrestacion", {
+        disableMobile: "true",
+        plugins: [
+            new monthSelectPlugin({
+                shorthand: true,
+                dateFormat: "Y-m",
+                altFormat: "F Y"
+            })
+        ]
     });
 </script>
 

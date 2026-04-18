@@ -392,13 +392,6 @@ $now = date('Y-m-d H:i:s');
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed layout-footer-fixed">
-<div class="preloader  flex-column justify-content-center align-items-center">
-    <img class="animation__shake" src="../dist/img/ssvq1.png" alt="logo">
-    <br>
-    <div class="spinner-border text-danger" role="status">
-        <span class="sr-only">Loading...</span>
-    </div>
-</div>
 <div class="wrapper">
     <?php
     include '../sdo-templates/user-sidebar.php';
@@ -602,13 +595,6 @@ $now = date('Y-m-d H:i:s');
                                     <div class="col-xl-3 col-lg-6 col-md-6 col-12 mb-3">
                                         <button type="button" style="margin-left: 10px;" class="btn btn-info btn-block" data-toggle="modal" data-target=".generarInformeResumen"><b><i class="far fa-file-pdf"></i> Generar Reporte Resumen</b></button>
                                     </div>
-
-                                    <!--<button class="btn btn-success modalViaje" data-toggle="modal" data-target=".modalViajeOrd"><b><i class="fas fa-plus"></i> Añadir Viaje</b></button>-->
-
-
-                                    <!-- <button type="button" style="margin-left: 10px; color: white;" data-toggle="modal" data-target=".generarInformeResumenExcel" class="btn bg-gradient-purple"><b><i class="far fa-file-excel"></i> Generar Resumen Excel</b></button> -->
-                                    <!--<a href="../sdo-pdf/SDO-Reporte-Viajes-Excel.php" style="margin-left: 10px; color: white;" class="btn bg-gradient-purple"><b><i class="far fa-file-excel"></i> Generar Resumen Excel</b></a> -->
-
                                 </div>
 
                                 <div class="modal fade generarInforme" tabindex="-1">
@@ -1546,8 +1532,6 @@ $now = date('Y-m-d H:i:s');
 
                                     });
                                 </script>
-                                <br>
-                                <hr>
 
                             </div>
 

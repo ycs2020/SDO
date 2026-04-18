@@ -945,7 +945,7 @@ $observacion14 = $respuestas[14]['observacion'];
                     <?php
                     $getRutaFirmaVisado = getRutaFirmaVisado($tecnico1);
                     if (!empty($getRutaFirmaVisado)) {
-                        $logoVisado = "http://" . $_SERVER['SERVER_NAME'] . '/'.$getRutaFirmaVisado;
+                        $logoVisado = "https://" . $_SERVER['SERVER_NAME'] . '/'.$getRutaFirmaVisado;
                         //                        $controlCent2 = "data:image/png;base64," . base64_encode(file_get_contents($controlCent));
                         $logoVisado2 = str_replace(" ", "%20", $logoVisado);
                         ?>
@@ -960,7 +960,7 @@ $observacion14 = $respuestas[14]['observacion'];
                     if($isVisadoCheck == 1) {
                         $getRutaFirmaVisado = getRutaFirmaVisado($personaSoli);
                         if (!empty($getRutaFirmaVisado)) {
-                            $logoVisado = "http://" . $_SERVER['SERVER_NAME'] . '/'.$getRutaFirmaVisado;
+                            $logoVisado = "https://" . $_SERVER['SERVER_NAME'] . '/'.$getRutaFirmaVisado;
                             //                        $controlCent2 = "data:image/png;base64," . base64_encode(file_get_contents($controlCent));
                             $logoVisado2 = str_replace(" ", "%20", $logoVisado);
                             ?>

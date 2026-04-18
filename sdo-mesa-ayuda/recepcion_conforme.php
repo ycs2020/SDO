@@ -263,6 +263,7 @@ $idDepartamento = $_SESSION['idDepartamento'];
 
                                             while ($row = $res->fetch_assoc()) {
                                                 $id = $row['id'];
+
                                                 $nombre = $row['nombre'];
                                                 ?>
                                                 <li class="nav-item" role="presentation">
@@ -328,7 +329,7 @@ $idDepartamento = $_SESSION['idDepartamento'];
 
                                                 <br>
                                                 <br>
-                                                <form action="../sdo-mesa-ayuda/detalles-categorias-recepciones-conformes.php" method="POST">
+                                                <form action="../sdo-mesa-ayuda/detalles-categorias-recepciones-conformes.php" method="POST" target="_blank">
                                                     <button type="submit" class="btn btn-block bg-success">Visualizar</button>
                                                     <input type="hidden" name="idCategoria" value="<?php echo $id; ?>">
                                                 </form>

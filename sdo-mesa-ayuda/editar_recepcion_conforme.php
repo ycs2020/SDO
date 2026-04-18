@@ -93,6 +93,9 @@ if (isset($_POST['idContrato'])) {
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     <link rel="stylesheet" href="../plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/style.css">
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-footer-fixed">
 <div class="wrapper">
@@ -171,9 +174,13 @@ if (isset($_POST['idContrato'])) {
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text"><i class="fas fa-pen-alt"></i></span>
                                                     </div>
-                                                    <input type="month" required class="form-control" id="Fecha" name="Fecha" placeholder="Numero del Memo"
-                                                            value="<?php echo date('Y-m', strtotime($fechaGeneral)); ?>"
-                                                    >
+                                                    <input type="text"
+                                                            required
+                                                            class="form-control"
+                                                            id="Fecha"
+                                                            name="Fecha"
+                                                            placeholder="Seleccione Mes y Año"
+                                                            value="<?php echo date('Y-m', strtotime($fechaGeneral)); ?>">
                                                 </div>
                                             </div>
                                             <div class="form-group col-md-6">
@@ -264,12 +271,16 @@ if (isset($_POST['idContrato'])) {
                                             <div class="form-group col-md-6">
                                                 <label for="exampleInputTurno">Fecha de Prestación del Servicio: <code>*</code></label>
                                                 <div class="input-group mb-3">
+
                                                     <div class="input-group-prepend">
                                                         <span class="input-group-text"><i class="fas fa-pen-alt"></i></span>
                                                     </div>
-                                                    <input type="month" class="form-control" id="FechaPrestacion"
-                                                        name="FechaPrestacion"
-                                                        value="<?php echo date('Y-m', strtotime($fechaPrestacionServicio)); ?>">
+                                                    <input type="text"
+                                                            class="form-control"
+                                                            id="FechaPrestacion"
+                                                            name="FechaPrestacion"
+                                                            value="<?php echo (!empty($fechaPrestacionServicio)) ? date('Y-m', strtotime($fechaPrestacionServicio)) : ''; ?>"
+                                                            placeholder="Seleccione Mes de Prestación">
 
                                                 </div>
                                             </div>
@@ -658,5 +669,37 @@ if (isset($_POST['idContrato'])) {
     document.getElementById('valorMensual').addEventListener('input', calcularSaldo);
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/plugins/monthSelect/index.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Inicializar el primer campo (Fecha General)
+        flatpickr("#Fecha", {
+            disableMobile: "true",
+            defaultDate: "<?php echo (!empty($fechaGeneral)) ? date('Y-m', strtotime($fechaGeneral)) : ''; ?>",
+            plugins: [
+                new monthSelectPlugin({
+                    shorthand: true,
+                    dateFormat: "Y-m",
+                    altFormat: "F Y"
+                })
+            ]
+        });
+
+        // Inicializar el segundo campo (Fecha Prestación)
+        flatpickr("#FechaPrestacion", {
+            disableMobile: "true",
+            defaultDate: "<?php echo (!empty($fechaPrestacionServicio)) ? date('Y-m', strtotime($fechaPrestacionServicio)) : ''; ?>",
+            plugins: [
+                new monthSelectPlugin({
+                    shorthand: true,
+                    dateFormat: "Y-m",
+                    altFormat: "F Y"
+                })
+            ]
+        });
+    });
+</script>
 
 </html>

@@ -5,7 +5,14 @@ $modulosInicio = [
         'items' => [
             [
                 'icono' => '<i class="fas fa-server fa-2x"></i>',
-                'nombre' => 'Nube de Datos',
+                'nombre' => 'Soporte Plataforma SDO',
+                'ruta' => '../sdo-jefestecnicos/soporte_plataforma_listado.php',
+                'departamentos' => [1, 13],
+                'usuarios' => ['Yorgo Casimis Subiabre'], // <-- sólo para estos usuarios
+            ],
+            [
+                'icono' => '<i class="fas fa-server fa-2x"></i>',
+                'nombre' => 'Nube de Datos (En Desarrollo)',
                 'ruta' => '../sdo-jefestecnicos/archivos_administracion_nube.php',
                 'departamentos' => [1, 13],
                 'usuarios' => ['Yorgo Casimis Subiabre'], // <-- sólo para estos usuarios
