@@ -330,8 +330,7 @@ if ($horaActual >= '08' && $horaActual <= '11') {
                                             }
                                             ?>
                                             <?php
-                                            if($idUsuario == 5){
-
+                                            if($nomUsuario === 'Marcela Rojas Perez'){
                                             }else{
                                                 ?>
                                                 <h5><b>Solicitudes Telefonicas</b></h5>

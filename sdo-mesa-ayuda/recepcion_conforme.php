@@ -8,6 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 $nomUsuario = trim($_SESSION['nomUsuario']);
 $idUsuario = trim($_SESSION['idUsuario']);
+$idDepartamento = $_SESSION['idDepartamento'];
 
 ?>
 
@@ -150,6 +151,32 @@ $idUsuario = trim($_SESSION['idUsuario']);
                                                             <input type="text" class="form-control form-control-sm" required id="nomCategoria" name="nomCategoria">
                                                         </div>
                                                     </div>
+                                                    <div class="form-group col-md-12 col-12">
+                                                        <label style="font-size:12px">Departamento:<code>*</code></label>
+                                                        <div class="input-group mb-3">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text"><i class="fas fa-pen"></i></span>
+                                                            </div>
+                                                            <select name="idDepartamento" id="idDepartamento" class="form-control form-control-sm">
+                                                                <option value="">Seleccione....</option>
+                                                                <?php
+                                                                if($nomUsuario == 'Marcela Rojas Perez'){
+                                                                    ?>
+                                                                    <option selected value="7">Logistica</option>
+                                                                    <?php
+                                                                }else{
+                                                                    $sqlDepa = "SELECT * FROM `departamentos` WHERE idDepartamento != 11 AND idDepartamento != 13 AND idDepartamento != 14 AND idDepartamento != 15 ORDER BY idDepartamento DESC";
+                                                                    $resDepa = mysqli_query($conexion, $sqlDepa);
+                                                                    while($rowDepa = $resDepa->fetch_assoc()){
+                                                                        ?>
+                                                                        <option value="<?php echo $rowDepa['idDepartamento']?>"><?php echo $rowDepa['nomDepartamento']?></option>
+                                                                        <?php
+                                                                    }
+                                                                }
+                                                                ?>
+                                                            </select>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
@@ -181,9 +208,9 @@ $idUsuario = trim($_SESSION['idUsuario']);
                                                                 <option value="" selected disabled>Seleccione.....</option>
                                                                 <?php
                                                                 if($idUsuario == 5){
-                                                                    $sqlCategorias = "SELECT * FROM `categorias_recepcion_conforme` WHERE nomCreador = 'Marcela Rojas Perez' ORDER BY id DESC";
+                                                                    $sqlCategorias = "SELECT * FROM `categorias_recepcion_conforme` WHERE nomCreador = 'Marcela Rojas Perez' OR idDepartamento = $idDepartamento ORDER BY id DESC";
                                                                 }else if($idUsuario == 1){
-                                                                    $sqlCategorias = "SELECT * FROM categorias_recepcion_conforme WHERE nomCreador = 'Carola Avila' ORDER BY id DESC";
+                                                                    $sqlCategorias = "SELECT * FROM categorias_recepcion_conforme ORDER BY id DESC";
                                                                 }else{
                                                                     $sqlCategorias = "SELECT * FROM categorias_recepcion_conforme ORDER BY id DESC";
                                                                 }
@@ -224,9 +251,9 @@ $idUsuario = trim($_SESSION['idUsuario']);
                                         <ul class="nav nav-tabs" id="myTab" role="tablist">
                                             <?php
                                             if($idUsuario == 5){
-                                                $sql = "SELECT * FROM categorias_recepcion_conforme WHERE nomCreador = 'Marcela Rojas Perez' ORDER BY id DESC";
+                                                $sql = "SELECT * FROM categorias_recepcion_conforme WHERE nomCreador = 'Marcela Rojas Perez' OR idDepartamento = $idDepartamento ORDER BY id DESC";
                                             }else if($idUsuario == 1){
-                                                $sql = "SELECT * FROM categorias_recepcion_conforme WHERE nomCreador = 'Carola Avila' ORDER BY id DESC";
+                                                $sql = "SELECT * FROM categorias_recepcion_conformeORDER BY id DESC";
                                             }else{
                                                 $sql = "SELECT * FROM categorias_recepcion_conforme ORDER BY id DESC";
                                             }
@@ -248,7 +275,7 @@ $idUsuario = trim($_SESSION['idUsuario']);
                                                         role="tab"
                                                         aria-controls="target<?php echo $id; ?>"
                                                         aria-selected="<?php echo $first ? 'true' : 'false'; ?>">
-                                                        <?php echo $nombre; ?>
+                                                        <?php echo  $nombre; ?>
                                                     </button>
                                                 </li>
                                                 <?php

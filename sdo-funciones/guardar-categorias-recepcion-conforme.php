@@ -40,9 +40,11 @@ if($_POST['nomCategoria']) {
     $now = date('Y-m-d H:i:s');
     $nomCategoria = $_POST['nomCategoria'];
     $nomUsuario = $_POST['nomUsuario'];
+    $idDepartamento = $_POST['idDepartamento'];
 
-    $sql = "INSERT INTO `categorias_recepcion_conforme`(`fecha`, `nombre`, `nomCreador`) 
-    VALUES ('$now','$nomCategoria','$nomUsuario')";
+
+    $sql = "INSERT INTO `categorias_recepcion_conforme`(`fecha`, `nombre`, `nomCreador`, `idDepartamento`)
+    VALUES ('$now','$nomCategoria','$nomUsuario',$idDepartamento)";
 
     $res = mysqli_query($conexion,$sql);
     if($res){

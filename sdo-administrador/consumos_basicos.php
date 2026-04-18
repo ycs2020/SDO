@@ -322,6 +322,9 @@ date_default_timezone_set('America/Santiago');
                                             <li class="nav-item" role="presentation">
                                                 <button class="nav-link" id="gases-tab" data-toggle="tab" data-target="#gases" type="button" role="tab" aria-controls="gases" aria-selected="false">Gases</button>
                                             </li>
+                                            <li class="nav-item" role="presentation">
+                                                <button class="nav-link" id="criogenico-tab" data-toggle="tab" data-target="#criogenico" type="button" role="tab" aria-controls="criogenico" aria-selected="false">Criogenico</button>
+                                            </li>
                                         </ul>
                                     </div>
                                     <div class="card-body text-center">
@@ -593,6 +596,33 @@ date_default_timezone_set('America/Santiago');
                                                     <?php include_once('../sdo-includes/consumos_basicos_dashboard_gases.php')?>
                                                 </div>
                                             </div>
+                                            <div class="tab-pane fade" id="criogenico" role="tabpanel" aria-labelledby="criogenico-tab">
+                                                <div class="row">
+                                                    <div class="card col-12 col-xl-4 col-lg-6 col-md-6" style="width: 18rem; text-align: center">
+                                                        <br>
+                                                        <img src="../dist/img/HBQP.jpg" class="card-img-top img-fluid" alt="..." height="500px">
+                                                        <div class="card-body text-center">
+                                                            <h5 style="text-align: center" class="card-title text-bold">Hospital Biprovincial Quillota Petorca<br></h5>
+                                                            <br>&nbsp;
+                                                            <br>
+                                                            <?php
+                                                            if($nomUsuario == 'Guillermo Hidalgo' || $nomUsuario == 'Matias Gutierrez' || $nomUsuario == 'Haroll Álvarez Barrera'){
+                                                                ?>
+                                                                <a  class="btn btn-block bg-info " href="criogenico_datos.php"><b></b>Administrar</a>
+                                                                <?php
+                                                            }else{
+                                                                ?>
+                                                                <a  class="btn btn-block bg-info " href="criogenico_datos.php"><b></b>Visualizar</a>
+                                                                <?php
+                                                            }
+                                                            ?>
+                                                            <hr>
+                                                            <br>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                         </div>
                                         <!-- /.card -->
                                     </div>

@@ -18,6 +18,8 @@ if (isset($_SESSION['nomUsuario']) && $_SESSION['userUsuario'] && $_SESSION['idU
 
     $nomDepartamento = 'Mesa de Ayuda - SDO';
 
+    $idDepartamento = $_SESSION['idDepartamento'];
+
     $rolUsuario2 = '';
     if ($rolUsuario == 'Mesa Ayuda') {
         $rolUsuario2 = 'Mesa de Ayuda';
@@ -228,17 +230,21 @@ if (isset($_SESSION['nomUsuario']) && $_SESSION['userUsuario'] && $_SESSION['idU
                 }
                 ?>
 
+                <?php
+                if($idUsuario == 5){
 
-
-                <li class="nav-header"></li>
-                <li class="nav-item">
-                    <a href="../sdo-mesa-ayuda/solicitudes_telefonicas.php" class="nav-link">
-                        <i class="nav-icon fas fa-address-book"></i>
-                        <p>Solicitudes Telefonicas</p>
-                    </a>
-                </li>
-
-
+                }else{
+                    ?>
+                    <li class="nav-header"></li>
+                    <li class="nav-item">
+                        <a href="../sdo-mesa-ayuda/solicitudes_telefonicas.php" class="nav-link">
+                            <i class="nav-icon fas fa-address-book"></i>
+                            <p>Solicitudes Telefonicas</p>
+                        </a>
+                    </li>
+                    <?php
+                }
+                ?>
                 <li class="nav-header"></li>
                 <li class="nav-item">
                     <a href="../sdo-mesa-ayuda/consumos_basicos.php" class="nav-link">
