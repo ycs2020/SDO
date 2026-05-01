@@ -9,7 +9,6 @@ date_default_timezone_set('America/Santiago');
 
 if (isset($_POST['idEquipo'])) {
     $idEquipo = $_POST['idEquipo'];
-    ECHO $idEquipo;
     $idCategoria = $_POST['idCategoria'];
     $sqlGeneral = "SELECT * FROM equipamiento_hbqp WHERE id = $idEquipo";
     $res = mysqli_query($conexion, $sqlGeneral);
@@ -70,9 +69,6 @@ if (isset($_POST['idOrden'])) {
         }
     }
 }
-{
-}
-
 ?>
 <!DOCTYPE html>
 <html lang="es">

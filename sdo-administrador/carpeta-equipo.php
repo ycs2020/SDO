@@ -454,6 +454,12 @@ $costosMantJS  = json_encode($costosMant);
                                         'visible' => ($idCarpeta == 2),
                                         'url' => '/sdo-includes/equipamiento/equipamiento_programacion_vav.php' // URL específica
                                     ],
+                                    [
+                                        'id' => 'tabVF',
+                                        'titulo' => 'Programacion Vigas Frias',
+                                        'visible' => ($idCarpeta == 2),
+                                        'url' => '/sdo-includes/equipamiento/equipamiento_programacion_vf.php' // URL específica
+                                    ],
                                 ];
                                 ?>
 

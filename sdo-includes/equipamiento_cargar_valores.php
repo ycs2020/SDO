@@ -19,7 +19,7 @@ function h($string)
 $map = [
     'Equipos Operativos' => "estadoEquipo LIKE 'Operativo'",
     'Equipos Con Observaciones' => "estadoEquipo LIKE 'OperativoObs'",
-    'Equipos en Mantenimiento' => "estadoEquipo LIKE 'En Mantenimiento'",
+    'Equipos en Mantenimiento' => "estadoEquipo LIKE 'Mantenimiento'",
     'Equipos Fuera de Servicio' => "estadoEquipo LIKE 'Fuera de Servicio'",
     'Equipos Extraviados' => "estadoEquipo LIKE 'Extraviado'"
 ];
@@ -29,7 +29,7 @@ $map = [
 $map2 = [
     'Equipos Operativos' => "estado LIKE 'Operativo'",
     'Equipos Con Observaciones' => "estado LIKE 'OperativoObs'",
-    'Equipos en Mantenimiento' => "estado LIKE 'En Mantenimiento'",
+    'Equipos en Mantenimiento' => "estado LIKE 'Mantenimiento'",
     'Equipos Fuera de Servicio' => "estado LIKE 'Fuera de Servicio'",
     'Equipos Extraviados' => "estado LIKE 'Extraviado'"
 ];
@@ -57,7 +57,7 @@ if ($res->num_rows === 0) {
 $mapTipos = [
     'Equipos Operativos' => 'Operativo',
     'Equipos Con Observaciones' => 'OperativoObs',
-    'Equipos en Mantenimiento' => 'En Mantenimiento',
+    'Equipos en Mantenimiento' => 'Mantenimiento',
     'Equipos Fuera de Servicio' => 'Fuera de Servicio',
     'Equipos Extraviados' => 'Extraviado'
 ];

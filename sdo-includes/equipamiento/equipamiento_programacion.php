@@ -229,26 +229,35 @@ if ($countBuscarUcas > 0) {
 
         <div class="filtro-equipos-box">
             <div class="row">
-                <div class="col-lg-4 col-md-12 mb-2">
+                <div class="col-lg-3 col-md-12 mb-2">
                     <label class="font-weight-bold mb-1">Buscar equipo</label>
                     <input
-                        type="text"
-                        id="buscadorEquipos"
-                        class="form-control"
-                        placeholder="Nombre, marca, modelo, recinto, PMA...">
+                            type="text"
+                            id="buscadorEquipos"
+                            class="form-control"
+                            placeholder="Nombre, marca, modelo, recinto, PMA...">
                 </div>
 
-                <div class="col-lg-3 col-md-6 mb-2">
+                <div class="col-lg-2 col-md-6 mb-2">
                     <label class="font-weight-bold mb-1">Filtrar por piso</label>
                     <select id="filtroPiso" class="form-control">
                         <option value="">Todos los pisos</option>
                     </select>
                 </div>
 
-                <div class="col-lg-3 col-md-6 mb-2">
+                <div class="col-lg-2 col-md-6 mb-2">
                     <label class="font-weight-bold mb-1">Filtrar por estado</label>
                     <select id="filtroEstado" class="form-control">
                         <option value="">Todos los estados</option>
+                    </select>
+                </div>
+
+                <div class="col-lg-3 col-md-12 mb-2">
+                    <label class="font-weight-bold mb-1">Ordenar por Próx. Mantención</label>
+                    <select id="ordenarFecha" class="form-control">
+                        <option value="default">Por defecto (Piso/Nombre)</option>
+                        <option value="asc">Más cercana primero</option>
+                        <option value="desc">Más lejana primero</option>
                     </select>
                 </div>
 
@@ -292,6 +301,9 @@ if ($countBuscarUcas > 0) {
                 $fechaProxMant = 'Sin registro';
                 $colorSpan     = 'text-muted';
 
+                // Variable para el ordenamiento (Usamos un timestamp o string YYYYMMDD)
+                $fechaOrdenValue = '99999999';
+
                 if (!empty($obtenerUltimoMantenimientoUCA) && $obtenerUltimoMantenimientoUCA !== '0') {
                     try {
                         $fechaObj = new DateTime($obtenerUltimoMantenimientoUCA);
@@ -304,6 +316,7 @@ if ($countBuscarUcas > 0) {
                         $fecha6Meses->modify('+6 months');
 
                         $fechaProxMant = $fecha6Meses->format('d-m-Y');
+                        $fechaOrdenValue = $fecha6Meses->format('Ymd'); // Formato para ordenar
 
                         $fechaActual = new DateTime();
 
@@ -346,10 +359,11 @@ if ($countBuscarUcas > 0) {
                 ]);
                 ?>
                 <div
-                    class="col-xl-3 col-lg-4 col-md-6 col-12 mb-4 card-equipo-wrap card-equipo"
-                    data-search="<?php echo h(mb_strtolower($textoBusqueda, 'UTF-8')); ?>"
-                    data-piso="<?php echo h($pisoUcas); ?>"
-                    data-estado="<?php echo h($estadoNormalizado); ?>">
+                        class="col-xl-3 col-lg-4 col-md-6 col-12 mb-4 card-equipo-wrap card-equipo"
+                        data-search="<?php echo h(mb_strtolower($textoBusqueda, 'UTF-8')); ?>"
+                        data-piso="<?php echo h($pisoUcas); ?>"
+                        data-estado="<?php echo h($estadoNormalizado); ?>"
+                        data-proxima="<?php echo $fechaOrdenValue; ?>">
 
                     <div class="card card-primary card-outline card-equipo-custom <?php echo h($claseBorde); ?>">
                         <div class="card-body">
@@ -357,9 +371,9 @@ if ($countBuscarUcas > 0) {
                             <div>
                                 <div class="bloque-imagen-equipo">
                                     <img
-                                        class="img-fluid img-equipo"
-                                        src="<?php echo h($rutaImagenUCAS); ?>"
-                                        alt="<?php echo h($modeloUcas); ?>">
+                                            class="img-fluid img-equipo"
+                                            src="<?php echo h($rutaImagenUCAS); ?>"
+                                            alt="<?php echo h($modeloUcas); ?>">
                                 </div>
 
                                 <h5 class="titulo-equipo mb-3">
@@ -419,11 +433,11 @@ if ($countBuscarUcas > 0) {
                                 <div class="row">
                                     <div class="col-6 pr-1">
                                         <button
-                                            class="btn btn-info btn-block btn-detalle-equipo"
-                                            type="button"
-                                            data-idequipo="<?php echo $idEquipoUcas; ?>"
-                                            data-nomequipo="<?php echo h($nombreEquipo); ?>"
-                                            data-menu="<?php echo h($tipomenu); ?>">
+                                                class="btn btn-info btn-block btn-detalle-equipo"
+                                                type="button"
+                                                data-idequipo="<?php echo $idEquipoUcas; ?>"
+                                                data-nomequipo="<?php echo h($nombreEquipo); ?>"
+                                                data-menu="<?php echo h($tipomenu); ?>">
                                             <i class="fas fa-eye"></i> Ver detalle
                                         </button>
                                     </div>
@@ -469,7 +483,6 @@ if ($countBuscarUcas > 0) {
         </div>
     </div>
 
-    <!-- AGREGAR MPI UCA -->
     <div class="modal fade" id="modalAgregarMPIUCA" tabindex="-1" role="dialog" aria-labelledby="modalAgregarMPIUCALabel" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -556,18 +569,6 @@ if ($countBuscarUcas > 0) {
                                     name="inicioPlanTareaP"
                                     required>
                         </div>
-
-                        <!--                        <div class="form-group">-->
-                        <!--                            <label for="observacionMPIUCA" class="font-weight-bold">-->
-                        <!--                                Observación-->
-                        <!--                            </label>-->
-                        <!--                            <textarea-->
-                        <!--                                    class="form-control"-->
-                        <!--                                    id="observacionMPIUCA"-->
-                        <!--                                    name="observacion"-->
-                        <!--                                    rows="3"-->
-                        <!--                                    placeholder="Ingrese una observación si corresponde..."></textarea>-->
-                        <!--                        </div>-->
                     </div>
 
                     <div class="modal-footer">
@@ -656,9 +657,11 @@ if ($countBuscarUcas > 0) {
             const inputBuscador = document.getElementById('buscadorEquipos');
             const filtroPiso = document.getElementById('filtroPiso');
             const filtroEstado = document.getElementById('filtroEstado');
+            const selectorOrden = document.getElementById('ordenarFecha');
             const btnLimpiarFiltros = document.getElementById('btnLimpiarFiltros');
             const contador = document.getElementById('contadorEquipos');
             const mensajeSinResultados = document.getElementById('mensajeSinResultados');
+            const contenedorCards = document.getElementById('contenedorUCAS');
             const cards = document.querySelectorAll('#contenedorUCAS .card-equipo');
 
             if (!inputBuscador || !filtroPiso || !filtroEstado || !btnLimpiarFiltros || !contador || !mensajeSinResultados) {
@@ -688,13 +691,16 @@ if ($countBuscarUcas > 0) {
                 contador.textContent = totalVisible;
             }
 
-            function filtrarEquipos() {
+            function filtrarYOrdenarEquipos() {
                 const texto = (inputBuscador.value || '').toLowerCase().trim();
                 const piso = (filtroPiso.value || '').toLowerCase().trim();
                 const estado = (filtroEstado.value || '').toLowerCase().trim();
+                const orden = selectorOrden.value;
 
-                let visibles = 0;
+                let visibles = [];
+                let invisibles = [];
 
+                // 1. Filtrado
                 cards.forEach(function(card) {
                     const contenido = (card.getAttribute('data-search') || '').toLowerCase();
                     const pisoCard = (card.getAttribute('data-piso') || '').toLowerCase();
@@ -706,14 +712,32 @@ if ($countBuscarUcas > 0) {
 
                     if (coincideTexto && coincidePiso && coincideEstado) {
                         card.style.display = '';
-                        visibles++;
+                        visibles.push(card);
                     } else {
                         card.style.display = 'none';
+                        invisibles.push(card);
                     }
                 });
 
-                actualizarContador(visibles);
-                mensajeSinResultados.style.display = visibles === 0 ? 'block' : 'none';
+                // 2. Ordenamiento (Solo de los visibles si se desea, o de todos para mantener coherencia)
+                if (orden !== 'default') {
+                    visibles.sort((a, b) => {
+                        const valA = parseInt(a.getAttribute('data-proxima')) || 99999999;
+                        const valB = parseInt(b.getAttribute('data-proxima')) || 99999999;
+
+                        return (orden === 'asc') ? (valA - valB) : (valB - valA);
+                    });
+
+                    // Re-inyectar en el DOM
+                    visibles.forEach(card => contenedorCards.appendChild(card));
+                    invisibles.forEach(card => contenedorCards.appendChild(card));
+                } else {
+                    // Si es default, podrías recargar o dejar el orden original de PHP
+                    // Para efectos prácticos, si no es default, el append ya cambió el orden.
+                }
+
+                actualizarContador(visibles.length);
+                mensajeSinResultados.style.display = visibles.length === 0 ? 'block' : 'none';
             }
 
             const pisos = Array.from(cards).map(function(card) {
@@ -727,15 +751,19 @@ if ($countBuscarUcas > 0) {
             poblarFiltro(filtroPiso, pisos, 'Todos los pisos');
             poblarFiltro(filtroEstado, estados, 'Todos los estados');
 
-            inputBuscador.addEventListener('input', filtrarEquipos);
-            filtroPiso.addEventListener('change', filtrarEquipos);
-            filtroEstado.addEventListener('change', filtrarEquipos);
+            inputBuscador.addEventListener('input', filtrarYOrdenarEquipos);
+            filtroPiso.addEventListener('change', filtrarYOrdenarEquipos);
+            filtroEstado.addEventListener('change', filtrarYOrdenarEquipos);
+            selectorOrden.addEventListener('change', filtrarYOrdenarEquipos);
 
             btnLimpiarFiltros.addEventListener('click', function() {
                 inputBuscador.value = '';
                 filtroPiso.value = '';
                 filtroEstado.value = '';
-                filtrarEquipos();
+                selectorOrden.value = 'default';
+                // Para restaurar orden original PHP lo ideal sería recargar o guardar el orden inicial
+                // Aquí simplemente aplicamos filtros vacíos.
+                filtrarYOrdenarEquipos();
             });
 
             actualizarContador(cards.length);
@@ -799,7 +827,6 @@ if ($countBuscarUcas > 0) {
                 $('#turnoAsignadoMPIUCA').val('');
                 $('#funcionarioMPIUCA').val('');
                 $('#fechaInicioMPIUCA').val('');
-                // $('#observacionMPIUCA').val('');
 
                 $('#modalAgregarMPIUCA').modal('show');
             });
@@ -812,39 +839,8 @@ if ($countBuscarUcas > 0) {
                 const funcionario = $('#funcionarioMPIUCA').val().trim();
                 const fechaInicio = $('#fechaInicioMPIUCA').val().trim();
 
-                if (titulo === '') {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Campo requerido',
-                        text: 'Debe generarse el título de la tarea.'
-                    });
-                    return;
-                }
-
-                if (turno === '') {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Campo requerido',
-                        text: 'Debe seleccionar un turno.'
-                    });
-                    return;
-                }
-
-                if (funcionario === '') {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Campo requerido',
-                        text: 'Debe seleccionar un funcionario.'
-                    });
-                    return;
-                }
-
-                if (fechaInicio === '') {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Campo requerido',
-                        text: 'Debe seleccionar la fecha de planificación.'
-                    });
+                if (titulo === '' || turno === '' || funcionario === '' || fechaInicio === '') {
+                    Swal.fire({ icon: 'warning', title: 'Campo requerido', text: 'Complete todos los campos obligatorios.' });
                     return;
                 }
 
@@ -861,30 +857,14 @@ if ($countBuscarUcas > 0) {
                     success: function (response) {
                         if (response && response.status === 'success') {
                             $('#modalAgregarMPIUCA').modal('hide');
-
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'MPI creada',
-                                text: response.message + ' Folio generado: ' + response.folioTG
-                            });
-
+                            Swal.fire({ icon: 'success', title: 'MPI creada', text: response.message + ' Folio generado: ' + response.folioTG });
                             $('#formAgregarMPIUCA')[0].reset();
                         } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'No se pudo guardar',
-                                text: (response && response.message) ? response.message : 'Ocurrió un error al registrar la MPI.'
-                            });
+                            Swal.fire({ icon: 'error', title: 'No se pudo guardar', text: (response && response.message) ? response.message : 'Ocurrió un error.' });
                         }
                     },
                     error: function (xhr) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error de servidor',
-                            text: 'Ocurrió un problema al procesar la solicitud.'
-                        });
-
-                        console.error(xhr.responseText);
+                        Swal.fire({ icon: 'error', title: 'Error de servidor', text: 'Problema al procesar solicitud.' });
                     },
                     complete: function () {
                         $btn.prop('disabled', false).html(textoOriginal);
@@ -894,83 +874,31 @@ if ($countBuscarUcas > 0) {
 
             $(document).off('click', '.btn-ver-ot-uca').on('click', '.btn-ver-ot-uca', function () {
                 const idEquipo = $(this).data('iduca') || 0;
+                if (!idEquipo || parseInt(idEquipo, 10) <= 0) return;
 
-                if (!idEquipo || parseInt(idEquipo, 10) <= 0) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Equipo no válido',
-                        text: 'No fue posible identificar el equipo seleccionado.'
-                    });
-                    return;
-                }
-
-                $('#contenedorTrabajosUCAS').html(
-                    '<div class="text-center py-4">' +
-                    '<i class="fas fa-spinner fa-spin fa-2x mb-2"></i><br>' +
-                    '<span>Cargando trabajos programados...</span>' +
-                    '</div>'
-                );
-
+                $('#contenedorTrabajosUCAS').html('<div class="text-center py-4"><i class="fas fa-spinner fa-spin fa-2x mb-2"></i><br><span>Cargando...</span></div>');
                 $('#modalVerTrabajosUCAS').modal('show');
 
                 $.ajax({
                     url: '../sdo-includes/equipamiento/trabajos_ucas_cargar.php',
                     type: 'POST',
-                    data: {
-                        idEquipo: idEquipo
-                    },
-                    success: function (response) {
-                        $('#contenedorTrabajosUCAS').html(response);
-                    },
-                    error: function (xhr) {
-                        $('#contenedorTrabajosUCAS').html(
-                            '<div class="alert alert-danger mb-0">' +
-                            'Ocurrió un error al cargar los trabajos programados.' +
-                            '</div>'
-                        );
-                        console.error(xhr.responseText);
-                    }
+                    data: { idEquipo: idEquipo },
+                    success: function (response) { $('#contenedorTrabajosUCAS').html(response); }
                 });
             });
 
             $(document).off('click', '.btn-ver-check-uca').on('click', '.btn-ver-check-uca', function () {
                 const idEquipo = $(this).data('iduca') || 0;
+                if (!idEquipo || parseInt(idEquipo, 10) <= 0) return;
 
-                if (!idEquipo || parseInt(idEquipo, 10) <= 0) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Equipo no válido',
-                        text: 'No fue posible identificar el equipo seleccionado.'
-                    });
-                    return;
-                }
-
-                $('#contenedorCheckListUCAS').html(
-                    '<div class="text-center py-4">' +
-                    '<i class="fas fa-spinner fa-spin fa-2x mb-2"></i><br>' +
-                    '<span>Cargando CheckList...</span>' +
-                    '</div>'
-                );
-
+                $('#contenedorCheckListUCAS').html('<div class="text-center py-4"><i class="fas fa-spinner fa-spin fa-2x mb-2"></i><br><span>Cargando...</span></div>');
                 $('#modalVerCheckListUCAS').modal('show');
 
                 $.ajax({
                     url: '../sdo-includes/equipamiento/checklist_ucas_cargar.php',
                     type: 'POST',
-                    data: {
-                        idEquipo: idEquipo
-                    },
-                    success: function (response) {
-                        $('#contenedorCheckListUCAS').html(response);
-                    },
-                    error: function (xhr) {
-                        $('#contenedorCheckListUCAS').html(
-                            '<div class="alert alert-danger mb-0">' +
-                            'Ocurrió un error al cargar los checklist.' +
-                            '</div>'
-                        );
-                        console.error(xhr.responseText);
-                    }
+                    data: { idEquipo: idEquipo },
+                    success: function (response) { $('#contenedorCheckListUCAS').html(response); }
                 });
             });
         })();

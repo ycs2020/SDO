@@ -1,4 +1,4 @@
-ñ<?php
+<?php
 include 'conexion.php';
 include 'funciones.php';
 

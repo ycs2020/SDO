@@ -9060,62 +9060,91 @@ function buscararchivocoticc($idSoliCompra)
 
 function contardigitalinput($nom)
 {
-    include 'conexion.php';
-    $sql = "SELECT COUNT(digitalInput_ControlBMS) as total FROM detalle_control_bms WHERE controlador_ControlBMS = '$nom' AND digitalInput_ControlBMS NOT IN ('-')";
-    $res = mysqli_query($conexion, $sql);
-    while ($row = $res->fetch_assoc()) {
-        $total = $row['total'];
-    }
-    return $total;
+    include "conexion.php"; // Se asegura de cargar la conexión una sola vez
+
+    $sql = "SELECT COUNT(digitalInput_ControlBMS) as total 
+            FROM detalle_control_bms 
+            WHERE controlador_ControlBMS = ? AND digitalInput_ControlBMS != '-'";
+
+    $stmt = $conexion->prepare($sql);
+    $stmt->bind_param("s", $nom);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $row = $res->fetch_assoc();
+
+    return $row['total'] ?? 0;
 }
 
 function contaranaloginput($nom)
 {
-    include 'conexion.php';
-    $sql = "SELECT COUNT(analogInput_ControlBMS) as total FROM detalle_control_bms WHERE controlador_ControlBMS = '$nom' AND analogInput_ControlBMS NOT IN ('-')";
-    $res = mysqli_query($conexion, $sql);
-    while ($row = $res->fetch_assoc()) {
-        $total = $row['total'];
-    }
-    return $total;
-}
+    include "conexion.php";
 
-function contardigitaloutput($nom)
-{
-    include 'conexion.php';
-    $sql = "SELECT COUNT(digitalOutput_ControlBMS) as total FROM detalle_control_bms WHERE controlador_ControlBMS = '$nom' AND digitalOutput_ControlBMS NOT IN ('-')";
-    $res = mysqli_query($conexion, $sql);
-    while ($row = $res->fetch_assoc()) {
-        $total = $row['total'];
-    }
-    return $total;
+    $sql = "SELECT COUNT(analogInput_ControlBMS) as total 
+            FROM detalle_control_bms 
+            WHERE controlador_ControlBMS = ? AND analogInput_ControlBMS != '-'";
+
+    $stmt = $conexion->prepare($sql);
+    $stmt->bind_param("s", $nom);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $row = $res->fetch_assoc();
+
+    return $row['total'] ?? 0;
 }
 
 function contaranalogoutput($nom)
 {
-    include 'conexion.php';
-    $sql = "SELECT COUNT(analogOutput_ControlBMS) as total FROM detalle_control_bms WHERE controlador_ControlBMS = '$nom' AND analogOutput_ControlBMS NOT IN ('-')  AND analogOutput_ControlBMS IS NOT NULL";
-    $res = mysqli_query($conexion, $sql);
-    while ($row = $res->fetch_assoc()) {
-        $total = $row['total'];
-    }
-    return $total;
+    include "conexion.php";
+
+    $sql = "SELECT COUNT(analogOutput_ControlBMS) as total 
+            FROM detalle_control_bms 
+            WHERE controlador_ControlBMS = ? 
+            AND analogOutput_ControlBMS != '-' 
+            AND analogOutput_ControlBMS IS NOT NULL";
+
+    $stmt = $conexion->prepare($sql);
+    $stmt->bind_param("s", $nom);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $row = $res->fetch_assoc();
+
+    return $row['total'] ?? 0;
+}
+
+function contardigitaloutput($nom)
+{
+    include "conexion.php";
+
+    $sql = "SELECT COUNT(digitalOutput_ControlBMS) as total 
+            FROM detalle_control_bms 
+            WHERE controlador_ControlBMS = ? AND digitalOutput_ControlBMS != '-'";
+
+    $stmt = $conexion->prepare($sql);
+    $stmt->bind_param("s", $nom);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $row = $res->fetch_assoc();
+
+    return $row['total'] ?? 0;
 }
 
 function buscarequipoPadre($id)
 {
-    include 'conexion.php';
-    $sql = "SELECT nombreEquipo FROM equipamiento_hbqp WHERE id = $id";
-    $res = mysqli_query($conexion, $sql);
-    if ($res) {
-        while ($row = $res->fetch_assoc()) {
-            $nomPadre = $row['nombreEquipo'];
-        }
-        return $nomPadre;
-    } else {
-        return 'null';
+    if (empty($id) || $id == 0) return 'null';
+
+    include "conexion.php";
+
+    $sql = "SELECT nombreEquipo FROM equipamiento_hbqp WHERE id = ?";
+    $stmt = $conexion->prepare($sql);
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $res = $stmt->get_result();
+
+    if ($row = $res->fetch_assoc()) {
+        return $row['nombreEquipo'];
     }
 
+    return 'null';
 }
 
 function contarCantidadAccesos($rut)
@@ -12428,6 +12457,33 @@ function obtenerUltimoMantenimientoVAV($idEquipoVAV)
     $sql = "SELECT fecha 
             FROM datos_vav 
             WHERE idEquipamiento = $idEquipoVAV
+              AND fecha IS NOT NULL
+              AND fecha <> ''
+            ORDER BY fecha DESC 
+            LIMIT 1";
+
+    $res = mysqli_query($conexion, $sql);
+
+    if ($res && mysqli_num_rows($res) > 0) {
+        $row = mysqli_fetch_assoc($res);
+
+        if (!empty($row['fecha']) && strtotime($row['fecha'])) {
+            return $row['fecha']; // devolver formato original BD
+        }
+    }
+
+    return 0;
+}
+
+function obtenerUltimoMantenimientoVF($idEquipoVF)
+{
+    include "conexion.php";
+
+    $idEquipoVF = (int)$idEquipoVF;
+
+    $sql = "SELECT fecha 
+            FROM datos_vf 
+            WHERE idEquipo = $idEquipoVF
               AND fecha IS NOT NULL
               AND fecha <> ''
             ORDER BY fecha DESC 

@@ -1010,8 +1010,8 @@ while ($rowObs = $resObs->fetch_assoc()) {
 
                                                     <?php
                                                     $rutFormateado = verificarYFormatearRUT($rutActa2);
+                                                    $querySolicitudes = 'SELECT idFormRegAcceso FROM formularios_funcionarios WHERE rutFormFuncCCAA LIKE "%' . $rutFormateado . '%" GROUP BY idFormRegAcceso ORDER BY idFormRegAcceso DESC  ';
 
-                                                    $querySolicitudes = 'SELECT idFormRegAcceso FROM formularios_funcionarios WHERE rutFormFuncCCAA = "' . $rutFormateado . '" GROUP BY idFormRegAcceso ORDER BY idFormRegAcceso DESC  ';
                                                     $resSolicitudes = mysqli_query($conexion, $querySolicitudes);
 
                                                     $numSolicitudes = 1;

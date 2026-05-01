@@ -486,15 +486,15 @@ $contarsiguientes = 1;
                         <div class="card">
                             <div class="card-header bg-info">
                                 <?php
-                                    if($idCategoria == 1){
-                                        ?>
-                                        <h1 class="card-title">Visualizando Equipo - <?php echo $nombreEquipo ?> - <?php echo $nomCategoria ?> - <?php echo $recinto?></h1>
-                                        <?php
-                                    }else{
-                                        ?>
-                                        <h1 class="card-title">Visualizando Equipo - <?php echo $nombreEquipo ?> - <?php echo $nomCategoria ?></h1>
-                                        <?php
-                                    }
+                                if ($idCategoria == 1) {
+                                    ?>
+                                    <h1 class="card-title">Visualizando Equipo - <?php echo $nombreEquipo ?> - <?php echo $nomCategoria ?> - <?php echo $recinto ?></h1>
+                                    <?php
+                                } else {
+                                    ?>
+                                    <h1 class="card-title">Visualizando Equipo - <?php echo $nombreEquipo ?> - <?php echo $nomCategoria ?></h1>
+                                    <?php
+                                }
                                 ?>
                                 <?php
                                 if ($idEquipoPadre > 0) {
@@ -637,11 +637,11 @@ $contarsiguientes = 1;
                                 <br>
 
                                 <?php
-                                if($idCategoria == 1){
+                                if ($idCategoria == 1) {
                                     ?>
-                                    <h2 class="profile-username text-center text-bold">Equipo - <?php echo $nombreEquipo ?> - <?php echo $recinto?></h2>
+                                    <h2 class="profile-username text-center text-bold">Equipo - <?php echo $nombreEquipo ?> - <?php echo $recinto ?></h2>
                                     <?php
-                                }else{
+                                } else {
                                     ?>
                                     <h2 class="profile-username text-center text-bold">Equipo - <?php echo $nombreEquipo ?> </h2>
                                     <?php
@@ -734,8 +734,8 @@ $contarsiguientes = 1;
                                                         <span aria-hidden="true">&times;</span>
                                                     </button>
                                                 </div>
-                                                <div class="modal-body">
-                                                    <form id="formularioCambiaEstado" method="POST" action="../sdo-funciones/cambiaEstadoEquipo.php">
+                                                <form id="formularioCambiaEstado" method="POST" action="../sdo-funciones/cambiaEstadoEquipo.php">
+                                                    <div class="modal-body">
                                                         <input type="hidden" value="<?php echo $idEquipo ?>" name="idEquipo">
                                                         <input type="hidden" value="<?php echo $idCategoria ?>" name="idCategoria">
                                                         <input type="hidden" value="<?php echo $nombreEquipo ?>" name="nombreEquipo">
@@ -769,7 +769,7 @@ $contarsiguientes = 1;
                                                                             <option value="Extraviado">Extraviado</option>
 
                                                                             <?php
-                                                                        } else if($estadoEquipo == 'Extraviado'){
+                                                                        } else if ($estadoEquipo == 'Extraviado') {
                                                                             ?>
                                                                             <option value="<?php echo $ope ?>">Operativo</option>
                                                                             <option value="Mantenimiento">Mantenimiento</option>
@@ -778,7 +778,7 @@ $contarsiguientes = 1;
                                                                             <option value="Extraviado" selected="selected">Extraviado</option>
 
                                                                             <?php
-                                                                        }else{
+                                                                        } else {
                                                                             ?>
                                                                             <option value="<?php echo $ope ?>" selected>Operativo</option>
                                                                             <option value="Mantenimiento">Mantenimiento</option>
@@ -802,13 +802,13 @@ $contarsiguientes = 1;
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                                    <button type="submit" class="btn btn-primary">Guardar Estado</button>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                                        <button type="submit" class="btn btn-primary">Guardar Estado</button>
 
-                                                    </form>
-                                                </div>
+                                                    </div>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>
@@ -1337,21 +1337,21 @@ $contarsiguientes = 1;
                                     </li>
                                     <?php
                                     if (strpos($nombreEquipo, 'UMA-') === 0) {
-                                           ?>
-                                            <li class="nav-item">
-                                                <a class="nav-link text-white" href="#tabRelaciones" data-toggle="tab">Relaciones</a>
-                                            </li>
-                                            <?php
-                                        }
+                                        ?>
+                                        <li class="nav-item">
+                                            <a class="nav-link text-white" href="#tabRelaciones" data-toggle="tab">Relaciones</a>
+                                        </li>
+                                        <?php
+                                    }
                                     ?>
                                     <?php
-                                        if($idCategoria == 2){
-                                            ?>
-                                            <li class="nav-item">
-                                                <a class="nav-link text-white" href="#tabCheckList" data-toggle="tab">Check List</a>
-                                            </li>
-                                            <?php
-                                        }
+                                    if ($idCategoria == 2) {
+                                        ?>
+                                        <li class="nav-item">
+                                            <a class="nav-link text-white" href="#tabCheckList" data-toggle="tab">Check List</a>
+                                        </li>
+                                        <?php
+                                    }
                                     ?>
                                     <!--                                    <li class="nav-item"><a class="nav-link text-white" href="#tabEquipamientoMtto" data-toggle="tab">Mantenimiento</a></li>-->
 
@@ -3347,59 +3347,59 @@ $contarsiguientes = 1;
                                             ?>
 
                                             <?php
-                                                if(strpos($nombreEquipo, "VF_") !== false){
-                                                    ?>
-                                                    <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
-                                                        <button class="btn bg-purple btn-block" type="button" data-toggle="modal" data-target="#modalVFOT">
-                                                            <i class="fas fa-plus"></i> Agregar MPI VF
-                                                        </button>
-                                                        <form method="post" style="vertical-align: middle" action="../sdo-funciones/planificacion_mpi_vf.php">
-                                                            <div class="modal fade" id="modalVFOT" name="modalVFOT" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                                <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header bg-purple">
-                                                                            <h5 class="modal-title" id="exampleModalLabel">Agregar MPI a VF</h5>
-                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                                <span aria-hidden="true">&times;</span>
-                                                                            </button>
+                                            if (strpos($nombreEquipo, "VF_") !== false) {
+                                                ?>
+                                                <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
+                                                    <button class="btn bg-purple btn-block" type="button" data-toggle="modal" data-target="#modalVFOT">
+                                                        <i class="fas fa-plus"></i> Agregar MPI VF
+                                                    </button>
+                                                    <form method="post" style="vertical-align: middle" action="../sdo-funciones/planificacion_mpi_vf.php">
+                                                        <div class="modal fade" id="modalVFOT" name="modalVFOT" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header bg-purple">
+                                                                        <h5 class="modal-title" id="exampleModalLabel">Agregar MPI a VF</h5>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <div class="row">
+                                                                            <div class="col-md-12 ml-auto">
+                                                                                <div style="text-align:left;" class="form-group">
+                                                                                    <label for="exampleInputBorder">Titulo de Tarea:
+                                                                                        <code>*</code></label>
+                                                                                    <input type="text" name="tituloTareaP" id="tituloTareaP" class="form-control" required readonly="readonly" placeholder="Titulo de Tarea..." value="MANTENIMIENTO PREVENTIVO INTERNO UTILIZANDO PAUTA CHECK LIST DE <?php echo $nombreEquipo ?>">
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
-                                                                        <div class="modal-body">
-                                                                            <div class="row">
-                                                                                <div class="col-md-12 ml-auto">
-                                                                                    <div style="text-align:left;" class="form-group">
-                                                                                        <label for="exampleInputBorder">Titulo de Tarea:
-                                                                                            <code>*</code></label>
-                                                                                        <input type="text" name="tituloTareaP" id="tituloTareaP" class="form-control" required readonly="readonly" placeholder="Titulo de Tarea..." value="MANTENIMIENTO PREVENTIVO INTERNO UTILIZANDO PAUTA CHECK LIST DE <?php echo $nombreEquipo ?>">
-                                                                                    </div>
+                                                                        <div class="row">
+                                                                            <div class="col-md-12 ml-auto">
+
+                                                                                <div style="text-align:left;" class="form-group">
+                                                                                    <label for="exampleInputBorder">Turno Asignado
+                                                                                        <code>*</code></label>
+                                                                                    <select class="custom-select" name="turnoAsignado" id="turnoAsignado">
+                                                                                        <option value="0">Seleccione...</option>
+                                                                                        <option value="1">Personal Diurno</option>
+                                                                                        <option value="2">Personal Nocturno</option>
+                                                                                    </select>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="row">
-                                                                                <div class="col-md-12 ml-auto">
 
-                                                                                    <div style="text-align:left;" class="form-group">
-                                                                                        <label for="exampleInputBorder">Turno Asignado
-                                                                                            <code>*</code></label>
-                                                                                        <select class="custom-select" name="turnoAsignado" id="turnoAsignado">
-                                                                                            <option value="0">Seleccione...</option>
-                                                                                            <option value="1">Personal Diurno</option>
-                                                                                            <option value="2">Personal Nocturno</option>
-                                                                                        </select>
-                                                                                    </div>
-                                                                                </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-md-12 ml-auto">
+                                                                                <div style="text-align:left;" class="form-group">
+                                                                                    <label for="exampleFormControlSelect1">Seleccione Funcionario
+                                                                                        <code>*</code></label>
+                                                                                    <select class="listFuncionarioMPIVAV" name="funcionarioMPIVAV" required>
+                                                                                        <option value="nulo">Seleccione...</option>
 
-                                                                            </div>
-                                                                            <div class="row">
-                                                                                <div class="col-md-12 ml-auto">
-                                                                                    <div style="text-align:left;" class="form-group">
-                                                                                        <label for="exampleFormControlSelect1">Seleccione Funcionario
-                                                                                            <code>*</code></label>
-                                                                                        <select class="listFuncionarioMPIVAV" name="funcionarioMPIVAV" required>
-                                                                                            <option value="nulo">Seleccione...</option>
-
-                                                                                            <?php
+                                                                                        <?php
 
 
-                                                                                            $sqlListadoFuncionarios = "SELECT jt.nomJefe AS nomPersonal 
+                                                                                        $sqlListadoFuncionarios = "SELECT jt.nomJefe AS nomPersonal 
                                                                                                              FROM jefes_tecnicos jt 
                                                                                                              WHERE (nomJefe NOT LIKE('%Jaime Amador Estay Jorquera%') AND nomJefe NOT LIKE('%Alejandro Cantillano%')) 
                                                                                                              AND (idDepartamento = 1 AND jt.userActivado = 1)
@@ -3411,136 +3411,136 @@ $contarsiguientes = 1;
                                                                                                              AND activoPersonal = 1 
                                                                                                              AND (nomPersonal NOT LIKE('%Técnico Pruebas%') AND nomPersonal NOT LIKE('%Cynthia Latorre%'))
                                                                                                              ORDER BY nomPersonal;";
-                                                                                            $resListadoFuncionarios = mysqli_query($conexion, $sqlListadoFuncionarios);
+                                                                                        $resListadoFuncionarios = mysqli_query($conexion, $sqlListadoFuncionarios);
 
-                                                                                            if ($resListadoFuncionarios && mysqli_num_rows($resListadoFuncionarios) > 0) {
-                                                                                                while ($rowListadoFuncionarios = $resListadoFuncionarios->fetch_assoc()) {
-                                                                                                    $nomPersonal = $rowListadoFuncionarios['nomPersonal'];
-                                                                                                    ?>
-                                                                                                    <option value="<?php echo $nomPersonal; ?>"><?php echo $nomPersonal; ?></option>
-                                                                                                    <?php
-                                                                                                }
+                                                                                        if ($resListadoFuncionarios && mysqli_num_rows($resListadoFuncionarios) > 0) {
+                                                                                            while ($rowListadoFuncionarios = $resListadoFuncionarios->fetch_assoc()) {
+                                                                                                $nomPersonal = $rowListadoFuncionarios['nomPersonal'];
+                                                                                                ?>
+                                                                                                <option value="<?php echo $nomPersonal; ?>"><?php echo $nomPersonal; ?></option>
+                                                                                                <?php
                                                                                             }
-                                                                                            ?>
-                                                                                        </select>
+                                                                                        }
+                                                                                        ?>
+                                                                                    </select>
 
-                                                                                        <script>
-                                                                                            $(document).ready(function () {
+                                                                                    <script>
+                                                                                        $(document).ready(function () {
 
-                                                                                                $('.listFuncionarioMPIVAV').select2({
-                                                                                                    placeholder: 'Seleccione',
-                                                                                                    theme: 'bootstrap4',
-                                                                                                    allowClear: true,
-                                                                                                    width: '100%',
+                                                                                            $('.listFuncionarioMPIVAV').select2({
+                                                                                                placeholder: 'Seleccione',
+                                                                                                theme: 'bootstrap4',
+                                                                                                allowClear: true,
+                                                                                                width: '100%',
 
-                                                                                                });
-
-
-                                                                                                // $("#formAgregarTareaOT").submit(function (event) {
-                                                                                                //     let checklistSeleccionado = $("#checklist\\[\\]").val(); // Captura el valor del checklist
-                                                                                                //     let funcionariosSeleccionados = $(".listFuncionariosTareaOT").val(); // Captura los funcionarios seleccionados
-                                                                                                //
-                                                                                                //     if (checklistSeleccionado !== "" && funcionariosSeleccionados.length > 1) {
-                                                                                                //         Swal.fire({
-                                                                                                //             icon: 'warning',
-                                                                                                //             title: 'Validación',
-                                                                                                //             text: 'Al seleccionar un Checklist, solo puede asignar la Tarea a un Funcionario.',
-                                                                                                //             confirmButtonColor: '#d33'
-                                                                                                //         });
-                                                                                                //         event.preventDefault(); // Detiene el envío del formulario
-                                                                                                //     }
-                                                                                                // });
                                                                                             });
-                                                                                        </script>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="row">
-                                                                                <div class="col-md-12 ml-auto">
-                                                                                    <div style="text-align:left;" class="form-group">
-                                                                                        <label for="inicioPlanTareaP">Fecha Inicio - Planificaci&oacute;n:
-                                                                                            <code>*</code></label>
-                                                                                        <input type="date" name="inicioPlanTareaP" id="inicioPlanTareaP" placeholder="Fecha Inicio - Planificaci&oacute;n" class="form-control" required/>
-                                                                                    </div>
+
+
+                                                                                            // $("#formAgregarTareaOT").submit(function (event) {
+                                                                                            //     let checklistSeleccionado = $("#checklist\\[\\]").val(); // Captura el valor del checklist
+                                                                                            //     let funcionariosSeleccionados = $(".listFuncionariosTareaOT").val(); // Captura los funcionarios seleccionados
+                                                                                            //
+                                                                                            //     if (checklistSeleccionado !== "" && funcionariosSeleccionados.length > 1) {
+                                                                                            //         Swal.fire({
+                                                                                            //             icon: 'warning',
+                                                                                            //             title: 'Validación',
+                                                                                            //             text: 'Al seleccionar un Checklist, solo puede asignar la Tarea a un Funcionario.',
+                                                                                            //             confirmButtonColor: '#d33'
+                                                                                            //         });
+                                                                                            //         event.preventDefault(); // Detiene el envío del formulario
+                                                                                            //     }
+                                                                                            // });
+                                                                                        });
+                                                                                    </script>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="modal-footer">
-                                                                            <input type="hidden" name="idEquipo" id="idEquipo" value="<?php echo $idEquipo ?>">
-                                                                            <input type="hidden" name="esEquipamiento" id="esEquipamiento" value="1">
-                                                                            <input type="hidden" name="idTareaP" id="idTareaP" value="0">
-                                                                            <input type="hidden" name="nomCreadorTareaP" id="nomCreadorTareaP" value="<?php echo $nomUsuario; ?>">
-                                                                            <input type="hidden" name="deptoCreadorTareaP" id="deptoCreadorTareaP" value="1">
-                                                                            <button type="submit" class="btn btn-primary">
-                                                                                <i class="fas fa-upload"></i>&nbsp;&nbsp;Agregar
-                                                                            </button>
-                                                                            <button type="button" class="btn btn-danger" data-dismiss="modal">
-                                                                                <i class="fas fa-times"></i>&nbsp;&nbsp;Cancelar
-                                                                            </button>
+                                                                        <div class="row">
+                                                                            <div class="col-md-12 ml-auto">
+                                                                                <div style="text-align:left;" class="form-group">
+                                                                                    <label for="inicioPlanTareaP">Fecha Inicio - Planificaci&oacute;n:
+                                                                                        <code>*</code></label>
+                                                                                    <input type="date" name="inicioPlanTareaP" id="inicioPlanTareaP" placeholder="Fecha Inicio - Planificaci&oacute;n" class="form-control" required/>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <input type="hidden" name="idEquipo" id="idEquipo" value="<?php echo $idEquipo ?>">
+                                                                        <input type="hidden" name="esEquipamiento" id="esEquipamiento" value="1">
+                                                                        <input type="hidden" name="idTareaP" id="idTareaP" value="0">
+                                                                        <input type="hidden" name="nomCreadorTareaP" id="nomCreadorTareaP" value="<?php echo $nomUsuario; ?>">
+                                                                        <input type="hidden" name="deptoCreadorTareaP" id="deptoCreadorTareaP" value="1">
+                                                                        <button type="submit" class="btn btn-primary">
+                                                                            <i class="fas fa-upload"></i>&nbsp;&nbsp;Agregar
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-danger" data-dismiss="modal">
+                                                                            <i class="fas fa-times"></i>&nbsp;&nbsp;Cancelar
+                                                                        </button>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </form>
-                                                    </div>
-                                                    <?php
-                                                }
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                <?php
+                                            }
                                             ?>
 
                                             <?php
-                                                if(strpos($nombreEquipo, "ECB") !== false){
-                                                    ?>
-                                                    <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
-                                                        <button class="btn bg-purple btn-block" type="button" data-toggle="modal" data-target="#modalECBOT">
-                                                            <i class="fas fa-plus"></i> Agregar MPI ECB
-                                                        </button>
-                                                        <form method="post" style="vertical-align: middle" action="../sdo-funciones/planificacion_mpi_ECB.php">
-                                                            <div class="modal fade" id="modalECBOT" name="modalECBOT" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                                <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-                                                                    <div class="modal-content">
-                                                                        <div class="modal-header bg-purple">
-                                                                            <h5 class="modal-title" id="exampleModalLabel">Agregar MPI a ECB</h5>
-                                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                                <span aria-hidden="true">&times;</span>
-                                                                            </button>
+                                            if (strpos($nombreEquipo, "ECB") !== false) {
+                                                ?>
+                                                <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
+                                                    <button class="btn bg-purple btn-block" type="button" data-toggle="modal" data-target="#modalECBOT">
+                                                        <i class="fas fa-plus"></i> Agregar MPI ECB
+                                                    </button>
+                                                    <form method="post" style="vertical-align: middle" action="../sdo-funciones/planificacion_mpi_ECB.php">
+                                                        <div class="modal fade" id="modalECBOT" name="modalECBOT" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header bg-purple">
+                                                                        <h5 class="modal-title" id="exampleModalLabel">Agregar MPI a ECB</h5>
+                                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                            <span aria-hidden="true">&times;</span>
+                                                                        </button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <div class="row">
+                                                                            <div class="col-md-12 ml-auto">
+                                                                                <div style="text-align:left;" class="form-group">
+                                                                                    <label for="exampleInputBorder">Titulo de Tarea:
+                                                                                        <code>*</code></label>
+                                                                                    <input type="text" name="tituloTareaP" id="tituloTareaP" class="form-control" required readonly="readonly" placeholder="Titulo de Tarea..." value="MANTENIMIENTO PREVENTIVO INTERNO UTILIZANDO PAUTA CHECK LIST DE <?php echo $nombreEquipo ?>">
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
-                                                                        <div class="modal-body">
-                                                                            <div class="row">
-                                                                                <div class="col-md-12 ml-auto">
-                                                                                    <div style="text-align:left;" class="form-group">
-                                                                                        <label for="exampleInputBorder">Titulo de Tarea:
-                                                                                            <code>*</code></label>
-                                                                                        <input type="text" name="tituloTareaP" id="tituloTareaP" class="form-control" required readonly="readonly" placeholder="Titulo de Tarea..." value="MANTENIMIENTO PREVENTIVO INTERNO UTILIZANDO PAUTA CHECK LIST DE <?php echo $nombreEquipo ?>">
-                                                                                    </div>
+                                                                        <div class="row">
+                                                                            <div class="col-md-12 ml-auto">
+
+                                                                                <div style="text-align:left;" class="form-group">
+                                                                                    <label for="exampleInputBorder">Turno Asignado
+                                                                                        <code>*</code></label>
+                                                                                    <select class="custom-select" name="turnoAsignado" id="turnoAsignado">
+                                                                                        <option value="0">Seleccione...</option>
+                                                                                        <option value="1">Personal Diurno</option>
+                                                                                        <option value="2">Personal Nocturno</option>
+                                                                                    </select>
                                                                                 </div>
                                                                             </div>
-                                                                            <div class="row">
-                                                                                <div class="col-md-12 ml-auto">
 
-                                                                                    <div style="text-align:left;" class="form-group">
-                                                                                        <label for="exampleInputBorder">Turno Asignado
-                                                                                            <code>*</code></label>
-                                                                                        <select class="custom-select" name="turnoAsignado" id="turnoAsignado">
-                                                                                            <option value="0">Seleccione...</option>
-                                                                                            <option value="1">Personal Diurno</option>
-                                                                                            <option value="2">Personal Nocturno</option>
-                                                                                        </select>
-                                                                                    </div>
-                                                                                </div>
+                                                                        </div>
+                                                                        <div class="row">
+                                                                            <div class="col-md-12 ml-auto">
+                                                                                <div style="text-align:left;" class="form-group">
+                                                                                    <label for="exampleFormControlSelect1">Seleccione Funcionario
+                                                                                        <code>*</code></label>
+                                                                                    <select class="listFuncionarioMPIVAV" name="funcionarioMPIVAV" required>
+                                                                                        <option value="nulo">Seleccione...</option>
 
-                                                                            </div>
-                                                                            <div class="row">
-                                                                                <div class="col-md-12 ml-auto">
-                                                                                    <div style="text-align:left;" class="form-group">
-                                                                                        <label for="exampleFormControlSelect1">Seleccione Funcionario
-                                                                                            <code>*</code></label>
-                                                                                        <select class="listFuncionarioMPIVAV" name="funcionarioMPIVAV" required>
-                                                                                            <option value="nulo">Seleccione...</option>
-
-                                                                                            <?php
+                                                                                        <?php
 
 
-                                                                                            $sqlListadoFuncionarios = "SELECT jt.nomJefe AS nomPersonal 
+                                                                                        $sqlListadoFuncionarios = "SELECT jt.nomJefe AS nomPersonal 
                                                                                                              FROM jefes_tecnicos jt 
                                                                                                              WHERE (nomJefe NOT LIKE('%Jaime Amador Estay Jorquera%') AND nomJefe NOT LIKE('%Alejandro Cantillano%')) 
                                                                                                              AND (idDepartamento = 1 AND jt.userActivado = 1)
@@ -3552,80 +3552,80 @@ $contarsiguientes = 1;
                                                                                                              AND activoPersonal = 1 
                                                                                                              AND (nomPersonal NOT LIKE('%Técnico Pruebas%') AND nomPersonal NOT LIKE('%Cynthia Latorre%'))
                                                                                                              ORDER BY nomPersonal;";
-                                                                                            $resListadoFuncionarios = mysqli_query($conexion, $sqlListadoFuncionarios);
+                                                                                        $resListadoFuncionarios = mysqli_query($conexion, $sqlListadoFuncionarios);
 
-                                                                                            if ($resListadoFuncionarios && mysqli_num_rows($resListadoFuncionarios) > 0) {
-                                                                                                while ($rowListadoFuncionarios = $resListadoFuncionarios->fetch_assoc()) {
-                                                                                                    $nomPersonal = $rowListadoFuncionarios['nomPersonal'];
-                                                                                                    ?>
-                                                                                                    <option value="<?php echo $nomPersonal; ?>"><?php echo $nomPersonal; ?></option>
-                                                                                                    <?php
-                                                                                                }
+                                                                                        if ($resListadoFuncionarios && mysqli_num_rows($resListadoFuncionarios) > 0) {
+                                                                                            while ($rowListadoFuncionarios = $resListadoFuncionarios->fetch_assoc()) {
+                                                                                                $nomPersonal = $rowListadoFuncionarios['nomPersonal'];
+                                                                                                ?>
+                                                                                                <option value="<?php echo $nomPersonal; ?>"><?php echo $nomPersonal; ?></option>
+                                                                                                <?php
                                                                                             }
-                                                                                            ?>
-                                                                                        </select>
+                                                                                        }
+                                                                                        ?>
+                                                                                    </select>
 
-                                                                                        <script>
-                                                                                            $(document).ready(function () {
+                                                                                    <script>
+                                                                                        $(document).ready(function () {
 
-                                                                                                $('.listFuncionarioMPIVAV').select2({
-                                                                                                    placeholder: 'Seleccione',
-                                                                                                    theme: 'bootstrap4',
-                                                                                                    allowClear: true,
-                                                                                                    width: '100%',
+                                                                                            $('.listFuncionarioMPIVAV').select2({
+                                                                                                placeholder: 'Seleccione',
+                                                                                                theme: 'bootstrap4',
+                                                                                                allowClear: true,
+                                                                                                width: '100%',
 
-                                                                                                });
-
-
-                                                                                                // $("#formAgregarTareaOT").submit(function (event) {
-                                                                                                //     let checklistSeleccionado = $("#checklist\\[\\]").val(); // Captura el valor del checklist
-                                                                                                //     let funcionariosSeleccionados = $(".listFuncionariosTareaOT").val(); // Captura los funcionarios seleccionados
-                                                                                                //
-                                                                                                //     if (checklistSeleccionado !== "" && funcionariosSeleccionados.length > 1) {
-                                                                                                //         Swal.fire({
-                                                                                                //             icon: 'warning',
-                                                                                                //             title: 'Validación',
-                                                                                                //             text: 'Al seleccionar un Checklist, solo puede asignar la Tarea a un Funcionario.',
-                                                                                                //             confirmButtonColor: '#d33'
-                                                                                                //         });
-                                                                                                //         event.preventDefault(); // Detiene el envío del formulario
-                                                                                                //     }
-                                                                                                // });
                                                                                             });
-                                                                                        </script>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                            <div class="row">
-                                                                                <div class="col-md-12 ml-auto">
-                                                                                    <div style="text-align:left;" class="form-group">
-                                                                                        <label for="inicioPlanTareaP">Fecha Inicio - Planificaci&oacute;n:
-                                                                                            <code>*</code></label>
-                                                                                        <input type="date" name="inicioPlanTareaP" id="inicioPlanTareaP" placeholder="Fecha Inicio - Planificaci&oacute;n" class="form-control" required/>
-                                                                                    </div>
+
+
+                                                                                            // $("#formAgregarTareaOT").submit(function (event) {
+                                                                                            //     let checklistSeleccionado = $("#checklist\\[\\]").val(); // Captura el valor del checklist
+                                                                                            //     let funcionariosSeleccionados = $(".listFuncionariosTareaOT").val(); // Captura los funcionarios seleccionados
+                                                                                            //
+                                                                                            //     if (checklistSeleccionado !== "" && funcionariosSeleccionados.length > 1) {
+                                                                                            //         Swal.fire({
+                                                                                            //             icon: 'warning',
+                                                                                            //             title: 'Validación',
+                                                                                            //             text: 'Al seleccionar un Checklist, solo puede asignar la Tarea a un Funcionario.',
+                                                                                            //             confirmButtonColor: '#d33'
+                                                                                            //         });
+                                                                                            //         event.preventDefault(); // Detiene el envío del formulario
+                                                                                            //     }
+                                                                                            // });
+                                                                                        });
+                                                                                    </script>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-                                                                        <div class="modal-footer">
-                                                                            <input type="hidden" name="idEquipo" id="idEquipo" value="<?php echo $idEquipo ?>">
-                                                                            <input type="hidden" name="esEquipamiento" id="esEquipamiento" value="1">
-                                                                            <input type="hidden" name="idTareaP" id="idTareaP" value="0">
-                                                                            <input type="hidden" name="nomCreadorTareaP" id="nomCreadorTareaP" value="<?php echo $nomUsuario; ?>">
-                                                                            <input type="hidden" name="deptoCreadorTareaP" id="deptoCreadorTareaP" value="1">
-                                                                            <button type="submit" class="btn btn-primary">
-                                                                                <i class="fas fa-upload"></i>&nbsp;&nbsp;Agregar
-                                                                            </button>
-                                                                            <button type="button" class="btn btn-danger" data-dismiss="modal">
-                                                                                <i class="fas fa-times"></i>&nbsp;&nbsp;Cancelar
-                                                                            </button>
+                                                                        <div class="row">
+                                                                            <div class="col-md-12 ml-auto">
+                                                                                <div style="text-align:left;" class="form-group">
+                                                                                    <label for="inicioPlanTareaP">Fecha Inicio - Planificaci&oacute;n:
+                                                                                        <code>*</code></label>
+                                                                                    <input type="date" name="inicioPlanTareaP" id="inicioPlanTareaP" placeholder="Fecha Inicio - Planificaci&oacute;n" class="form-control" required/>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <input type="hidden" name="idEquipo" id="idEquipo" value="<?php echo $idEquipo ?>">
+                                                                        <input type="hidden" name="esEquipamiento" id="esEquipamiento" value="1">
+                                                                        <input type="hidden" name="idTareaP" id="idTareaP" value="0">
+                                                                        <input type="hidden" name="nomCreadorTareaP" id="nomCreadorTareaP" value="<?php echo $nomUsuario; ?>">
+                                                                        <input type="hidden" name="deptoCreadorTareaP" id="deptoCreadorTareaP" value="1">
+                                                                        <button type="submit" class="btn btn-primary">
+                                                                            <i class="fas fa-upload"></i>&nbsp;&nbsp;Agregar
+                                                                        </button>
+                                                                        <button type="button" class="btn btn-danger" data-dismiss="modal">
+                                                                            <i class="fas fa-times"></i>&nbsp;&nbsp;Cancelar
+                                                                        </button>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                        </form>
-                                                    </div>
-                                                    <?php
-                                                }
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                                <?php
+                                            }
                                             ?>
 
                                             <?php
@@ -4025,13 +4025,13 @@ $contarsiguientes = 1;
                                                                         $destinoTGOT = '#';
 
                                                                         $tecnico1OT = trim($tecnico1OT);
-                                                                        if($idTGOT > 0 && !empty($tecnico1OT) && in_array($estadoTGOT, ['Trabajo Ingresado', 'Trabajo Terminado'])){
+                                                                        if ($idTGOT > 0 && !empty($tecnico1OT) && in_array($estadoTGOT, ['Trabajo Ingresado', 'Trabajo Terminado'])) {
 
-                                                                            if($estadoTGOT == 'Trabajo Ingresado'){
+                                                                            if ($estadoTGOT == 'Trabajo Ingresado') {
                                                                                 $destinoTGOT = 'detalle_ordenes_trabajo.php';
-                                                                            }else if($estadoTGOT == 'Trabajo Terminado' ){
+                                                                            } else if ($estadoTGOT == 'Trabajo Terminado') {
                                                                                 $destinoTGOT = 'visualizardetallesterminadas.php';
-                                                                            }else{
+                                                                            } else {
                                                                                 $destinoTGOT = '#';
                                                                             }
 
@@ -4045,10 +4045,9 @@ $contarsiguientes = 1;
                                                                             </form>
                                                                             <?php
 
-                                                                        }else{
+                                                                        } else {
                                                                             echo 'No Aplica';
                                                                         }
-
 
 
                                                                     } else {
@@ -5702,110 +5701,112 @@ $contarsiguientes = 1;
                                         <div class="col-12">
                                             <h5 class="text-center">Relaciones</h5>
                                             <hr>
-                                                <?php
-                                                    if (strpos($nombreEquipo, 'UMA-') === 0) {
-                                                        ?>
-                                                        <div class="row">
-                                                            <table id="tableRelaciones" class="table table-bordered table-striped text-center" style="width: 100%">
-                                                                <thead class="bg-secondary">
-                                                                <tr>
-                                                                    <th>Nombre del Equipo</th>
-                                                                    <th>Número de Entrada</th>
-                                                                    <th>Entradas Digitales</th>
-                                                                    <th>Entradas Analogicas</th>
-                                                                    <th>Número de Salida</th>
-                                                                    <th>Salidas Digitales</th>
-                                                                    <th>Salidas Analogicas</th>
-                                                                    <th>Visualizar Equipo</th>
-                                                                </tr>
-                                                                </thead>
-                                                                <tbody>
-
-                                                                <?php
-                                                                if (strpos($nombreEquipo, 'UMA-') === 0) {
-                                                                    $nombreEquipoRelacion = str_replace('UMA-', 'UMA ', $nombreEquipo);
-                                                                }
-
-                                                                if($nombreEquipoRelacion == 'UMA S1-4'){
-                                                                    $nombreEquipoRelacion = 'UMA 1-4';
-                                                                }
-                                                                $sqlRelaciones = "SELECT * FROM detalle_control_bms WHERE digitalInput_ControlBMS REGEXP '" . $nombreEquipoRelacion . "($|[^A-Za-z0-9])' OR analogInput_ControlBMS REGEXP ' " . $nombreEquipoRelacion . "($|[^A-Za-z0-9])' OR analogOutput_ControlBMS REGEXP ' " . $nombreEquipoRelacion . "($|[^A-Za-z0-9])' OR digitalOutput_ControlBMS REGEXP '".$nombreEquipoRelacion."($|[^A-Za-z0-9])'";
-
-                                                                $resRelaciones = mysqli_query($conexion,$sqlRelaciones);
-                                                                while($rowRelaciones = $resRelaciones->fetch_assoc()){
-                                                                    $controlador_ControlBMSRelacion = $rowRelaciones['controlador_ControlBMS'];
-                                                                    $digitalInput_ControlBMSRelacion = $rowRelaciones['digitalInput_ControlBMS'];
-                                                                    $analogInput_ControlBMSRelacion = $rowRelaciones['analogInput_ControlBMS'];
-                                                                    $digitalOutput_ControlBMSRelacion = $rowRelaciones['digitalOutput_ControlBMS'];
-                                                                    $analogOutput_ControlBMSRelacion = $rowRelaciones['analogOutput_ControlBMS'];
-                                                                    $numEntrada_ControlBMSRelacion = $rowRelaciones['numEntrada_ControlBMS'];
-                                                                    $numSalida_ControlBMSRelacion = $rowRelaciones['numSalida_ControlBMS'];
-                                                                    $controlador_ControlBMSRelacionEquipamiento = str_replace([' ', '-'], ['', '_'], $controlador_ControlBMSRelacion);
-
-                                                                    ?>
-                                                                    <tr>
-                                                                        <td>
-                                                                            <?php echo $controlador_ControlBMSRelacion?>
-                                                                        </td>
-                                                                        <td>
-                                                                            <?php echo $numEntrada_ControlBMSRelacion?>
-                                                                        </td>
-                                                                        <td>
-                                                                            <?php echo $digitalInput_ControlBMSRelacion?>
-                                                                        </td>
-                                                                        <td>
-                                                                            <?php echo $analogInput_ControlBMSRelacion?>
-                                                                        </td>
-                                                                        <td>
-                                                                            <?php echo $numSalida_ControlBMSRelacion?>
-                                                                        </td>
-                                                                        <td>
-                                                                            <?php echo $digitalOutput_ControlBMSRelacion?>
-                                                                        </td>
-                                                                        <td>
-                                                                            <?php
-                                                                            if (strpos($analogOutput_ControlBMSRelacion, $nombreEquipoRelacion) !== false) {
-                                                                                echo $analogOutput_ControlBMSRelacion;
-                                                                            } else {
-                                                                                echo '-';
-                                                                            }
-                                                                            ?>
-                                                                        </td>
-                                                                        <td>
-                                                                            <?php
-                                                                            $sqlEquipamientoControlador = "SELECT *  FROM `equipamiento_hbqp` WHERE `nombreEquipo` LIKE '%$controlador_ControlBMSRelacionEquipamiento%'";
-                                                                            $resEquipamientoControlador = mysqli_query($conexion,$sqlEquipamientoControlador);
-                                                                            while($rowEquipamientoControlador = $resEquipamientoControlador->fetch_assoc()){
-                                                                                $idRelacion = $rowEquipamientoControlador['id'];
-                                                                            }
-                                                                            ?>
-                                                                            <form action="equipo_menuAntiguo.php" method="POST" target="_blank">
-                                                                                <input type="hidden" name="idEquipo" value="<?php echo $idRelacion ?>">
-                                                                                <button type="submit" class="btn bg-secondary"><i class="fas fa-eye"></i></button>
-                                                                            </form>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <?php
-                                                                }
-                                                                ?>
-                                                                </tbody>
-                                                                <tfoot class="bg-secondary">
-                                                                <tr>
-                                                                    <th>Nombre del Equipo</th>
-                                                                    <th>Número de Entrada</th>
-                                                                    <th>Entradas Digitales</th>
-                                                                    <th>Entradas Analogicas</th>
-                                                                    <th>Número de Salida</th>
-                                                                    <th>Salidas Digitales</th>
-                                                                    <th>Salidas Analogicas</th>
-                                                                    <th>Visualizar Equipo</th>
-                                                                </tr>
-                                                                </tfoot>
-                                                            </table>
-                                                        </div>
-                                                        <?php
-                                                    }
+                                            <?php
+                                            if (strpos($nombreEquipo, 'UMA-') === 0) {
                                                 ?>
+                                                <div class="row">
+                                                    <table id="tableRelaciones" class="table table-bordered table-striped text-center" style="width: 100%">
+                                                        <thead class="bg-secondary">
+                                                        <tr>
+                                                            <th>Nombre del Equipo</th>
+                                                            <th>Número de Entrada</th>
+                                                            <th>Entradas Digitales</th>
+                                                            <th>Entradas Analogicas</th>
+                                                            <th>Número de Salida</th>
+                                                            <th>Salidas Digitales</th>
+                                                            <th>Salidas Analogicas</th>
+                                                            <th>Visualizar Equipo</th>
+                                                        </tr>
+                                                        </thead>
+                                                        <tbody>
+
+                                                        <?php
+                                                        if (strpos($nombreEquipo, 'UMA-') === 0) {
+                                                            $nombreEquipoRelacion = str_replace('UMA-', 'UMA ', $nombreEquipo);
+                                                        }
+
+                                                        if ($nombreEquipoRelacion == 'UMA S1-4') {
+                                                            $nombreEquipoRelacion = 'UMA 1-4';
+                                                        }
+                                                        $sqlRelaciones = "SELECT * FROM detalle_control_bms WHERE digitalInput_ControlBMS REGEXP '" . $nombreEquipoRelacion . "($|[^A-Za-z0-9])' OR analogInput_ControlBMS REGEXP ' " . $nombreEquipoRelacion . "($|[^A-Za-z0-9])' OR analogOutput_ControlBMS REGEXP ' " . $nombreEquipoRelacion . "($|[^A-Za-z0-9])' OR digitalOutput_ControlBMS REGEXP '" . $nombreEquipoRelacion . "($|[^A-Za-z0-9])'";
+
+                                                        $resRelaciones = mysqli_query($conexion, $sqlRelaciones);
+                                                        while ($rowRelaciones = $resRelaciones->fetch_assoc()) {
+                                                            $controlador_ControlBMSRelacion = $rowRelaciones['controlador_ControlBMS'];
+                                                            $digitalInput_ControlBMSRelacion = $rowRelaciones['digitalInput_ControlBMS'];
+                                                            $analogInput_ControlBMSRelacion = $rowRelaciones['analogInput_ControlBMS'];
+                                                            $digitalOutput_ControlBMSRelacion = $rowRelaciones['digitalOutput_ControlBMS'];
+                                                            $analogOutput_ControlBMSRelacion = $rowRelaciones['analogOutput_ControlBMS'];
+                                                            $numEntrada_ControlBMSRelacion = $rowRelaciones['numEntrada_ControlBMS'];
+                                                            $numSalida_ControlBMSRelacion = $rowRelaciones['numSalida_ControlBMS'];
+                                                            $controlador_ControlBMSRelacionEquipamiento = str_replace([' ', '-'], ['', '_'], $controlador_ControlBMSRelacion);
+
+                                                            ?>
+                                                            <tr>
+                                                                <td>
+                                                                    <?php echo $controlador_ControlBMSRelacion ?>
+                                                                </td>
+                                                                <td>
+                                                                    <?php echo $numEntrada_ControlBMSRelacion ?>
+                                                                </td>
+                                                                <td>
+                                                                    <?php echo $digitalInput_ControlBMSRelacion ?>
+                                                                </td>
+                                                                <td>
+                                                                    <?php echo $analogInput_ControlBMSRelacion ?>
+                                                                </td>
+                                                                <td>
+                                                                    <?php echo $numSalida_ControlBMSRelacion ?>
+                                                                </td>
+                                                                <td>
+                                                                    <?php echo $digitalOutput_ControlBMSRelacion ?>
+                                                                </td>
+                                                                <td>
+                                                                    <?php
+                                                                    if (strpos($analogOutput_ControlBMSRelacion, $nombreEquipoRelacion) !== false) {
+                                                                        echo $analogOutput_ControlBMSRelacion;
+                                                                    } else {
+                                                                        echo '-';
+                                                                    }
+                                                                    ?>
+                                                                </td>
+                                                                <td>
+                                                                    <?php
+                                                                    $sqlEquipamientoControlador = "SELECT *  FROM `equipamiento_hbqp` WHERE `nombreEquipo` LIKE '%$controlador_ControlBMSRelacionEquipamiento%'";
+                                                                    $resEquipamientoControlador = mysqli_query($conexion, $sqlEquipamientoControlador);
+                                                                    while ($rowEquipamientoControlador = $resEquipamientoControlador->fetch_assoc()) {
+                                                                        $idRelacion = $rowEquipamientoControlador['id'];
+                                                                    }
+                                                                    ?>
+                                                                    <form action="equipo_menuAntiguo.php" method="POST" target="_blank">
+                                                                        <input type="hidden" name="idEquipo" value="<?php echo $idRelacion ?>">
+                                                                        <button type="submit" class="btn bg-secondary">
+                                                                            <i class="fas fa-eye"></i>
+                                                                        </button>
+                                                                    </form>
+                                                                </td>
+                                                            </tr>
+                                                            <?php
+                                                        }
+                                                        ?>
+                                                        </tbody>
+                                                        <tfoot class="bg-secondary">
+                                                        <tr>
+                                                            <th>Nombre del Equipo</th>
+                                                            <th>Número de Entrada</th>
+                                                            <th>Entradas Digitales</th>
+                                                            <th>Entradas Analogicas</th>
+                                                            <th>Número de Salida</th>
+                                                            <th>Salidas Digitales</th>
+                                                            <th>Salidas Analogicas</th>
+                                                            <th>Visualizar Equipo</th>
+                                                        </tr>
+                                                        </tfoot>
+                                                    </table>
+                                                </div>
+                                                <?php
+                                            }
+                                            ?>
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tabCheckList">
@@ -5848,21 +5849,23 @@ $contarsiguientes = 1;
                                                         $idTGChecKList = $rowCheckList['idTG'];
                                                         ?>
                                                         <tr>
-                                                            <td><?php echo $fechaCheckList?></td>
+                                                            <td><?php echo $fechaCheckList ?></td>
                                                             <td>
                                                                 <?php
-                                                                    $sqlBuscarOT = "SELECT * FROM `trabajos_general` WHERE idTG = $idTGChecKList ";
-                                                                    $resBuscarOT = mysqli_query($conexion, $sqlBuscarOT);
-                                                                    while($rowBuscarOT = $resBuscarOT->fetch_assoc()){
-                                                                        echo $rowBuscarOT['tecnico1'];
-                                                                    }
+                                                                $sqlBuscarOT = "SELECT * FROM `trabajos_general` WHERE idTG = $idTGChecKList ";
+                                                                $resBuscarOT = mysqli_query($conexion, $sqlBuscarOT);
+                                                                while ($rowBuscarOT = $resBuscarOT->fetch_assoc()) {
+                                                                    echo $rowBuscarOT['tecnico1'];
+                                                                }
                                                                 ?>
                                                             </td>
                                                             <td>
-                                                                <form action="<?php echo $pdf?>" method="POST" target="_blank">
-                                                                    <input type="hidden" name="<?php echo $campoIdNUEVO?>" value="<?php echo $id?>">
-                                                                    <input type="hidden" name="idTG" value="<?php echo $idTGChecKList?>">
-                                                                    <button type="submit" class="btn bg-success"><i class="fas fa-eye"></i></button>
+                                                                <form action="<?php echo $pdf ?>" method="POST" target="_blank">
+                                                                    <input type="hidden" name="<?php echo $campoIdNUEVO ?>" value="<?php echo $id ?>">
+                                                                    <input type="hidden" name="idTG" value="<?php echo $idTGChecKList ?>">
+                                                                    <button type="submit" class="btn bg-success">
+                                                                        <i class="fas fa-eye"></i>
+                                                                    </button>
                                                                 </form>
                                                             </td>
                                                         </tr>

@@ -19,6 +19,7 @@ function obtenerTotalEquipos($sql)
     return 0;
 }
 
+$ipCliente = $_SERVER['REMOTE_ADDR'];
 
 if (isset($_POST['idDepartamento'])) {
     $id = (int)$_POST['idDepartamento'];
@@ -44,7 +45,7 @@ if (isset($_POST['idDepartamento'])) {
                 </div>
 
                 <?php
-                if (in_array($idDeptoPrincipal, [1, 13])) {
+                if (in_array($idDeptoPrincipal, [1, 13]) && $ipCliente == '10.69.250.151' ) {
                     ?>
                     <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
                         <button
@@ -122,7 +123,6 @@ if (isset($_POST['idDepartamento'])) {
                         $nomCategoriaNormalizado = mb_convert_case($nomCategoria, MB_CASE_UPPER, 'UTF-8');
 
                         if (!in_array($nomCategoriaNormalizado, $categoriasExcluidas)) {
-                            $ipCliente = $_SERVER['REMOTE_ADDR'];
                             $urlCarpeta = "carpeta-equipo.php";
                             ?>
                             <div
