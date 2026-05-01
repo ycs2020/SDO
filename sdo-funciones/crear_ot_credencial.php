@@ -55,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $apellidoCredencial = $_POST['apellidoCredencial'];
     $rutCredencial = $_POST['rutCredencial'];
     $nombreCompleto = $nombreCredencial.' '.$apellidoCredencial;
+    $idCredencial = $_POST['idCredencial'];
 
 
     if($turnoAsignado == 1){
@@ -86,14 +87,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $id = mysqli_insert_id($conexion);
 
+
         $modificar = "UPDATE trabajos_general SET folioTG = 'OT-I-$id' WHERE idTG = $id";
         $resModificar = mysqli_query($conexion, $modificar);
 
 
         $sqlInsert = "INSERT INTO `datos_credencial_funcionarios`(`id`, `idRegistroTarjeta`, `idTG`) 
         VALUES (null,$idRegistroTarjeta,$id)";
-
         $resInsert = mysqli_query($conexion, $sqlInsert);
+
+
+        $sqlObs = "INSERT INTO `credenciales_rrhh_observaciones`(`idObservacion`, `idCredencial`, `fechaObservacion`, `usuarioObservacion`, `tipoObservacion`, `observacion`) 
+        VALUES (null,$idCredencial,'$now','$usuarioCreador','Creacion de Orden de Trabajo','Se ha creado una orden de trabajo para $texto el día $now con folio OT-I-$id')";
+        $resObs = mysqli_query($conexion, $sqlObs);
 
 
         header('Location: ../'.$rutaDireccion.'/credenciales_administracion.php?exitoCreacionOT=true');

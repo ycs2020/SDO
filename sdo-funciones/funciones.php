@@ -8936,6 +8936,10 @@ function contarchecklistLLE($idTG)
 }
 
 
+
+
+
+
 function contartipocheck($idTG)
 {
     include 'conexion.php';

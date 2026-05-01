@@ -70,13 +70,13 @@ while ($fila = $resultado->fetch_assoc()) {
 
     $activacionCredencial2 = (int)$fila['activacionCredencial'];
 
-    if($activacionCredencial2 === 1){
+    if ($activacionCredencial2 === 1) {
         $fila['activacionCredencial2'] = "<span class='badge badge-success'>Activo</span>";
-    }else if($activacionCredencial2 === 2){
+    } else if ($activacionCredencial2 === 2) {
         $fila['activacionCredencial2'] = "<span class='badge badge-warning'>Por Habilitar</span>";
-    }else if($activacionCredencial2 === 3){
+    } else if ($activacionCredencial2 === 3) {
         $fila['activacionCredencial2'] = "<span class='badge badge-primary'>Por Deshabilitar</span>";
-    }else{
+    } else {
         $fila['activacionCredencial2'] = "<span class='badge badge-danger'>Inactivo</span>";
     }
 
@@ -85,19 +85,20 @@ while ($fila = $resultado->fetch_assoc()) {
     $btnDeshabilitar = "Opción Deshabilitada";
     $idRegistroTarjeta = $fila['idRegistroTarjeta'];
 
-    if($activacionCredencial2 === 1 || $activacionCredencial2 === 2) {
+    if ($activacionCredencial2 === 1 || $activacionCredencial2 === 2) {
         $btnDeshabilitar = "<button class='btn btn-sm btn-danger'  data-idcreddesh='$idRegistroTarjeta' ><i class='fas fa-times'></i>&nbsp;&nbsp;Deshabilitar</button>";
     }
 
 
-   /* if($activacionCredencial2 == 2 || $activacionCredencial2 == 3){
-        $btnOT = "<button class='btn btn-sm btn-primary' data-idOT='$idRegistroTarjeta'><i class='fas fa-check'></i>&nbsp;&nbsp;Crear OT</button>";
-    }
-   */
+    /* if($activacionCredencial2 == 2 || $activacionCredencial2 == 3){
+         $btnOT = "<button class='btn btn-sm btn-primary' data-idOT='$idRegistroTarjeta'><i class='fas fa-check'></i>&nbsp;&nbsp;Crear OT</button>";
+     }
+    */
 
     $fila['btnDeshabilitar'] = $btnDeshabilitar;
     $fila['idRegistroTarjeta'] = $idRegistroTarjeta;
     $fila['activacionCredencial3'] = $activacionCredencial2;
+    $fila['idCredencial'] = $idCredencial;
    // $fila['btnOT'] = $btnOT;
 
 

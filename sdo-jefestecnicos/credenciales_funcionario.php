@@ -1021,11 +1021,12 @@ $estado = [
                                   class="btn btn-primary"
                                   data-toggle="modal"
                                   data-target="#crearOT${row.idRegistroTarjeta}"
-                                  >
-                                  Crear OT
+                                  >Crear OT
                                 </button>
                                 <form method="post" style="vertical-align: middle" action="../sdo-funciones/crear_ot_credencial.php">
+                                    <input type="hidden" name="idCredencial" id="idCredencial" value="${row.idCredencial}">
                                     <div class="modal fade" id="crearOT${row.idRegistroTarjeta}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
                                     <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                                     <div class="modal-content">
                                      <div class="modal-header bg-purple">

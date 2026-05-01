@@ -78,6 +78,8 @@ if (isset($_POST['idTG']) || isset($_SESSION['idTG'])) {
         $idEquipamiento = $row['idEquipamiento'];
     }
 
+
+
 }
 
 if (isset($_POST['folioTGDescargar'])) {
@@ -317,9 +319,10 @@ $contarNoControl = contarRespuestaNocontrol($idTG);
 
 $contarPermisosRevisados = contarPermisosRevisadosJIJI($idTG);
 
-
 /*BUSCAR EL NOMBRE DEL SERVICIO EN LAS BASE DE DATOS*/
 $buscarNombreServicio = buscarNombreServicio($servicio);
+
+
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -4367,8 +4370,17 @@ EOL;
                                                         echo "<br>";
                                                         ?>
                                                         <br>
-                                                        <form action="#" method="POST">
-                                                            <button type="button" class="form-control btn" style="background-color: blue;color:white;"> Revisar Datos del Funcionario</button>
+                                                        <form action="revisar_datos_funcionario.php" method="POST">
+                                                            <button type="submit" class="form-control btn" style="background-color: blue;color:white;"> Revisar Datos del Funcionario</button>
+                                                            <?php
+                                                                $sqlBuscar = "SELECT * FROM `datos_credencial_funcionarios` WHERE idTG = $idTG";
+                                                                $resBuscar = mysqli_query($conexion,$sqlBuscar);
+                                                                while($rowBuscar = $resBuscar->fetch_assoc()){
+                                                                    ?>
+                                                                    <input type="hidden" name="idRegistroTarjeta" id="idRegistroTarjeta" value="<?php echo $rowBuscar['idRegistroTarjeta']?>">
+                                                                    <?php
+                                                                }
+                                                            ?>
                                                         </form>
                                                         <?php
                                                         
