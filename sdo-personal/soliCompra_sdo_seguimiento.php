@@ -34,6 +34,7 @@ if (isset($_POST['idSoliCompra'])) {
         $idSolicitudSoporte = $datosSolicitud['idSolicitudSoporte'];
         $descripcionSoliCompra = $datosSolicitud['descripcionSoliCompra'];
 
+        $scSigh = $datosSolicitud["scSigh"] ?? 'Sin Codigo SIGH';
 
         $fechaCreacion = strtotime($fechaSoliCompra);
         $fechaCreacion = fechaEspañol2($fechaCreacion);
@@ -65,6 +66,7 @@ if (isset($_POST['idSoliCompra'])) {
         $idSolicitudSoporte = $datosSolicitud['idSolicitudSoporte'];
         $descripcionSoliCompra = $datosSolicitud['descripcionSoliCompra'];
 
+        $scSigh = $datosSolicitud["scSigh"] ?? 'Sin Codigo SIGH';
 
         $fechaCreacion = strtotime($fechaSoliCompra);
         $fechaCreacion = fechaEspañol2($fechaCreacion);
@@ -136,6 +138,39 @@ if (isset($_POST['descargaCotizacion'], $_POST['folioSoliCompraDescarga'])) {
 }
 
 
+$anioSC = date('Y', strtotime(str_replace('/', '-', $datosSolicitud["fechaSoliCompra"])));
+
+$scSighNormalizado = '';
+
+if ($scSigh !== 'Sin Codigo SIGH' && !empty(trim($scSigh))) {
+    // 1. Limpieza inicial
+    $scSigh = trim($scSigh, '/ ');
+
+    // 2. Rellenar con ceros el primer segmento (ej: 5 -> 005)
+    // Si tiene slash, separamos para normalizar solo el número
+    $segmentos = explode('/', $scSigh);
+    if (strlen($segmentos[0]) < 3) {
+        $segmentos[0] = str_pad($segmentos[0], 3, '0', STR_PAD_LEFT);
+    }
+
+    // Reconstruimos la base normalizada
+    $scSighNormalizado = $segmentos[0] . (isset($segmentos[1]) ? '/' . $segmentos[1] : '');
+
+    // 3. Lógica de Año: Si NO contiene un "/", agregamos el año de la SC
+    if (strpos($scSighNormalizado, '/') === false) {
+        $scSighNormalizado .= "/" . $anioSC;
+    }
+
+} else {
+    $scSighNormalizado = 'Sin Codigo SIGH';
+}
+
+
+$tieneCodigo = ($scSighNormalizado !== 'SIN CODIGO SIGH' && !empty($scSighNormalizado));
+$claseBoton = $tieneCodigo ? 'btn-success' : 'btn-warning';
+$textoBoton = $tieneCodigo ? $scSighNormalizado : 'AGREGAR CÓDIGO SIGH';
+$icono = $tieneCodigo ? 'fa-search' : 'fa-plus';
+
 
 ?>
 
@@ -164,6 +199,9 @@ if (isset($_POST['descargaCotizacion'], $_POST['folioSoliCompraDescarga'])) {
     <link rel="stylesheet" href="css/dark-mode.css">
 
     <script src="../sdo-funciones/jquery-3.2.1.min.js"></script>
+    <!-- Theme style -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+
 
 </head>
 
@@ -419,6 +457,10 @@ if (isset($_POST['descargaCotizacion'], $_POST['folioSoliCompraDescarga'])) {
                                             ?>
                                         </h5>
 
+                                        <h5 style="font-size:150%">
+                                            <b>Codigo SC SIGH: </b>
+                                            <span id="texto-sigh-visual"><?= $scSighNormalizado; ?></span>
+                                        </h5>
                                         <br>
                                     </div>
                                     <div style="font-size:85%" class="col-md-3">
@@ -835,6 +877,19 @@ if (isset($_POST['descargaCotizacion'], $_POST['folioSoliCompraDescarga'])) {
                                             </div>
                                         </div>
                                         -->
+                                        <?php
+
+                                        if ($idSoliCompra > 0) {
+                                            ?>
+                                            <button id="btn-sigh-principal"
+                                                    class="btn <?= $claseBoton ?> btn-buscar btn-block mt-3"
+                                                    data-correlativo="<?= $tieneCodigo ? $scSighNormalizado : '' ?>"
+                                                    data-id="<?= $idSoliCompra ?>">
+                                                <i class="fa <?= $icono ?>"></i> <span><?= $textoBoton ?></span>
+                                            </button>
+                                            <?php
+                                        }
+                                        ?>
                                     </div>
                                 </div>
                                 <br>
@@ -1122,6 +1177,133 @@ if (isset($_POST['descargaCotizacion'], $_POST['folioSoliCompraDescarga'])) {
 
 
     })
+</script>
+
+
+<script>
+    $(document).on('click', '.btn-buscar', function () {
+        const boton = $(this);
+        const correlativoOriginal = boton.data('correlativo');
+        const idSoliCompra = boton.data('id');
+        const originalHTML = boton.html();
+
+        // Función para actualizar la interfaz visualmente sin recargar
+        const actualizarInterfazManual = (nuevoValor) => {
+            const valorMayus = nuevoValor.toUpperCase();
+
+            // Actualizar el texto del H5
+            $('#texto-sigh-visual').text(valorMayus);
+
+            // Actualizar el Botón
+            const btnPrincipal = $('#btn-sigh-principal');
+            btnPrincipal.data('correlativo', valorMayus); // Actualiza memoria jQuery
+            btnPrincipal.attr('data-correlativo', valorMayus); // Actualiza DOM
+
+            // Cambiar estética a "Encontrado" (Verde)
+            btnPrincipal.removeClass('btn-warning').addClass('btn-success');
+            btnPrincipal.find('i').removeClass('fa-plus').addClass('fa-search');
+            btnPrincipal.find('span').text(valorMayus);
+        };
+
+        const guardarCodigo = (nuevoValor) => {
+            return $.ajax({
+                url: '../sdo-funciones/sc_sigh_actualizar_codigo.php',
+                type: 'POST',
+                dataType: 'json',
+                data: { id: idSoliCompra, nuevoSigh: nuevoValor }
+            });
+        };
+
+        // --- FLUJO 1: AGREGAR NUEVO ---
+        if (!correlativoOriginal || correlativoOriginal === '') {
+            Swal.fire({
+                title: 'Agregar Código SIGH',
+                input: 'text',
+                inputLabel: 'Ingrese el número correlativo',
+                inputPlaceholder: 'Ej: 005/2026',
+                showCancelButton: true,
+                confirmButtonText: 'Guardar y Vincular',
+                confirmButtonColor: '#28a745',
+                preConfirm: (nuevoValor) => {
+                    if (!nuevoValor) return Swal.showValidationMessage('El código es obligatorio');
+                    return guardarCodigo(nuevoValor).then(response => {
+                        return { response: response, nuevoValor: nuevoValor };
+                    });
+                }
+            }).then((result) => {
+                if (result.isConfirmed && result.value.response.status === 'success') {
+                    actualizarInterfazManual(result.value.nuevoValor);
+                    toastr.success('Código vinculado correctamente');
+                }
+            });
+            return;
+        }
+
+        // --- FLUJO 2: BÚSQUEDA Y EDICIÓN ---
+        boton.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i>');
+
+        fetch('/sdo-funciones/solic_adquis_tic_a_sdo.php?correlativo=' + encodeURIComponent(correlativoOriginal))
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Información SIGH',
+                        html: `
+                        <div style="text-align: left;">
+                            <p><b>Solicitante:</b> ${data.nombre_solicitante}</p>
+                            <p><b>Etapa:</b> <span class="badge badge-info">${data.etapa_actual}</span></p>
+                            <hr>
+                            <label><b>Editar Código:</b></label>
+                            <input type="text" id="swal-input-sigh" class="form-control" value="${data.correlativo}">
+                        </div>`,
+                        showCancelButton: true,
+                        confirmButtonText: 'Actualizar',
+                        preConfirm: () => {
+                            const nuevoV = $('#swal-input-sigh').val();
+                            return guardarCodigo(nuevoV).then(response => {
+                                return { response: response, nuevoValor: nuevoV };
+                            });
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed && result.value.response.status === 'success') {
+                            actualizarInterfazManual(result.value.nuevoValor);
+                            toastr.success('Código actualizado');
+                        }
+                    });
+                } else {
+                    // Caso no encontrado: Permitir corregir
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Código no validado',
+                        html: `
+                                <div style="text-align: center;">
+                                    <p>El código no existe en SIGH. ¿Desea corregirlo?</p>
+                                    <p class="text-muted" style="font-size: 0.9rem;">
+                                        <b>Ejemplo de formato:</b> 005/2026
+                                    </p>
+                                </div>
+                            `,
+                        input: 'text',
+                        inputValue: correlativoOriginal,
+                        showCancelButton: true,
+                        confirmButtonText: 'Corregir',
+                        preConfirm: (nuevoValor) => {
+                            return guardarCodigo(nuevoValor).then(response => {
+                                return { response: response, nuevoValor: nuevoValor };
+                            });
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed && result.value.response.status === 'success') {
+                            actualizarInterfazManual(result.value.nuevoValor);
+                            toastr.success('Código corregido');
+                        }
+                    });
+                }
+            })
+            .catch(error => toastr.error('Error de conexión con SIGH'))
+            .finally(() => boton.prop('disabled', false).html(originalHTML));
+    });
 </script>
 </body>
 

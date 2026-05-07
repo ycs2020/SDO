@@ -99,47 +99,23 @@ if (isset($_POST['descargaCotizacion'], $_POST['folioSoliCompraDescarga'])) {
     <link rel="stylesheet" href="../dist/sweetalert2/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="css/dark-mode.css">
     <script src="../sdo-funciones/jquery-3.2.1.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+
 
 
     <script>
         $(document).ready(function () {
+            // Escuchamos el click en ambos botones a la vez
+            $(".show-realizar, .show-listar").on("click", function () {
+                // Intercambia la visibilidad de las filas de menú
+                $("#rowMenu1, #rowMenu2").toggle();
 
-
-            // Show div by removing inline display none style rule
-            $(".show-realizar").click(function () {
-                $("#rowMenu2").show();
-                $("#rowMenu1").hide();
-                $("#listarSC").show();
-                $("#realizarSC").hide();
-            });
-
-            // Show div by removing inline display none style rule
-            $(".show-listar").click(function () {
-                $("#rowMenu2").hide();
-                $("#rowMenu1").show();
-                $("#listarSC").hide();
-                $("#realizarSC").show();
+                // Intercambia la visibilidad de los botones de acción
+                $("#realizarSC, #listarSC").toggle();
             });
         });
     </script>
-    <script>
-        function DoCheckUncheckDisplay(d, dchecked, dunchecked) {
-            if (d.checked == true) {
-                document.getElementById(dchecked).style.display = "block";
-                document.getElementById(dunchecked).style.display = "none";
-            } else {
-                document.getElementById(dchecked).style.display = "none";
-                document.getElementById(dunchecked).style.display = "block";
-            }
-        }
-    </script>
 
-
-    <script>
-        function descargarArchivos($id) {
-            alert($id);
-        }
-    </script>
 
 </head>
 
@@ -318,7 +294,7 @@ if (isset($_POST['descargaCotizacion'], $_POST['folioSoliCompraDescarga'])) {
 
                                 <input type="hidden" id="nomDeptoEnviar" name="nomDeptoEnviar" value="<?php echo $nomDepartamento; ?>">
                                 <div class="table-responsive">
-                                    <table style="font-size:90%" id="tableSCSDO" class="table table-bordered table-hover">
+                                    <table style="font-size:90%" id="tableSCSDO" class="table table-bordered table-hover table-sm">
                                         <thead class="bg-secondary">
                                         <tr>
                                             <th style="vertical-align:middle; text-align: center;">
@@ -341,6 +317,9 @@ if (isset($_POST['descargaCotizacion'], $_POST['folioSoliCompraDescarga'])) {
                                             </th>
                                             <th style="vertical-align:middle; text-align: center;">
                                                 Descripci&oacute;n
+                                            </th>
+                                            <th style="vertical-align:middle; text-align: center;">
+                                                Codigo SC SIGH
                                             </th>
                                         </tr>
                                         </thead>
@@ -368,6 +347,9 @@ if (isset($_POST['descargaCotizacion'], $_POST['folioSoliCompraDescarga'])) {
                                             </th>
                                             <th style="vertical-align:middle; text-align: center;">
                                                 Descripci&oacute;n
+                                            </th>
+                                            <th style="vertical-align:middle; text-align: center;">
+                                                Codigo SC SIGH
                                             </th>
                                         </tr>
                                         </tfoot>
@@ -397,6 +379,7 @@ if (isset($_POST['descargaCotizacion'], $_POST['folioSoliCompraDescarga'])) {
                                             },
                                             {"data": "textoTicket"},
                                             {"data": "descripcionSoliCompra"},
+                                            {"data": "botonSigh"},
 
                                             // Agregar columnas dinámicamente
                                         ];
@@ -449,6 +432,10 @@ if (isset($_POST['descargaCotizacion'], $_POST['folioSoliCompraDescarga'])) {
                 <div class="row" id="rowMenu2" name="rowMenu2" style="display:none;">
 
                     <?php
+                    echo "Cargo: $cargoPersonal";
+                    ?>
+
+                    <?php
                     if($nomDepartamento == 'Instrumentación' || $nomDepartamento == 'Control Centralizado'){
                         include_once 'sdo-includes/sc-sdo-control.php';
                     }else{
@@ -490,6 +477,16 @@ if (isset($_POST['descargaCotizacion'], $_POST['folioSoliCompraDescarga'])) {
 <script src="../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../dist/js/adminlte.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script>
+    toastr.options = {
+        "positionClass": "toast-top-right",
+        "timeOut": "5000",
+        "closeButton": true,
+        "progressBar": true
+    };
+</script>
+
 <!-- Page specific script -->
 <script>
     function mostrarRadio(inputFile) {
@@ -506,6 +503,119 @@ if (isset($_POST['descargaCotizacion'], $_POST['folioSoliCompraDescarga'])) {
             inputRadio2.required = false;
         }
     }
+</script>
+
+<script>
+    $(document).ready(function () {
+        $(document).on('click', '.btn-buscar', function () {
+            const boton = $(this);
+            const correlativoOriginal = boton.data('correlativo');
+            const idSoliCompra = boton.data('id');
+            const originalHTML = boton.html();
+
+            // Función interna para actualizar la base de datos SDO
+            const guardarCodigoSDO = (nuevoValor) => {
+                return $.ajax({
+                    url: '../sdo-funciones/sc_sigh_actualizar_codigo.php',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { id: idSoliCompra, nuevoSigh: nuevoValor }
+                });
+            };
+
+            // --- FLUJO 1: AGREGAR (Si el correlativo viene vacío desde el AJAX) ---
+            if (!correlativoOriginal || correlativoOriginal === '') {
+                Swal.fire({
+                    title: 'Agregar Código SIGH',
+                    input: 'text',
+                    inputLabel: 'Ingrese el correlativo (Ej: 005/2026)',
+                    showCancelButton: true,
+                    confirmButtonText: '<i class="fas fa-save"></i> Guardar',
+                    confirmButtonColor: '#28a745',
+                    preConfirm: (nuevoValor) => {
+                        if (!nuevoValor) return Swal.showValidationMessage('El código es obligatorio');
+                        return guardarCodigoSDO(nuevoValor);
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed && result.value.status === 'success') {
+                        toastr.success('Código vinculado correctamente');
+                        $('#tableSCSDO').DataTable().ajax.reload(null, false);
+                    }
+                });
+                return;
+            }
+
+            // --- FLUJO 2: CONSULTA Y EDICIÓN (Si ya existe un correlativo) ---
+            boton.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i>');
+
+            fetch('/sdo-funciones/solic_adquis_tic_a_sdo.php?correlativo=' + encodeURIComponent(correlativoOriginal))
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        let etapa = data.etapa_actual.toLowerCase();
+                        let icono = etapa === "proceso completado" ? 'success' : (etapa.includes("pendiente") ? 'warning' : 'info');
+                        let claseBadge = etapa === "proceso completado" ? 'badge-success' : (etapa.includes("pendiente") ? 'badge-warning' : 'badge-info');
+
+                        Swal.fire({
+                            icon: icono,
+                            title: 'Solicitud SIGH Encontrada',
+                            html: `
+                            <div style="text-align: left; font-size: 0.95rem;">
+                                <p><b>Solicitante:</b> ${data.nombre_solicitante}</p>
+                                <p><b>Etapa:</b> <span class="badge ${claseBadge}">${data.etapa_actual.toUpperCase()}</span></p>
+                                <hr>
+                                <div class="form-group">
+                                    <label for="nuevoCorrelativo"><b>Corregir Número SIGH:</b></label>
+                                    <input type="text" id="nuevoCorrelativo" class="form-control" value="${data.correlativo}">
+                                    <small class="text-muted">Ejemplo: 005/2026</small>
+                                </div>
+                            </div>
+                        `,
+                            showCancelButton: true,
+                            confirmButtonText: 'Actualizar',
+                            preConfirm: () => {
+                                const nuevoV = $('#nuevoCorrelativo').val();
+                                return guardarCodigoSDO(nuevoV);
+                            }
+                        }).then((result) => {
+                            if (result.isConfirmed && result.value.status === 'success') {
+                                toastr.success('Código actualizado correctamente');
+                                $('#tableSCSDO').DataTable().ajax.reload(null, false);
+                            }
+                        });
+                    } else {
+                        // CASO: CÓDIGO MAL INGRESADO (No existe en SIGH)
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Código no validado',
+                            html: `
+                            <div style="text-align: center;">
+                                <p>El código <b>${correlativoOriginal}</b> no existe en SIGH.</p>
+                                <div class="form-group text-left">
+                                    <label>Ingrese el código correcto:</label>
+                                    <input type="text" id="corregirSigh" class="form-control" placeholder="000/0000">
+                                </div>
+                            </div>
+                        `,
+                            showCancelButton: true,
+                            confirmButtonText: 'Corregir',
+                            preConfirm: () => {
+                                const nuevoV = $('#corregirSigh').val();
+                                if (!nuevoV) return Swal.showValidationMessage('Debe ingresar un valor');
+                                return guardarCodigoSDO(nuevoV);
+                            }
+                        }).then((result) => {
+                            if (result.isConfirmed && result.value.status === 'success') {
+                                toastr.success('Código corregido');
+                                $('#tableSCSDO').DataTable().ajax.reload(null, false);
+                            }
+                        });
+                    }
+                })
+                .catch(error => Swal.fire('Error', 'No se pudo conectar con el servidor SIGH', 'error'))
+                .finally(() => boton.prop('disabled', false).html(originalHTML));
+        });
+    });
 </script>
 </body>
 

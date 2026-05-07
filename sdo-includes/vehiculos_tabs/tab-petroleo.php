@@ -6,9 +6,21 @@
     <div class="text-center mb-4">
         <h4 class="text-secondary font-weight-bold">Registro de Combustible</h4>
         <p class="text-muted">Control de cargas de petróleo, valores netos e impuestos (IVA 19%)</p>
-        <button class="btn btn-warning mt-2 shadow-sm font-weight-bold text-dark" data-toggle="modal" data-target="#gasolinaModal">
-            <i class="fas fa-gas-pump mr-1"></i> Registrar Carga de Petróleo
-        </button>
+
+        <div class="row justify-content-center">
+            <!-- Columna para el botón de Registro -->
+            <div class="col-xl-3 col-lg-3 col-md-4 col-12 mb-2">
+                <button class="btn btn-warning btn-block shadow-sm font-weight-bold text-dark" data-toggle="modal" data-target="#gasolinaModal">
+                    <i class="fas fa-gas-pump mr-1"></i> Registrar Carga
+                </button>
+            </div>
+
+            <div class="col-xl-3 col-lg-3 col-md-4 col-12 mb-2">
+                <button class="btn btn-success btn-block shadow-sm font-weight-bold" data-toggle="modal" data-target="#modalExcelPetroleo">
+                    <i class="fas fa-file-excel mr-1"></i> Descargar Excel
+                </button>
+            </div>
+        </div>
     </div>
 
     <div class="table-responsive">
@@ -75,8 +87,8 @@
                             <?php
                             // Consulta rápida para obtener nombres únicos ya registrados
                             $queryNombres = $conexion->query("SELECT DISTINCT nomConductor FROM historial_petroleo_moviles WHERE nomConductor IS NOT NULL ORDER BY nomConductor ASC");
-                            while($nom = $queryNombres->fetch_assoc()){
-                                echo "<option value='".htmlspecialchars($nom['nomConductor'])."'>";
+                            while ($nom = $queryNombres->fetch_assoc()) {
+                                echo "<option value='" . htmlspecialchars($nom['nomConductor']) . "'>";
                             }
                             ?>
                         </datalist>
@@ -97,14 +109,18 @@
                             <input type="number" step="any" class="form-control" required name="valorUnitario" placeholder="Sin IVA">
                         </div>
                     </div>
-                    <p class="text-muted small"><i class="fas fa-info-circle"></i> El sistema calculará automáticamente el IVA (19%) y los totales al guardar.</p>
+                    <p class="text-muted small">
+                        <i class="fas fa-info-circle"></i> El sistema calculará automáticamente el IVA (19%) y los totales al guardar.
+                    </p>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-warning font-weight-bold">
                         <i class="fas fa-save mr-1"></i> Guardar Carga
                     </button>
 
-                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times mr-1"></i>Cancelar</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">
+                        <i class="fas fa-times mr-1"></i>Cancelar
+                    </button>
                 </div>
             </form>
         </div>
@@ -159,6 +175,73 @@
                 <button type="button" class="btn btn-success" id="btnGuardarEdicionPetroleo">
                     <i class="fas fa-save mr-1"></i> Guardar Cambios
                 </button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">
+                    <i class="fas fa-times mr-1"></i>Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalExcelPetroleo" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title"><i class="fas fa-calendar-alt mr-2"></i>Rango de Exportación</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <?php
+                // 1. Preparamos la sentencia
+                $stmt = $conexion->prepare("SELECT MIN(DATE(fechaRegistro)) as f_min, MAX(DATE(fechaRegistro)) as f_max 
+                            FROM historial_petroleo_moviles 
+                            WHERE idMovil = ?");
+
+                // 2. "Bindeamos" el parámetro (i = integer, s = string)
+                $stmt->bind_param("i", $idMovil);
+
+                // 3. Ejecutamos
+                $stmt->execute();
+
+                // 4. Obtenemos el resultado
+                $resultado = $stmt->get_result();
+                $dataLimites = $resultado->fetch_assoc();
+
+                $minima = $dataLimites['f_min'] ?? date('Y-m-d');
+                $maxima = $dataLimites['f_max'] ?? date('Y-m-d');
+
+                $stmt->close();
+                ?>
+
+                <p class="text-muted small">Seleccione el rango de fechas para el informe de petróleo.</p>
+                <div class="row">
+                    <div class="col-6">
+                        <label class="font-weight-bold">Fecha Inicio:</label>
+                        <input type="date" id="fechaInicioExcel"
+                                class="form-control"
+                                min="<?php echo $minima; ?>"
+                                max="<?php echo $maxima; ?>">
+                    </div>
+                    <div class="col-6">
+                        <label class="font-weight-bold">Fecha Fin:</label>
+                        <input type="date" id="fechaFinExcel"
+                                class="form-control"
+                                min="<?php echo $minima; ?>"
+                                max="<?php echo $maxima; ?>">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <button id="btnDescargarTodo" class="btn btn-info shadow-sm font-weight-bold" data-idmovil="<?php echo $idMovil; ?>">
+                    <i class="fas fa-list mr-1"></i> Descargar Todo
+                </button>
+
+                <button id="btnProcesarExcel" class="btn btn-success font-weight-bold" data-idmovil="<?php echo $idMovil; ?>">
+                    <i class="fas fa-download mr-1"></i> Generar Reporte
+                </button>
+
                 <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times mr-1"></i>Cancelar</button>
             </div>
         </div>

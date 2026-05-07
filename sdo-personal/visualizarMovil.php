@@ -112,6 +112,10 @@ if ($idMovil) {
     <link rel="stylesheet" href="../dist/css/modelo.css">
     <link rel="stylesheet" href="../dist/sweetalert2/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="css/dark-mode.css">
+    <script src="../sdo-funciones/jquery-3.2.1.min.js"></script>
+
+    <!-- Theme style -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
     <!-- Estilos -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <!-- Script -->
@@ -243,6 +247,17 @@ if ($idMovil) {
 <script src="../dist/sweetalert2/dist/sweetalert2.all.min.js"></script>
 <script src="../dist/js/adminlte.min.js"></script>
 <script src="js/dark-mode.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<script>
+    toastr.options = {
+        "positionClass": "toast-top-right",
+        "timeOut": "5000",
+        "closeButton": true,
+        "progressBar": true
+    };
+</script>
+
 
 <script src="../dist/js/datatables-config.js"></script>
 

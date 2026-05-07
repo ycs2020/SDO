@@ -141,7 +141,7 @@
 
                 <div class="form-group">
                     <input type="hidden" name="personalSC" id="personalSC" value="<?php echo $nomUsuario; ?>">
-                    <input type="hidden" name="cargoSC" id="cargoSC" value="<?php echo $cargoJefe; ?>">
+                    <input type="hidden" name="cargoSC" id="cargoSC" value="<?php echo $cargoPersonal; ?>">
                     <input type="hidden" name="deptoSC" id="deptoSC" value="<?php echo $nomDepartamento; ?>">
                     <input type="hidden" name="emailSC" id="emailSC" value="<?php echo $emailJefe; ?>">
                     <?php

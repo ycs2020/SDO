@@ -1,82 +1,63 @@
-
 <?php
 include '../sdo-funciones/conexion.php';
-
 include '../sdo-funciones/funciones.php';
 
-if (session_status() == PHP_SESSION_NONE) {
+if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+// Validación de sesión rápida
+$idUsuario = $_SESSION['idUsuario'] ?? null;
+if (!$idUsuario) {
+    header("Location: login.php"); // Opcional: Redirigir si no hay sesión
+    exit;
+}
+
 $descargaConfirma = "";
-$idUsuario = $_SESSION['idUsuario'];
-
-
-
 date_default_timezone_set('America/Santiago');
+
+// Lógica de Procesamiento POST
 if (isset($_POST['descargaCotizacion'], $_POST['folioSoliCompraDescarga'])) {
-    $descargaCotizacion = $_POST['descargaCotizacion'];
-    $folioSoliCompraDescarga = trim($_POST['folioSoliCompraDescarga']);
+    $idDescarga = (int)$_POST['descargaCotizacion'];
+    $folioSoliDescarga = trim($_POST['folioSoliCompraDescarga']);
 
-    if ($descargaCotizacion > 0) {
+    if ($idDescarga > 0 && !empty($folioSoliDescarga)) {
 
-        if (empty($folioSoliCompraDescarga) || $folioSoliCompraDescarga == '') {
-        } else {
-            if ($descargaCotizacion < 10) {
-                $descargaCotizacion = "000" . $descargaCotizacion;
-            } else if ($descargaCotizacion > 9 && $descargaCotizacion < 100) {
-                $descargaCotizacion = "00" . $descargaCotizacion;
-            } else if ($descargaCotizacion > 99 && $descargaCotizacion < 1000) {
-                $descargaCotizacion = "0" . $descargaCotizacion;
-            } else if ($descargaCotizacion > 999) {
-                $descargaCotizacion = $descargaCotizacion;
-            } else {
-                $descargaCotizacion = $descargaCotizacion;
-            }
+        // Uso de sprintf para simplificar los ceros a la izquierda (SC-SDO-0001)
+        $folioFormateado = sprintf("SC-SDO-%04d", $idDescarga);
 
+        $dir = "../sdo-solicCompra/{$folioFormateado}/";
+        $archivoZip = "Cotizaciones_{$folioSoliDescarga}.zip";
 
-
-            $folioSoliCompra2 = "SC-SDO-" . $descargaCotizacion;
-
-            ini_set("memory_limit", "1256M");
+        if (is_dir($dir)) {
             $zip = new ZipArchive();
-            $dir = '../sdo-solicCompra/' . $folioSoliCompra2 . "/";
-            $rutaFinal = "../sdo-jefestecnicos/";
-            $archivoZip = "Cotizaciones " . $folioSoliCompraDescarga . ".zip";
-
-            // echo $rutaFinal.$folioSoliCompra2;
-
-            if ($zip->open($archivoZip, ZIPARCHIVE::CREATE) === true) {
+            if ($zip->open($archivoZip, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
                 agregar_zip($dir, $zip);
                 $zip->close();
-                if (file_exists($rutaFinal . $archivoZip)) {
 
-                    $absoluteFilePath = $rutaFinal . "/" . $archivoZip;
+                if (file_exists($archivoZip)) {
+                    // Limpiar cualquier salida previa para evitar corrupción del ZIP
+                    if (ob_get_level()) ob_end_clean();
+
                     header('Content-Description: File Transfer');
-                    header('Content-Type: application/octet-stream');
-                    header('Content-Disposition: attachment; filename=' . basename($archivoZip));
+                    header('Content-Type: application/zip');
+                    header('Content-Disposition: attachment; filename="' . basename($archivoZip) . '"');
                     header('Content-Transfer-Encoding: binary');
                     header('Expires: 0');
-                    header('Cache-Control: must-revalidate');
+                    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
                     header('Pragma: public');
                     header('Content-Length: ' . filesize($archivoZip));
-                    ob_clean();
-                    flush();
+
                     readfile($archivoZip);
-                    unlink($archivoZip); //Esta línea destruye el elemento zip que se genera
+                    unlink($archivoZip);
                     exit;
-
-                    $descargaConfirma .= "Y";
-                } else {
-
-                    $descargaConfirma .= "N";
                 }
             }
         }
+        $descargaConfirma = "N"; // Si llega aquí, algo falló
     }
 }
-
 ?>
-
 <!DOCTYPE html>
 <html lang="es">
 
@@ -101,46 +82,22 @@ if (isset($_POST['descargaCotizacion'], $_POST['folioSoliCompraDescarga'])) {
     <link rel="stylesheet" href="../dist/sweetalert2/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="css/dark-mode.css">
     <script src="../sdo-funciones/jquery-3.2.1.min.js"></script>
+    <!-- Theme style -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
+
 
 
     <script>
         $(document).ready(function () {
+            // Escuchamos el click en ambos botones a la vez
+            $(".show-realizar, .show-listar").on("click", function () {
+                // Intercambia la visibilidad de las filas de menú
+                $("#rowMenu1, #rowMenu2").toggle();
 
-
-            // Show div by removing inline display none style rule
-            $(".show-realizar").click(function () {
-                $("#rowMenu2").show();
-                $("#rowMenu1").hide();
-                $("#listarSC").show();
-                $("#realizarSC").hide();
-            });
-
-            // Show div by removing inline display none style rule
-            $(".show-listar").click(function () {
-                $("#rowMenu2").hide();
-                $("#rowMenu1").show();
-                $("#listarSC").hide();
-                $("#realizarSC").show();
+                // Intercambia la visibilidad de los botones de acción
+                $("#realizarSC, #listarSC").toggle();
             });
         });
-    </script>
-    <script>
-        function DoCheckUncheckDisplay(d, dchecked, dunchecked) {
-            if (d.checked == true) {
-                document.getElementById(dchecked).style.display = "block";
-                document.getElementById(dunchecked).style.display = "none";
-            } else {
-                document.getElementById(dchecked).style.display = "none";
-                document.getElementById(dunchecked).style.display = "block";
-            }
-        }
-    </script>
-
-
-    <script>
-        function descargarArchivos($id) {
-            alert($id);
-        }
     </script>
 
 </head>
@@ -159,160 +116,42 @@ if (isset($_POST['descargaCotizacion'], $_POST['folioSoliCompraDescarga'])) {
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h4>Solicitudes de Compras - SDO</h4>
+                <div class="row">
+                    <!-- left column -->
+                    <div class="col-xl-10 col-lg-9 col-md-8 col-12">
+                        <div class="card">
+                            <div class="card-header bg-primary">
+                                <a style="pointer-events: none;" class="btn font-weight-bold text-black ">Solicitudes de Compra - SDO</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-lg-3 col-md-4 col-12">
+                        <div class="card">
+                            <div class="card-header bg-danger ">
+                                <a href="index.php" class="btn btn-block btn-danger">
+                                    <i class="fa fa-chevron-left"></i>&nbsp;&nbsp;Volver Atrás
+                                </a>
+                            </div>
+                        </div>
+                    </div>
 
-                    </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="index.php" id="hrefInicio" class="text-dark">Inicio</a></li>
-                        </ol>
-                    </div>
                 </div>
             </div><!-- /.container-fluid -->
         </section>
-
-        <?php
-
-        if ($descargaConfirma == "Y" || $descargaConfirma == "y") {
-            ?>
-            <script>
-                Swal.fire({
-                    title: 'Descarga de Cotizaciones con &Eacute;xito.',
-                    confirmButtonText: 'Cerrar',
-                    icon: 'success',
-                });
-            </script>
-        <?php
-        } else if ($descargaConfirma == "N" || $descargaConfirma == "n") {
-        ?>
-            <script>
-                Swal.fire({
-                    title: 'Error al Descargar Cotizaci&oacute;n.',
-                    confirmButtonText: 'Cerrar',
-                    icon: 'error',
-                });
-            </script>
-            <?php
-        }
-
-        if (isset($_GET['exitoCrearSC'])) {
-            ?>
-            <script>
-                Swal.fire({
-                    title: 'Solicitud de Compra Ingresada con &Eacute;xito.',
-                    confirmButtonText: 'Cerrar',
-                    icon: 'success',
-                }).then((result) => {
-                    <?php
-                    if ($_GET['material'] == "Con") {
-                    ?>
-                    Swal.fire('Materiales solicitados con &eacute;xito.', '', 'success')
-                    <?php
-                    } else if ($_GET['material'] == "Sin") {
-                    ?>
-                    Swal.fire('Solicitud sin Materiales espec&iacute;ficos.', '', 'success')
-                    <?php
-                    } else {
-                    ?>
-                    Swal.fire('Error al Solicitar Materiales.', '', 'error')
-                    <?php
-                    }
-                    ?>
-                })
-            </script>
-            <?php
-        }
-        if (isset($_GET['errorCrearSC'])) {
-            ?>
-            <script>
-                Swal.fire({
-                    title: 'Error al Ingresar Solicitud de Compra.',
-                    confirmButtonText: 'Cerrar',
-                    icon: 'error',
-                });
-            </script>
-            <?php
-        }
-
-        if (isset($_GET['exitoAnularSolicitud'])) {
-            ?>
-            <script>
-                Swal.fire({
-                    title: 'Anulaci&oacute;n de Solicitud de Compra con &Eacute;xito.',
-                    confirmButtonText: 'Cerrar',
-                    icon: 'success',
-                });
-            </script>
-            <?php
-        }
-
-        if (isset($_GET['errorAnularSolicitud'])) {
-            ?>
-            <script>
-                Swal.fire({
-                    title: 'Error al Anular Solicitud de Compra.',
-                    confirmButtonText: 'Cerrar',
-                    icon: 'error',
-                });
-            </script>
-            <?php
-        }
-
-
-        ?>
 
         <!-- Main content -->
         <section class="content">
             <div class="container-fluid">
 
-                <!-- Timelime example  -->
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-header">
-
-                                <a href="index.php" style="float: right;" class="btn btn-danger"><i class="fa fa-chevron-left"></i>&nbsp;&nbsp;Volver Atras</a>
-                                <br>
-                                <br>
-
-                            </div>
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                    <!-- /.col -->
-                </div>
 
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body" style="text-align:center;">
 
-
-<!--                                --><?php
-//
-//                                $ipClienteActual = obtenerIPCliente();
-//
-//                                if($ipClienteActual == "10.69.250.151"){
-//                                    ?>
-<!--                                    <button class="btn bg-yellow show-realizar" id="realizarSC" name="realizarSC">Realizar Solicitud de Compra</button>-->
-<!--                                --><?php
-//                                }else{
-//                                    echo '<b>"No es posible crear solicitudes de compra en este momento"</b>';
-//
-//                                }
-//
-//                                ?>
                                 <button class="btn bg-yellow show-realizar" id="realizarSC" name="realizarSC">Realizar Solicitud de Compra</button>
 
-
                                 <button class="btn bg-yellow show-listar" id="listarSC" style="display:none;" name="listarSC">Listar Solicitudes de Compra</button>
-
-                                <!-- <button type="button" class="hide-btn">Hide</button>
-                                <button type="button" class="show-btn">Show</button>
-                                <button type="button" class="toggle-btn">Toggle</button> -->
-
 
                             </div>
                             <!-- /.card-body -->
@@ -332,7 +171,7 @@ if (isset($_POST['descargaCotizacion'], $_POST['folioSoliCompraDescarga'])) {
 
                                 <input type="hidden" id="nomDeptoEnviar" name="nomDeptoEnviar" value="<?php echo $nomDepartamento; ?>">
                                 <div class="table-responsive">
-                                    <table style="font-size:90%" id="tableSCSDO" class="table table-bordered table-hover">
+                                    <table style="font-size:90%" id="tableSCSDO" class="table table-bordered table-hover table-sm">
                                         <thead class="bg-secondary">
                                         <tr>
                                             <th style="vertical-align:middle; text-align: center;">
@@ -355,6 +194,9 @@ if (isset($_POST['descargaCotizacion'], $_POST['folioSoliCompraDescarga'])) {
                                             </th>
                                             <th style="vertical-align:middle; text-align: center;">
                                                 Descripci&oacute;n
+                                            </th>
+                                            <th style="vertical-align:middle; text-align: center;">
+                                                Codigo SC SIGH
                                             </th>
                                         </tr>
                                         </thead>
@@ -382,6 +224,9 @@ if (isset($_POST['descargaCotizacion'], $_POST['folioSoliCompraDescarga'])) {
                                             </th>
                                             <th style="vertical-align:middle; text-align: center;">
                                                 Descripci&oacute;n
+                                            </th>
+                                            <th style="vertical-align:middle; text-align: center;">
+                                                Codigo SC SIGH
                                             </th>
                                         </tr>
                                         </tfoot>
@@ -411,6 +256,7 @@ if (isset($_POST['descargaCotizacion'], $_POST['folioSoliCompraDescarga'])) {
                                             },
                                             {"data": "textoTicket"},
                                             {"data": "descripcionSoliCompra"},
+                                            {"data": "botonSigh"},
 
                                             // Agregar columnas dinámicamente
                                         ];
@@ -512,6 +358,55 @@ if (isset($_POST['descargaCotizacion'], $_POST['folioSoliCompraDescarga'])) {
 <script src="../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../dist/js/adminlte.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script>
+    toastr.options = {
+        "positionClass": "toast-top-right",
+        "timeOut": "5000",
+        "closeButton": true,
+        "progressBar": true
+    };
+</script>
+
+<?php
+// 1. Manejo de Descarga de Cotizaciones
+if (!empty($descargaConfirma)) {
+    if (strtolower($descargaConfirma) === "y") {
+        echo "toastr.success('Descarga de Cotizaciones con éxito', 'Operación Exitosa');";
+    } else {
+        echo "toastr.error('Error al descargar cotización', 'Error');";
+    }
+}
+
+// 2. Manejo de Creación de Solicitud de Compra (URL GET)
+if (isset($_GET['exitoCrearSC'])) {
+    echo "toastr.success('Solicitud de Compra Ingresada con Éxito');";
+
+    $material = $_GET['material'] ?? '';
+    if ($material === "Con") {
+        echo "toastr.info('Materiales solicitados correctamente');";
+    } elseif ($material === "Sin") {
+        echo "toastr.warning('Solicitud sin materiales específicos');";
+    } else {
+        echo "toastr.error('Error al procesar materiales');";
+    }
+}
+
+if (isset($_GET['errorCrearSC'])) {
+    echo "toastr.error('Error al ingresar solicitud de compra', 'Error de Registro');";
+}
+
+// 3. Manejo de Anulación
+if (isset($_GET['exitoAnularSolicitud'])) {
+    echo "toastr.success('Anulación de solicitud realizada', 'Anulado');";
+}
+
+if (isset($_GET['errorAnularSolicitud'])) {
+    echo "toastr.error('Error al anular la solicitud', 'Error');";
+}
+
+echo "</script>";
+?>
 <!-- Page specific script -->
 <script>
     function mostrarRadio(inputFile) {
@@ -529,11 +424,118 @@ if (isset($_POST['descargaCotizacion'], $_POST['folioSoliCompraDescarga'])) {
         }
     }
 </script>
-<!-- <script>
-    function myFunction(name) {
-        alert(name)
-    }
-</script> -->
+<script>
+    $(document).ready(function () {
+        $(document).on('click', '.btn-buscar', function () {
+            const boton = $(this);
+            const correlativoOriginal = boton.data('correlativo');
+            const idSoliCompra = boton.data('id');
+            const originalHTML = boton.html();
+
+            // Función interna para actualizar la base de datos SDO
+            const guardarCodigoSDO = (nuevoValor) => {
+                return $.ajax({
+                    url: '../sdo-funciones/sc_sigh_actualizar_codigo.php',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: { id: idSoliCompra, nuevoSigh: nuevoValor }
+                });
+            };
+
+            // --- FLUJO 1: AGREGAR (Si el correlativo viene vacío desde el AJAX) ---
+            if (!correlativoOriginal || correlativoOriginal === '') {
+                Swal.fire({
+                    title: 'Agregar Código SIGH',
+                    input: 'text',
+                    inputLabel: 'Ingrese el correlativo (Ej: 005/2026)',
+                    showCancelButton: true,
+                    confirmButtonText: '<i class="fas fa-save"></i> Guardar',
+                    confirmButtonColor: '#28a745',
+                    preConfirm: (nuevoValor) => {
+                        if (!nuevoValor) return Swal.showValidationMessage('El código es obligatorio');
+                        return guardarCodigoSDO(nuevoValor);
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed && result.value.status === 'success') {
+                        toastr.success('Código vinculado correctamente');
+                        $('#tableSCSDO').DataTable().ajax.reload(null, false);
+                    }
+                });
+                return;
+            }
+
+            // --- FLUJO 2: CONSULTA Y EDICIÓN (Si ya existe un correlativo) ---
+            boton.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i>');
+
+            fetch('/sdo-funciones/solic_adquis_tic_a_sdo.php?correlativo=' + encodeURIComponent(correlativoOriginal))
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        let etapa = data.etapa_actual.toLowerCase();
+                        let icono = etapa === "proceso completado" ? 'success' : (etapa.includes("pendiente") ? 'warning' : 'info');
+                        let claseBadge = etapa === "proceso completado" ? 'badge-success' : (etapa.includes("pendiente") ? 'badge-warning' : 'badge-info');
+
+                        Swal.fire({
+                            icon: icono,
+                            title: 'Solicitud SIGH Encontrada',
+                            html: `
+                            <div style="text-align: left; font-size: 0.95rem;">
+                                <p><b>Solicitante:</b> ${data.nombre_solicitante}</p>
+                                <p><b>Etapa:</b> <span class="badge ${claseBadge}">${data.etapa_actual.toUpperCase()}</span></p>
+                                <hr>
+                                <div class="form-group">
+                                    <label for="nuevoCorrelativo"><b>Corregir Número SIGH:</b></label>
+                                    <input type="text" id="nuevoCorrelativo" class="form-control" value="${data.correlativo}">
+                                    <small class="text-muted">Ejemplo: 005/2026</small>
+                                </div>
+                            </div>
+                        `,
+                            showCancelButton: true,
+                            confirmButtonText: 'Actualizar',
+                            preConfirm: () => {
+                                const nuevoV = $('#nuevoCorrelativo').val();
+                                return guardarCodigoSDO(nuevoV);
+                            }
+                        }).then((result) => {
+                            if (result.isConfirmed && result.value.status === 'success') {
+                                toastr.success('Código actualizado correctamente');
+                                $('#tableSCSDO').DataTable().ajax.reload(null, false);
+                            }
+                        });
+                    } else {
+                        // CASO: CÓDIGO MAL INGRESADO (No existe en SIGH)
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Código no validado',
+                            html: `
+                            <div style="text-align: center;">
+                                <p>El código <b>${correlativoOriginal}</b> no existe en SIGH.</p>
+                                <div class="form-group text-left">
+                                    <label>Ingrese el código correcto:</label>
+                                    <input type="text" id="corregirSigh" class="form-control" placeholder="000/0000">
+                                </div>
+                            </div>
+                        `,
+                            showCancelButton: true,
+                            confirmButtonText: 'Corregir',
+                            preConfirm: () => {
+                                const nuevoV = $('#corregirSigh').val();
+                                if (!nuevoV) return Swal.showValidationMessage('Debe ingresar un valor');
+                                return guardarCodigoSDO(nuevoV);
+                            }
+                        }).then((result) => {
+                            if (result.isConfirmed && result.value.status === 'success') {
+                                toastr.success('Código corregido');
+                                $('#tableSCSDO').DataTable().ajax.reload(null, false);
+                            }
+                        });
+                    }
+                })
+                .catch(error => Swal.fire('Error', 'No se pudo conectar con el servidor SIGH', 'error'))
+                .finally(() => boton.prop('disabled', false).html(originalHTML));
+        });
+    });
+</script>
 </body>
 
 </html>
