@@ -1158,10 +1158,6 @@ $contarsiguientes = 1;
                                                         </tbody>
                                                     </table>
 
-                                                    <?php
-
-
-                                                    ?>
 
                                                 </div>
                                                 <div class="modal-footer">

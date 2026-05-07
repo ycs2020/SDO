@@ -10,6 +10,7 @@ $(document).ready(function () {
         },
         columns: [
             { "data": "fechaFormateada" },
+            { "data": "nomConductorFormateada" },
             { "data": "numGuiaFormateada" },
             { "data": "cantidadLitrosFormateada" },
             { "data": "valorUnitarioFormateada" },
@@ -18,7 +19,8 @@ $(document).ready(function () {
             { "data": "totalConIvaFormateada" },
             { "data": "btnModificar" },
             { "data": "btnEliminar" }
-        ]
+        ],
+        "order": [[ 0, "desc" ]] // Ordenar por fecha y hora más reciente por defecto
     }));
 
     // Agregar carga
@@ -36,6 +38,12 @@ $(document).ready(function () {
                 if (data.success) {
                     $('#gasolinaModal').modal('hide');
                     this.reset();
+
+                    // Si usas Flatpickr, resetear el valor a la fecha actual después de limpiar el form
+                    if (this.querySelector('[name="fechaReporte"]')._flatpickr) {
+                        this.querySelector('[name="fechaReporte"]')._flatpickr.setDate(new Date());
+                    }
+
                     tableGasolina.ajax.reload(null, false);
                     Swal.fire('¡Registrado!', data.message, 'success');
                 }
@@ -46,10 +54,25 @@ $(document).ready(function () {
     // Abrir Modal Editar
     $(document).on('click', '.btn-mod-petro', function() {
         const data = tableGasolina.row($(this).closest('tr')).data();
-        $('#fechaReporteMod').val(data.fechaRegistro);
+
+        // CRÍTICO: Formatear fecha para datetime-local (reemplazar espacio por T)
+        // El input espera YYYY-MM-DDTHH:MM
+        if (data.fechaRegistro) {
+            let fechaISO = data.fechaRegistro.replace(" ", "T").substring(0, 16);
+            const inputMod = document.querySelector('#fechaReporteMod');
+
+            $(inputMod).val(fechaISO);
+
+            // Si Flatpickr está activo, actualizar el calendario visual
+            if (inputMod._flatpickr) {
+                inputMod._flatpickr.setDate(fechaISO);
+            }
+        }
+
         $('#numGuiaMod').val(data.numGuia);
         $('#cantidadLitrosMod').val(data.cantidadLitros);
         $('#valorUnitMod').val(data.valorUnitario);
+        $('#nomConductorMod').val(data.nomConductor);
         $('#btnGuardarEdicionPetroleo').data('id', $(this).data('id'));
         $('#modalEditarPetroleo').modal('show');
     });
@@ -57,24 +80,33 @@ $(document).ready(function () {
     // Guardar Edición
     $('#btnGuardarEdicionPetroleo').on('click', function() {
         const idPetroleo = $(this).data('id');
+        const btn = $(this);
+
         const datos = {
             idPetroleo: idPetroleo,
-            fechaReporte: $('#fechaReporteMod').val(),
+            fechaReporte: $('#fechaReporteMod').val(), // Enviará "YYYY-MM-DDTHH:MM"
             numGuia: $('#numGuiaMod').val(),
             cantidadLitros: $('#cantidadLitrosMod').val(),
-            valorUnitario: $('#valorUnitMod').val()
+            valorUnitario: $('#valorUnitMod').val(),
+            nomConductor: $('#nomConductorMod').val()
         };
+
+        btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Guardando...');
 
         $.post('../sdo-includes/vehiculos/vehiculos_petroleo_modificar.php', datos, function(res) {
             if (res.success) {
                 $('#modalEditarPetroleo').modal('hide');
                 tableGasolina.ajax.reload(null, false);
-                Swal.fire('¡Actualizado!', '', 'success');
+                Swal.fire('¡Actualizado!', 'El registro de petróleo ha sido modificado.', 'success');
+            } else {
+                Swal.fire('Error', res.message || 'Error al actualizar.', 'error');
             }
-        }, 'json');
+        }, 'json')
+            .fail(() => Swal.fire('Error', 'Error de conexión con el servidor.', 'error'))
+            .always(() => btn.prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Guardar Cambios'));
     });
 
-    // Eliminar
+    // Eliminar (Sin cambios necesarios, pero optimizado)
     $(document).on('click', '.btn-delete-petro', function() {
         const id = $(this).data('id');
 
@@ -91,10 +123,7 @@ $(document).ready(function () {
             if (result.isConfirmed) {
                 $.post('../sdo-includes/vehiculos/vehiculos_petroleo_eliminar.php', { idPetroleo: id }, function(res) {
                     if (res.success) {
-                        // Recargar la tabla
                         tableGasolina.ajax.reload(null, false);
-
-                        // Mensaje de éxito
                         Swal.fire({
                             icon: 'success',
                             title: '¡Eliminado!',
@@ -103,13 +132,9 @@ $(document).ready(function () {
                             showConfirmButton: false
                         });
                     } else {
-                        // Mensaje de error si el servidor responde con success: false
                         Swal.fire('Error', res.message || 'No se pudo eliminar el registro.', 'error');
                     }
-                }, 'json').fail(function() {
-                    // Mensaje de error si hay un fallo de red o error 500
-                    Swal.fire('Error', 'Ocurrió un error crítico en el servidor.', 'error');
-                });
+                }, 'json');
             }
         });
     });

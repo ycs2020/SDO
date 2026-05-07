@@ -15,7 +15,8 @@
         <table class="table table-hover table-bordered w-100 table-valign-middle table-sm" id="table_gasolina">
             <thead class="bg-warning text-dark text-center">
             <tr>
-                <th>Fecha</th>
+                <th>Fecha y Hora</th>
+                <th>Nombre Conductor</th>
                 <th>N° Guía</th>
                 <th>Litros</th>
                 <th>V. Unitario</th>
@@ -30,7 +31,8 @@
             </tbody>
             <tfoot class="bg-warning text-dark text-center">
             <tr>
-                <th>Fecha</th>
+                <th>Fecha y Hora</th>
+                <th>Nombre Conductor</th>
                 <th>N° Guía</th>
                 <th>Litros</th>
                 <th>V. Unitario</th>
@@ -62,7 +64,22 @@
 
                     <div class="form-group">
                         <label>Fecha de Carga:<span class="text-danger">*</span></label>
-                        <input type="date" class="form-control" required value="<?php echo date('Y-m-d'); ?>" name="fechaReporte">
+                        <input type="datetime-local" class="form-control" required value="<?php echo date('Y-m-d\TH:i'); ?>" name="fechaReporte">
+                    </div>
+
+                    <!-- Busca el campo de Número de Guía y agrega arriba el de Conductor -->
+                    <div class="form-group">
+                        <label>Nombre Conductor:</label>
+                        <input type="text" class="form-control" name="nomConductor" list="listadoConductores" placeholder="Escriba o seleccione un nombre...">
+                        <datalist id="listadoConductores">
+                            <?php
+                            // Consulta rápida para obtener nombres únicos ya registrados
+                            $queryNombres = $conexion->query("SELECT DISTINCT nomConductor FROM historial_petroleo_moviles WHERE nomConductor IS NOT NULL ORDER BY nomConductor ASC");
+                            while($nom = $queryNombres->fetch_assoc()){
+                                echo "<option value='".htmlspecialchars($nom['nomConductor'])."'>";
+                            }
+                            ?>
+                        </datalist>
                     </div>
 
                     <div class="form-group">
@@ -83,10 +100,11 @@
                     <p class="text-muted small"><i class="fas fa-info-circle"></i> El sistema calculará automáticamente el IVA (19%) y los totales al guardar.</p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-warning font-weight-bold">
                         <i class="fas fa-save mr-1"></i> Guardar Carga
                     </button>
+
+                    <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times mr-1"></i>Cancelar</button>
                 </div>
             </form>
         </div>
@@ -108,7 +126,13 @@
                 <form id="formEditarPetroleo">
                     <div class="form-group">
                         <label>Fecha de Carga</label>
-                        <input type="date" class="form-control" id="fechaReporteMod" name="fechaReporteMod">
+                        <input type="datetime-local" class="form-control" id="fechaReporteMod" name="fechaReporteMod">
+                    </div>
+
+                    <!-- Agregar dentro del formEditarPetroleo -->
+                    <div class="form-group">
+                        <label>Nombre Conductor</label>
+                        <input type="text" class="form-control" id="nomConductorMod" name="nomConductorMod" list="listadoConductores">
                     </div>
 
                     <div class="form-group">
@@ -132,10 +156,10 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-success" id="btnGuardarEdicionPetroleo">
                     <i class="fas fa-save mr-1"></i> Guardar Cambios
                 </button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times mr-1"></i>Cancelar</button>
             </div>
         </div>
     </div>

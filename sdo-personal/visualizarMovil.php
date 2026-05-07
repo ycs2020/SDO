@@ -112,7 +112,11 @@ if ($idMovil) {
     <link rel="stylesheet" href="../dist/css/modelo.css">
     <link rel="stylesheet" href="../dist/sweetalert2/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="css/dark-mode.css">
-
+    <!-- Estilos -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <!-- Script -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
     <style>
         .nav-pills .nav-link {
             font-weight: 500;
@@ -246,6 +250,16 @@ if ($idMovil) {
 <script src="../sdo-includes/vehiculos_js/vehiculos-estados.js"></script>
 <script src="../sdo-includes/vehiculos_js/vehiculos-petroleo.js"></script>
 <script src="../sdo-includes/vehiculos_js/vehiculos-kilometraje.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        flatpickr("input[type=datetime-local]", {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            time_24hr: true,
+            locale: "es" // Ahora funcionará porque cargamos el recurso arriba
+        });
+    });
+</script>
 </body>
 </html>
 

@@ -4,27 +4,32 @@ include_once '../../sdo-funciones/conexion.php';
 header('Content-Type: application/json');
 
 try {
-    // Recibir datos del formulario
     $idMovil       = $_POST['idMovil'];
-    $fechaRegistro = $_POST['fechaReporte']; // Coincide con el name del input
+    // IMPORTANTE: Reemplazamos la 'T' de datetime-local por un espacio para SQL
+    $fechaRaw      = $_POST['fechaReporte'];
+    $fechaRegistro = str_replace('T', ' ', $fechaRaw);
+
     $numGuia       = $_POST['numGuia'];
     $cantidadLitros = $_POST['litros'];
-    $valorUnitario = $_POST['valorUnitario']; // Valor Neto (sin IVA)
+    $valorUnitario = $_POST['valorUnitario'];
 
-    // Cálculos según la estructura de tu tabla
     $totalSinIva   = round($cantidadLitros * $valorUnitario);
     $ivaCalculado  = round($totalSinIva * 0.19);
     $totalConIva   = $totalSinIva + $ivaCalculado;
 
+    $nomConductor  = !empty($_POST['nomConductor']) ? $_POST['nomConductor'] : 'Sin Información';
+
+// ... actualizar SQL
     $sql = "INSERT INTO historial_petroleo_moviles 
-            (fechaRegistro, numGuia, cantidadLitros, valorUnitario, totalSinIva, IvaCalculado, totalConIva, idMovil) 
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        (fechaRegistro, nomConductor, numGuia, cantidadLitros, valorUnitario, totalSinIva, IvaCalculado, totalConIva, idMovil) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = $conexion->prepare($sql);
 
-    // Tipos: s (string), d (decimal/double), i (integer)
-    $stmt->bind_param('ssddiiii',
+// Tipos: s=string, d=double, i=int. Ahora hay 9 parámetros.
+    $stmt->bind_param('sssddiiii',
         $fechaRegistro,
+        $nomConductor,  // Nuevo
         $numGuia,
         $cantidadLitros,
         $valorUnitario,

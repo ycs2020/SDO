@@ -178,6 +178,7 @@ function convertirOfficeAPdf($rutaFisicaOriginal, $rutaWebOriginal)
 }
 
 $idCarpeta = isset($_GET['idCarpeta']) ? (int)$_GET['idCarpeta'] : 0;
+$idEquipo = isset($_GET['idEquipo']) ? (int)$_GET['idEquipo'] : 0;
 $idArchivoSeleccionado = isset($_GET['idArchivo']) ? (int)$_GET['idArchivo'] : 0;
 
 if ($idCarpeta <= 0) {
@@ -185,9 +186,45 @@ if ($idCarpeta <= 0) {
     exit;
 }
 
+// Inicializamos la condición base
+$condicionEquipo = "";
+
+if ($idEquipo > 0) {
+    // 1. Obtenemos toda la jerarquía si hay un equipo seleccionado
+    $sqlJerarquia = "WITH RECURSIVE jerarquia_equipos AS (
+        SELECT id FROM equipamiento_hbqp WHERE id = $idEquipo
+        UNION ALL
+        SELECT e.id FROM equipamiento_hbqp e
+        INNER JOIN jerarquia_equipos je ON e.idEquipoPadre = je.id
+    )
+    SELECT id FROM jerarquia_equipos";
+
+    $resJerarquia = mysqli_query($conexion, $sqlJerarquia);
+
+    $listaIds = [];
+    if ($resJerarquia && mysqli_num_rows($resJerarquia) > 0) {
+        while ($row = mysqli_fetch_assoc($resJerarquia)) {
+            $listaIds[] = (int)$row['id'];
+        }
+    } else {
+        // Por seguridad, si falla la query, al menos incluimos el ID actual
+        $listaIds[] = (int)$idEquipo;
+    }
+
+    $idsParaQuery = implode(',', $listaIds);
+    $condicionEquipo = " AND idEquipo IN ($idsParaQuery)";
+
+} else {
+    // 2. Si idEquipo es 0 (Página principal de categoría),
+    // no añadimos restricción de equipo para mostrar varios de esa categoría.
+    $condicionEquipo = "";
+}
+
+// 3. Consulta final unificada
 $sqlArchivos = "SELECT * 
                 FROM archivos_equipamiento_hbqp 
-                WHERE idCategoria = $idCarpeta
+                WHERE idCategoria = $idCarpeta 
+                $condicionEquipo
                 ORDER BY id ASC";
 
 $resArchivos = mysqli_query($conexion, $sqlArchivos);

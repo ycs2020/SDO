@@ -716,6 +716,7 @@ $costosMantJS  = json_encode($costosMant);
 
         // Obtenemos el idCarpeta desde PHP para pasarlo al AJAX
         var idCarpetaActual = <?= (int)$idCarpeta ?>;
+        var idEquipoActual = 0;
 
         // Validamos que tenga URL y que NO tenga la clase 'ya-cargado'
         if (!contenedor.hasClass('ya-cargado') && urlDestino) {
@@ -723,7 +724,7 @@ $costosMantJS  = json_encode($costosMant);
             $.ajax({
                 url: urlDestino,
                 type: 'GET',
-                data: { idCarpeta: idCarpetaActual }, // <-- ¡ESTA ES LA MAGIA!
+                data: { idCarpeta: idCarpetaActual, idEquipo: idEquipoActual }, // <-- ¡ESTA ES LA MAGIA!
                 success: function(html) {
                     // Insertamos el HTML de respuesta
                     contenedor.html(html);

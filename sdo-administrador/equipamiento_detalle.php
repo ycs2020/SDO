@@ -114,7 +114,7 @@ $buscarequipoPadre = buscarequipoPadre($idEquipoPadre);
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Equipamiento HBQP</title>
+    <title><?= h($nombreEquipo) ?></title>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -164,23 +164,15 @@ $buscarequipoPadre = buscarequipoPadre($idEquipoPadre);
                         <div class="card shadow-sm mb-0">
                             <div class="card-body p-0">
                                 <?php
-                                // Determinamos la ruta y el ID que se debe enviar
-                                if ($idEquipoPadre > 0) {
+                                if($idEquipoPadre > 0){
                                     $urlVolver = "equipamiento_detalle.php";
-                                    $idEnviar = $idEquipoPadre; // Si es sub-equipo, volvemos al padre
-                                } else {
+                                }else{
                                     $urlVolver = "carpeta-equipo.php";
-                                    $idEnviar = $idEquipo; // Si es principal, volvemos a la carpeta base
                                 }
                                 ?>
-
-                                <!-- Formulario invisible para pasar el ID por POST -->
-                                <form action="<?= $urlVolver; ?>" method="POST" style="margin: 0;">
-                                    <input type="hidden" name="idEquipo" value="<?= (int)$idEnviar; ?>">
-                                    <button type="submit" class="btn btn-block btn-danger">
-                                        <i class="fa fa-chevron-left"></i>&nbsp;&nbsp;Volver Atrás
-                                    </button>
-                                </form>
+                                <a href="<?= $urlVolver; ?>" class="btn btn-block btn-danger">
+                                    <i class="fa fa-chevron-left"></i>&nbsp;&nbsp;Volver Atrás
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -279,6 +271,88 @@ $buscarequipoPadre = buscarequipoPadre($idEquipoPadre);
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-12 mt-3">
+                        <div class="card card-success card-outline">
+                            <div class="card-header d-flex p-0 bg-success text-white">
+
+                                <?php
+                                $nomUsuarioMPI = $_SESSION['nomUsuario'];
+
+                                $tabs = [
+                                    [
+                                        'id' => 'tabSubEquipos',
+                                        'titulo' => 'Equipos Registrados',
+                                        'visible' => true,
+                                        'url' => '/sdo-includes/equipamiento/equipamiento_listado.php' // URL específica
+                                    ],
+                                    [
+                                        'id' => 'tabDocumentos',
+                                        'titulo' => 'Documentos',
+                                        'visible' => true,
+                                        'url' => '/sdo-includes/equipamiento/equipamiento_documentos.php' // URL específica
+                                    ],
+                                ];
+                                ?>
+
+                                <ul class="nav nav-pills mr-auto p-2 small">
+                                    <?php
+                                    $primeraActiva = false;
+
+                                    foreach ($tabs as $tab) {
+                                        if ($tab['visible']) {
+
+                                            $active = (!$primeraActiva) ? 'active' : '';
+                                            $primeraActiva = true;
+                                            ?>
+                                            <li class="nav-item">
+                                                <a class="nav-link <?= $active ?> text-white"
+                                                        href="#<?= $tab['id'] ?>"
+                                                        data-toggle="tab"
+                                                        data-url="<?= $tab['url'] ?>"> <?= $tab['titulo'] ?>
+                                                </a>
+                                            </li>
+                                            <?php
+                                        }
+                                    }
+                                    ?>
+                                </ul>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="tab-content" id="custom-tabs-content">
+                                    <?php
+                                    $primeraActiva = false;
+
+                                    foreach ($tabs as $tab) {
+                                        if ($tab['visible']) {
+                                            // Determinamos cuál es la pestaña que se muestra al cargar la página
+                                            $activeClass = (!$primeraActiva) ? 'show active' : '';
+                                            $primeraActiva = true;
+                                            ?>
+
+                                            <div class="tab-pane fade <?= $activeClass ?>"
+                                                    id="<?= $tab['id'] ?>"
+                                                    role="tabpanel"
+                                                    aria-labelledby="<?= $tab['id'] ?>-tab">
+
+                                                <div class="tab-loader" data-url="<?= $tab['url'] ?>">
+                                                    <div class="text-center p-5 text-muted">
+                                                        <i class="fas fa-circle-notch fa-spin fa-2x"></i>
+                                                        <p class="mt-2">Cargando sección...</p>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <?php
+                                        }
+                                    }
+                                    ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -358,6 +432,50 @@ $buscarequipoPadre = buscarequipoPadre($idEquipoPadre);
             form.submit();
         });
     });
+</script>
+<script>
+    $(document).ready(function() {
+        // 1. Cargar la pestaña activa por defecto al entrar
+        var activeTab = $('.nav-link.active');
+        if (activeTab.length) {
+            ejecutarCarga(activeTab);
+        }
+
+        // 2. Al hacer clic en cualquier pestaña
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            ejecutarCarga($(e.target));
+        });
+    });
+
+    function ejecutarCarga(elemento) {
+        var targetId = elemento.attr("href");
+        var urlDestino = elemento.data("url");
+        var contenedor = $(targetId).find('.tab-loader');
+
+        // Obtenemos el idCarpeta desde PHP para pasarlo al AJAX
+        var idCarpetaActual = <?= (int)$idCategoria ?>;
+        var idEquipoActual = <?= (int)$idEquipo ?>;
+
+        // Validamos que tenga URL y que NO tenga la clase 'ya-cargado'
+        if (!contenedor.hasClass('ya-cargado') && urlDestino) {
+
+            $.ajax({
+                url: urlDestino,
+                type: 'GET',
+                data: { idCarpeta: idCarpetaActual, idEquipo: idEquipoActual }, // <-- ¡ESTA ES LA MAGIA!
+                success: function(html) {
+                    // Insertamos el HTML de respuesta
+                    contenedor.html(html);
+                    // Le agregamos la clase para que no vuelva a cargar la próxima vez que le des clic
+                    contenedor.addClass('ya-cargado');
+                },
+                error: function(xhr, status, error) {
+                    console.log("Error AJAX:", error);
+                    contenedor.html('<div class="alert alert-danger m-3">Error al conectar con la ruta: ' + urlDestino + '</div>');
+                }
+            });
+        }
+    }
 </script>
 
 <script src="../dist/js/datatables-config.js"></script>

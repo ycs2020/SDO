@@ -2,31 +2,32 @@
 include_once '../../sdo-funciones/conexion.php';
 header('Content-Type: application/json');
 
-// Recibir datos del AJAX
 $idPetroleo     = $_POST['idPetroleo'] ?? null;
-$fecha          = $_POST['fechaReporte'] ?? null;
+$fechaRaw       = $_POST['fechaReporte'] ?? null;
 $numGuia        = $_POST['numGuia'] ?? '';
 $litros         = (float)($_POST['cantidadLitros'] ?? 0);
-$valorUnitario  = (float)($_POST['valorUnitario'] ?? 0); // Precio Neto (Sin IVA)
+$valorUnitario  = (float)($_POST['valorUnitario'] ?? 0);
 
 if (!$idPetroleo || $litros <= 0 || $valorUnitario <= 0) {
     echo json_encode(['success' => false, 'message' => 'Faltan datos o los valores son 0.']);
     exit;
 }
 
-// --- LÓGICA DE RECALCULO ---
-// 1. Calcular el total neto (Sin IVA)
+// Limpiar la fecha para formato MySQL
+$fecha = str_replace('T', ' ', $fechaRaw);
+
+// Recalculo
 $totalSinIva  = round($litros * $valorUnitario);
-
-// 2. Calcular el IVA (19% en Chile)
 $ivaCalculado = round($totalSinIva * 0.19);
-
-// 3. Calcular el total final (Con IVA)
 $totalConIva  = $totalSinIva + $ivaCalculado;
 
-// Preparar la actualización de TODAS las columnas afectadas
+// ... capturar el nuevo dato
+$nomConductor = !empty($_POST['nomConductor']) ? $_POST['nomConductor'] : 'Sin Información';
+
+// ... actualizar SQL
 $sql = "UPDATE historial_petroleo_moviles SET 
             fechaRegistro = ?, 
+            nomConductor = ?, 
             numGuia = ?, 
             cantidadLitros = ?, 
             valorUnitario = ?, 
@@ -37,9 +38,10 @@ $sql = "UPDATE historial_petroleo_moviles SET
 
 $stmt = $conexion->prepare($sql);
 
-// s = string, d = double/float, i = integer
-$stmt->bind_param('ssddiiii',
+// Ahora hay 9 parámetros (8 de datos + 1 de ID en el WHERE)
+$stmt->bind_param('sssddiiii',
     $fecha,
+    $nomConductor, // Nuevo
     $numGuia,
     $litros,
     $valorUnitario,
@@ -50,7 +52,7 @@ $stmt->bind_param('ssddiiii',
 );
 
 if ($stmt->execute()) {
-    echo json_encode(['success' => true, 'message' => 'Actualizado con éxito.']);
+    echo json_encode(['success' => true, 'message' => 'Registro actualizado con éxito.']);
 } else {
     echo json_encode(['success' => false, 'message' => 'Error al guardar: ' . $conexion->error]);
 }
