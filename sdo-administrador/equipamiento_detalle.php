@@ -282,15 +282,21 @@ $buscarequipoPadre = buscarequipoPadre($idEquipoPadre);
                                 $tabs = [
                                     [
                                         'id' => 'tabSubEquipos',
-                                        'titulo' => 'Equipos Registrados',
+                                        'titulo' => 'SubEquipos',
                                         'visible' => true,
-                                        'url' => '/sdo-includes/equipamiento/equipamiento_listado.php' // URL específica
+                                        'url' => '/sdo-includes/equipamiento_detalle/equipamiento_listado.php' // URL específica
                                     ],
                                     [
                                         'id' => 'tabDocumentos',
                                         'titulo' => 'Documentos',
                                         'visible' => true,
-                                        'url' => '/sdo-includes/equipamiento/equipamiento_documentos.php' // URL específica
+                                        'url' => '/sdo-includes/equipamiento_detalle/equipamiento_documentos.php' // URL específica
+                                    ],
+                                    [
+                                        'id' => 'tabPlanificacion',
+                                        'titulo' => 'Planificacion',
+                                        'visible' => true,
+                                        'url' => '/sdo-includes/equipamiento_detalle/equipamiento_planificacion.php' // URL específica
                                     ],
                                 ];
                                 ?>
