@@ -135,7 +135,13 @@ if(isset($_POST['idGrupoPuerta'])){
                                             <tbody>
 
                                             <?php
-                                            $query2 = 'SELECT ACS_DOOR_GROUP_USER.*, ACM_owner.* FROM ACS_DOOR_GROUP_USER INNER JOIN ACM_owner ON ACS_DOOR_GROUP_USER.userid = ACM_owner.OWNER_CODE WHERE ACS_DOOR_GROUP_USER.doorgroupid = "' . $idGrupoPuerta . '" ORDER BY ACS_DOOR_GROUP_USER.doorgroupid ASC';
+                                            $query2 = 'SELECT ACS_DOOR_GROUP_USER.*,
+                                                               ACM_owner.* 
+                                                        FROM ACS_DOOR_GROUP_USER 
+                                                            INNER JOIN ACM_owner 
+                                                                ON ACS_DOOR_GROUP_USER.userid = ACM_owner.OWNER_CODE 
+                                                        WHERE ACS_DOOR_GROUP_USER.doorgroupid = "' . $idGrupoPuerta . '" 
+                                                        ORDER BY ACS_DOOR_GROUP_USER.doorgroupid ASC';
                                             $res = mysqli_query($conexion, $query2);
 
                                             $arrayFuncionarios = array();
