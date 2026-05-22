@@ -10,6 +10,7 @@ $(document).ready(function () {
         },
         columns: [
             { "data": "fechaFormateada" },
+            { "data": "fechaSubidaFormateada" },
             { "data": "nomConductorFormateada" },
             { "data": "numGuiaFormateada" },
             { "data": "cantidadLitrosFormateada" },

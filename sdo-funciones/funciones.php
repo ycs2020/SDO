@@ -1606,11 +1606,40 @@ function existeGestDoc($user)
 
 function getNomDepartamento($id)
 {
-    include('conexion.php');
-    $query = 'SELECT nomDepartamento FROM departamentos WHERE idDepartamento=' . $id . '';
-    $res = mysqli_query($conexion, $query);
-    $dato = mysqli_fetch_assoc($res);
-    return $dato['nomDepartamento'];
+    // 1. Incluir la conexión de forma segura sin duplicar procesos
+    include_once('conexion.php');
+    global $conexion;
+
+    if (!$conexion) {
+        return 'Sin Conexión';
+    }
+
+    // 2. Estructurar la consulta con Prepared Statements (?)
+    $query = 'SELECT nomDepartamento FROM departamentos WHERE idDepartamento = ? LIMIT 1';
+
+    $stmt = mysqli_prepare($conexion, $query);
+    if (!$stmt) {
+        error_log("Error en mysqli_prepare (getNomDepartamento): " . mysqli_error($conexion));
+        return 'Error de Sistema';
+    }
+
+    // 3. Forzar el tipo de dato entero y vincularlo para anular la Inyección SQL
+    $idLimpiado = (int)$id;
+    mysqli_stmt_bind_param($stmt, 'i', $idLimpiado);
+
+    // 4. Ejecutar y extraer de forma segura
+    if (mysqli_stmt_execute($stmt)) {
+        $res = mysqli_stmt_get_result($stmt);
+        $dato = mysqli_fetch_assoc($res);
+
+        mysqli_stmt_close($stmt);
+
+        // 5. Controlar si el departamento realmente existe en la BD antes de retornar
+        return isset($dato['nomDepartamento']) ? $dato['nomDepartamento'] : 'Departamento no encontrado';
+    }
+
+    mysqli_stmt_close($stmt);
+    return 'Error al consultar';
 }
 
 // FIN FUNCION
@@ -1648,13 +1677,13 @@ function fechaEspañol($FechaStamp)
     return $diassemanaN[$diasemana] . " $dia de " . $mesesN[$mes] . " del $ano";
 }
 
-function fechaEspañol2($FechaStamp)
-{
+function fechaEspañol2($FechaStamp) {
+    if (!$FechaStamp) return "No registra fecha";
     $ano = date('Y', $FechaStamp);
     $mes = date('n', $FechaStamp);
     $dia = date('d', $FechaStamp);
     $mesesN = array(1 => "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
-    return " $dia de " . $mesesN[$mes] . " de $ano";
+    return "$dia de " . $mesesN[$mes] . " de $ano";
 }
 
 function fechaEspañol3($FechaStamp)
@@ -5496,31 +5525,53 @@ function obtenerTotalArchivos($idOrden)
 
 function getTG($id)
 {
-    include('conexion.php');
-    $query = 'SELECT * FROM trabajos_general WHERE idTG = ' . $id;
-    $res = mysqli_query($conexion, $query);
-    $row = $res->fetch_assoc();
-    mysqli_close($conexion);
-    if ($row) {
-        $datos = array();
-        $datos['idTG'] = $row['idTG'];
-        $datos['folioTG'] = $row['folioTG'];
-        $datos['solicitanteTG'] = $row['solicitanteTG'];
-        $datos['detalleTG'] = $row['detalleTG'];
-        $datos['fechaTG'] = $row['fechaTG'];
-        $datos['estadoTG'] = $row['estadoTG'];
-        $datos['turnoTG'] = $row['turnoTG'];
-        $datos['tecnico1'] = $row['tecnico1'];
-        $datos['tecnico2'] = $row['tecnico2'];
-        $datos['tecnicoReemplazo1'] = $row['tecnicoReemplazo1'];
-        $datos['tecnicoReemplazo2'] = $row['tecnicoReemplazo2'];
-        $datos['observaciones'] = $row['observaciones'];
-        $datos['tipoTecnico'] = $row['tipoTecnico'];
-        $datos['fechaSubidaTecnico'] = $row['fechaSubidaTecnico'];
-        $datos['avanceTGT'] = $row['avanceTGT'];
-        $datos['observacionTGT'] = $row['observacionTGT'];
-        return $datos;
+    // 1. Incluir la conexión de forma segura
+    include_once('conexion.php');
+    global $conexion;
+
+    if (!$conexion) {
+        return null;
     }
+
+    // 2. Consulta con las columnas REALES extraídas de tu captura de pantalla
+    $query = 'SELECT 
+                idTG, folioTG, solicitanteTG, detalleTG, detalleTurnoCamara, 
+                detalleTurnoLLE, detalleTurnoCA, detalleTurnoRondas, detalleOtros, 
+                fechaTG, estadoTG, turnoTG, tecnico1, fechaProgramacion, 
+                ticketAsociado, tipoTrabajo, fechaTermino, departamento, 
+                formularioRondas, isVisado, nombreVisado, fechaVisado, 
+                idRecepcionDouc, descripcion, servicio, idTareaProgramada, idEquipamiento
+              FROM trabajos_general 
+              WHERE idTG = ? 
+              LIMIT 1';
+
+    // 3. Preparar la sentencia para evitar inyección SQL
+    $stmt = mysqli_prepare($conexion, $query);
+    if (!$stmt) {
+        // En caso de error en la estructura, puedes revisar tu log
+        error_log("Error en mysqli_prepare: " . mysqli_error($conexion));
+        return null;
+    }
+
+    // 4. Forzar que el ID sea un entero por seguridad y vincularlo
+    $idLimpiado = (int)$id;
+    mysqli_stmt_bind_param($stmt, 'i', $idLimpiado);
+
+    // 5. Ejecutar la consulta de forma segura
+    if (!mysqli_stmt_execute($stmt)) {
+        mysqli_stmt_close($stmt);
+        return null;
+    }
+
+    // 6. Obtener el resultado mapeado automáticamente
+    $res = mysqli_stmt_get_result($stmt);
+    $row = mysqli_fetch_assoc($res);
+
+    // 7. Liberar el statement de la memoria
+    mysqli_stmt_close($stmt);
+
+    // Retorna el array con los datos reales o null si el ID no existe
+    return $row ? $row : null;
 }
 
 // FIN FUNCION
@@ -7166,8 +7217,7 @@ function getACSGroupDoor($id)
 }
 
 // Función para agregar archivos al zip
-function agregar_zipSC($dir, $zip)
-{
+function agregar_zipSC($dir, $zip) {
     if (is_dir($dir)) {
         if ($dh = opendir($dir)) {
             while (($file = readdir($dh)) !== false) {
@@ -7182,6 +7232,31 @@ function agregar_zipSC($dir, $zip)
             closedir($dh);
         }
     }
+}
+
+function contarOTPorTipo($conexion, $folioTG, $tipoOT = null) {
+    if ($tipoOT === null) {
+        $query = "SELECT COUNT(*) AS TOTAL FROM ordenes_trabajos_general WHERE noOrdenTrabajo = ?";
+    } else {
+        $query = "SELECT COUNT(*) AS TOTAL FROM ordenes_trabajos_general WHERE noOrdenTrabajo = ? AND tipoOT = ?";
+    }
+
+    $stmt = mysqli_prepare($conexion, $query);
+    if ($stmt) {
+        if ($tipoOT === null) {
+            mysqli_stmt_bind_param($stmt, "s", $folioTG);
+        } else {
+            mysqli_stmt_bind_param($stmt, "ss", $folioTG, $tipoOT);
+        }
+
+        mysqli_stmt_execute($stmt);
+        $res = mysqli_stmt_get_result($stmt);
+        $dato = mysqli_fetch_assoc($res);
+        mysqli_stmt_close($stmt);
+
+        return $dato['TOTAL'] ?? 0;
+    }
+    return 0;
 }
 
 function verificarEsPabellon($id)
@@ -7341,132 +7416,8 @@ function contarRespuestaOtros($idTG)
 }
 
 
-function avancesbms($idTG)
-{
-    include('conexion.php');
-    $query = "SELECT * FROM avances_trabajo_general WHERE idTG = $idTG AND tipoTrabajo = 'BMS'";
-    $res = mysqli_query($conexion, $query);
-    $avance = '';
-    while ($row = $res->fetch_assoc()) {
-        $avance = $row['detalleObs'];
-    }
-    return $avance;
-}
 
-function avanceslle($idTG)
-{
-    include('conexion.php');
-    $query = "SELECT * FROM avances_trabajo_general WHERE idTG = $idTG AND tipoTrabajo = 'LLE'";
-    $res = mysqli_query($conexion, $query);
-    $avance = '';
-    while ($row = $res->fetch_assoc()) {
-        $avance = $row['detalleObs'];
-    }
-    return $avance;
-}
-
-function avancesca($idTG)
-{
-    include('conexion.php');
-    $query = "SELECT * FROM avances_trabajo_general WHERE idTG = $idTG AND tipoTrabajo = 'CA'";
-    $res = mysqli_query($conexion, $query);
-    $avance = '';
-    while ($row = $res->fetch_assoc()) {
-        $avance = $row['detalleObs'];
-    }
-    return $avance;
-}
-
-function avancescctv($idTG)
-{
-    include('conexion.php');
-    $query = "SELECT * FROM avances_trabajo_general WHERE idTG = $idTG AND tipoTrabajo = 'CCTV'";
-    $res = mysqli_query($conexion, $query);
-    $avance = '';
-    while ($row = $res->fetch_assoc()) {
-        $avance = $row['detalleObs'];
-    }
-    return $avance;
-}
-
-function avancesotros($idTG)
-{
-    include('conexion.php');
-    $query = "SELECT * FROM avances_trabajo_general WHERE idTG = $idTG AND tipoTrabajo = 'OTROS'";
-    $res = mysqli_query($conexion, $query);
-    $avance = '';
-    while ($row = $res->fetch_assoc()) {
-        $avance = $row['detalleObs'];
-    }
-    return $avance;
-}
-
-function contarobsgenearl($idTG)
-{
-    include('conexion.php');
-    $sql = "SELECT COUNT(*) AS TOTAL FROM observacion_ot WHERE idTG = $idTG";
-    $res = mysqli_query($conexion, $sql);
-    while ($row = $res->fetch_assoc()) {
-        $TOTAL = $row['TOTAL'];
-    }
-    return $TOTAL;
-}
-
-function contartemperatura($idTG)
-{
-    include('conexion.php');
-    $query = "SELECT COUNT(*) AS total FROM temperaturas_rondas WHERE idTG = " . $idTG;
-    $res = mysqli_query($conexion, $query);
-    $dato = mysqli_fetch_assoc($res);
-    return $dato['total'];
-}
-
-function contarTablaRondas($idTG)
-{
-    include('conexion.php');
-    $sql = "SELECT COUNT(*) AS TOTAL FROM parametros_ot_rondas WHERE idTG = $idTG";
-    $res = mysqli_query($conexion, $sql);
-    while ($row = $res->fetch_assoc()) {
-        $TOTAL = $row['TOTAL'];
-    }
-    return $TOTAL;
-}
-
-function contarTemperaturaRondas($idTG)
-{
-    include('conexion.php');
-    $sql = "SELECT COUNT(*) AS TOTAL FROM temperaturas_rondas WHERE idTG = $idTG";
-    $res = mysqli_query($conexion, $sql);
-    while ($row = $res->fetch_assoc()) {
-        $TOTAL = $row['TOTAL'];
-    }
-    return $TOTAL;
-}
-
-
-function contarconsolaalarma($idTG)
-{
-    include('conexion.php');
-    $sql = "SELECT COUNT(*) AS TOTAL FROM consola_alarma WHERE idTG = $idTG";
-    $res = mysqli_query($conexion, $sql);
-    while ($row = $res->fetch_assoc()) {
-        $TOTAL = $row['TOTAL'];
-    }
-    return $TOTAL;
-}
-
-function contarparametrosbms($idTG)
-{
-    include('conexion.php');
-    $sql = "SELECT COUNT(*) AS TOTAL FROM parametros_uma_bms WHERE idTG = $idTG";
-    $res = mysqli_query($conexion, $sql);
-    while ($row = $res->fetch_assoc()) {
-        $TOTAL = $row['TOTAL'];
-    }
-    return $TOTAL;
-}
-
-function contarRondasTG($idTG)
+function contarRondasTG2($idTG)
 {
     include('conexion.php');
 
@@ -7559,246 +7510,6 @@ function obtenervdrl($id)
 
 }
 
-function concatenaranalizadores($idTG)
-{
-    include('conexion.php');
-    $sql = "SELECT analizadores_red FROM consola_alarma WHERE idTG = $idTG";
-    $res = mysqli_query($conexion, $sql);
-    $datosConcatenados = '';
-    $count = 1;
-    while ($row = $res->fetch_assoc()) {
-        $datosConcatenados .= $row['analizadores_red'] . '<br>';
-        $count++;
-    }
-    return $datosConcatenados;
-}
-
-function concatenarfancoil($idTG)
-{
-    include('conexion.php');
-    $sql = "SELECT * FROM consola_alarma WHERE idTG = $idTG";
-    $res = mysqli_query($conexion, $sql);
-    $datosConcatenados = '';
-    $count = 1;
-    while ($row = $res->fetch_assoc()) {
-        $datosConcatenados .= $row['fan_coil'] . '<br>';
-        $count++;
-    }
-    return $datosConcatenados;
-}
-
-function concatenarRiego($idTG)
-{
-    include('conexion.php');
-    $sql = "SELECT * FROM consola_alarma WHERE idTG = $idTG";
-    $res = mysqli_query($conexion, $sql);
-    $datosConcatenados = '';
-    $count = 1;
-    while ($row = $res->fetch_assoc()) {
-        $datosConcatenados .= $row['riego'] . '<br>';
-        $count++;
-    }
-    return $datosConcatenados;
-}
-
-function concatenarSentina($idTG)
-{
-    include('conexion.php');
-    $sql = "SELECT * FROM consola_alarma WHERE idTG = $idTG";
-    $res = mysqli_query($conexion, $sql);
-    $datosConcatenados = '';
-    $count = 1;
-    while ($row = $res->fetch_assoc()) {
-        $datosConcatenados .= $row['sentina'] . '<br>';
-        $count++;
-    }
-    return $datosConcatenados;
-}
-
-function concatenarVAV($idTG)
-{
-    include('conexion.php');
-    $sql = "SELECT * FROM consola_alarma WHERE idTG = $idTG";
-    $res = mysqli_query($conexion, $sql);
-    $datosConcatenados = '';
-    $count = 1;
-    while ($row = $res->fetch_assoc()) {
-        $datosConcatenados .= $row['vav'] . '<br>';
-        $count++;
-    }
-    return $datosConcatenados;
-}
-
-function concatenarControladores($idTG)
-{
-    include('conexion.php');
-    $sql = "SELECT * FROM consola_alarma WHERE idTG = $idTG";
-    $res = mysqli_query($conexion, $sql);
-    $datosConcatenados = '';
-    $count = 1;
-    while ($row = $res->fetch_assoc()) {
-        $datosConcatenados .= $row['controladores'] . '<br>';
-        $count++;
-    }
-    return $datosConcatenados;
-}
-
-function concatenarvigasfrias($idTG)
-{
-    include('conexion.php');
-    $sql = "SELECT * FROM consola_alarma WHERE idTG = $idTG";
-    $res = mysqli_query($conexion, $sql);
-    $datosConcatenados = '';
-    $count = 1;
-    while ($row = $res->fetch_assoc()) {
-        $datosConcatenados .= $row['vigas_frias'] . '<br>';
-        $count++;
-    }
-    return $datosConcatenados;
-}
-
-
-function concatenarcw($idTG)
-{
-    include('conexion.php');
-    $sql = "SELECT * FROM consola_alarma WHERE idTG = $idTG";
-    $res = mysqli_query($conexion, $sql);
-    $datosConcatenados = '';
-    $count = 1;
-    while ($row = $res->fetch_assoc()) {
-        $datosConcatenados .= $row['cw'] . '<br>';
-        $count++;
-    }
-    return $datosConcatenados;
-}
-
-function concatenarvinyvex($idTG)
-{
-    include('conexion.php');
-    $sql = "SELECT * FROM consola_alarma WHERE idTG = $idTG";
-    $res = mysqli_query($conexion, $sql);
-    $datosConcatenados = '';
-    $count = 1;
-    while ($row = $res->fetch_assoc()) {
-        $datosConcatenados .= $row['vin_vex'] . '<br>';
-        $count++;
-    }
-    return $datosConcatenados;
-}
-
-function concatenaruma($idTG)
-{
-    include('conexion.php');
-    $sql = "SELECT * FROM consola_alarma WHERE idTG = $idTG";
-    $res = mysqli_query($conexion, $sql);
-    $datosConcatenados = '';
-
-    while ($row = $res->fetch_assoc()) {
-        $datosConcatenados .= $row['uma'] . '<br>';
-
-    }
-    return $datosConcatenados;
-}
-
-
-function concatenarpisosub($idTG)
-{
-    include('conexion.php');
-    $sql = "SELECT * FROM parametros_uma_bms WHERE idTG = $idTG";
-    $res = mysqli_query($conexion, $sql);
-    $datosConcatenados = '';
-    $count = 1;
-    while ($row = $res->fetch_assoc()) {
-        $datosConcatenados .= $row['pisosuby2'] . '<br>';
-        $count++;
-    }
-    return $datosConcatenados;
-}
-
-function concatenarpiso3($idTG)
-{
-    include('conexion.php');
-    $sql = "SELECT * FROM parametros_uma_bms WHERE idTG = $idTG";
-    $res = mysqli_query($conexion, $sql);
-    $datosConcatenados = '';
-    $count = 1;
-    while ($row = $res->fetch_assoc()) {
-        $datosConcatenados .= $row['piso3'] . '<br>';
-        $count++;
-    }
-    return $datosConcatenados;
-}
-
-function concatenarpisopabe($idTG)
-{
-    include('conexion.php');
-    $sql = "SELECT * FROM parametros_uma_bms WHERE idTG = $idTG";
-    $res = mysqli_query($conexion, $sql);
-    $datosConcatenados = '';
-    $count = 1;
-    while ($row = $res->fetch_assoc()) {
-        $datosConcatenados .= $row['pabellones'] . '<br>';
-        $count++;
-    }
-    return $datosConcatenados;
-}
-
-function concatenarpiso7($idTG)
-{
-    include('conexion.php');
-    $sql = "SELECT * FROM parametros_uma_bms WHERE idTG = $idTG";
-    $res = mysqli_query($conexion, $sql);
-    $datosConcatenados = '';
-    $count = 1;
-    while ($row = $res->fetch_assoc()) {
-        $datosConcatenados .= $row['piso7'] . '<br>';
-        $count++;
-    }
-    return $datosConcatenados;
-}
-
-function concatenarcrd($idTG)
-{
-    include('conexion.php');
-    $sql = "SELECT * FROM parametros_uma_bms WHERE idTG = $idTG";
-    $res = mysqli_query($conexion, $sql);
-    $datosConcatenados = '';
-    $count = 1;
-    while ($row = $res->fetch_assoc()) {
-        $datosConcatenados .= $row['crd'] . '<br>';
-        $count++;
-    }
-    return $datosConcatenados;
-}
-
-function concatenarurgencias($idTG)
-{
-    include('conexion.php');
-    $sql = "SELECT * FROM parametros_uma_bms WHERE idTG = $idTG";
-    $res = mysqli_query($conexion, $sql);
-    $datosConcatenados = '';
-    $count = 1;
-    while ($row = $res->fetch_assoc()) {
-        $datosConcatenados .= $row['urgencias'] . '<br>';
-        $count++;
-    }
-    return $datosConcatenados;
-}
-
-function concatenarhospitalizados($idTG)
-{
-    include('conexion.php');
-    $sql = "SELECT * FROM parametros_uma_bms WHERE idTG = $idTG";
-    $res = mysqli_query($conexion, $sql);
-    $datosConcatenados = '';
-    $count = 1;
-    while ($row = $res->fetch_assoc()) {
-        $datosConcatenados .= $row['hospitalizados'] . '<br>';
-        $count++;
-    }
-    return $datosConcatenados;
-}
-
 function obtenerPasswordJefeVisado($nomUsuario)
 {
     include('conexion.php');
@@ -7847,11 +7558,40 @@ function getVisadoHT($id)
 
 function getRutaFirmaVisado($nom)
 {
-    include('conexion.php');
-    $query = 'SELECT rutaVisado FROM visado_documentos WHERE nomVisado = "' . $nom . '"';
-    $res = mysqli_query($conexion, $query);
-    $dato = mysqli_fetch_assoc($res);
-    return $dato['rutaVisado'];
+    // 1. Incluir la conexión de forma segura sin duplicar procesos
+    include_once('conexion.php');
+    global $conexion;
+
+    if (!$conexion) {
+        return '';
+    }
+
+    // 2. Estructurar la consulta con Prepared Statements (?)
+    $query = 'SELECT rutaVisado FROM visado_documentos WHERE nomVisado = ? LIMIT 1';
+
+    $stmt = mysqli_prepare($conexion, $query);
+    if (!$stmt) {
+        error_log("Error en mysqli_prepare (getRutaFirmaVisado): " . mysqli_error($conexion));
+        return '';
+    }
+
+    // 3. Limpiar espacios en blanco y vincular como String ('s') para anular la Inyección SQL
+    $nombreLimpiado = trim((string)$nom);
+    mysqli_stmt_bind_param($stmt, 's', $nombreLimpiado);
+
+    // 4. Ejecutar y extraer de forma segura
+    if (mysqli_stmt_execute($stmt)) {
+        $res = mysqli_stmt_get_result($stmt);
+        $dato = mysqli_fetch_assoc($res);
+
+        mysqli_stmt_close($stmt);
+
+        // 5. Controlar si el registro existe y tiene una ruta válida asignada
+        return isset($dato['rutaVisado']) && !empty($dato['rutaVisado']) ? $dato['rutaVisado'] : '';
+    }
+
+    mysqli_stmt_close($stmt);
+    return '';
 }
 
 function getRutaFirmaVisadoYorgo()
@@ -7863,17 +7603,6 @@ function getRutaFirmaVisadoYorgo()
     return $dato['rutaVisado'];
 }
 
-function nocontrolavances($idTG)
-{
-    include('conexion.php');
-    $query = "SELECT * FROM avances_trabajo_general WHERE idTG = $idTG AND tipoTrabajo = 'NO-CONTROL'";
-    $res = mysqli_query($conexion, $query);
-    $avance = '';
-    while ($row = $res->fetch_assoc()) {
-        $avance = $row['detalleObs'];
-    }
-    return $avance;
-}
 
 function contarRespuestaNocontrol($idTG)
 {
@@ -7919,18 +7648,7 @@ function contarMaterial($idTG)
     return $TOTAL;
 }
 
-function contarsoli($idTG)
-{
-    include('conexion.php');
-    $sql = "SELECT COUNT(*) AS TOTAL FROM linea_vida_ot WHERE idTG = $idTG AND respuestaSoli = 1";
-    $res = mysqli_query($conexion, $sql);
-    while ($row = $res->fetch_assoc()) {
-        $TOTAL = $row['TOTAL'];
-    }
-    return $TOTAL;
-}
 
-// FIN FUNCION
 
 function obtenerEstadoTG($idTG)
 {
@@ -7956,17 +7674,6 @@ function contarRechazadoPanol($idTG)
 {
     include('conexion.php');
     $sql = "SELECT COUNT(*) AS TOTAL FROM linea_vida_ot WHERE idTG = $idTG AND rechazadoPanol = 1";
-    $res = mysqli_query($conexion, $sql);
-    while ($row = $res->fetch_assoc()) {
-        $TOTAL = $row['TOTAL'];
-    }
-    return $TOTAL;
-}
-
-function contarAceptadoPanol($idTG)
-{
-    include('conexion.php');
-    $sql = "SELECT COUNT(*) AS TOTAL FROM linea_vida_ot WHERE idTG = $idTG AND respuestaPanol = 1";
     $res = mysqli_query($conexion, $sql);
     while ($row = $res->fetch_assoc()) {
         $TOTAL = $row['TOTAL'];
@@ -8135,6 +7842,7 @@ function obtenerTempPabxFecha($fecha, $numPab)
     }
 }
 
+
 function obtenerHumedadPabxFecha($fecha, $numPab)
 {
     include('conexion.php');
@@ -8153,15 +7861,6 @@ function obtenerHumedadPabxFecha($fecha, $numPab)
     }
 }
 
-function contarDetalleNoControl($idTG)
-{
-    include('conexion.php');
-    $query = "SELECT COUNT(*) AS CANTIDAD FROM observacion_ot WHERE idTG = $idTG";
-    $res = mysqli_query($conexion, $query);
-    $dato = mysqli_fetch_assoc($res);
-    return $dato['CANTIDAD'];
-
-}
 
 function buscarPatente1($otraPatente)
 {
@@ -12552,6 +12251,505 @@ function obtenerEstadoTGUCA($idTG)
     }
 
     return 'Error';
+}
+
+function buscarUsuariosPorNombre($nombre) {
+    include 'conexion.php';
+    // Importamos la variable de conexión de MySQLi definida en conexion.php
+    global $conexion;
+
+    // Limpiamos espacios en blanco
+    $nombreBuscar = trim((string)$nombre);
+
+    // Si el término está vacío, evitamos procesar la query
+    if ($nombreBuscar === '') {
+        return [];
+    }
+
+    // Estructura SQL con marcadores de posición estándar de MySQLi (?)
+    $sql = "
+        SELECT 'personal' AS source, cargoPersonal AS cargo, nomPersonal AS nombre 
+        FROM personal 
+        WHERE nomPersonal LIKE ?
+        
+        UNION
+        
+        SELECT 'jefes_tecnicos' AS source, cargoJefe AS cargo, nomJefe AS nombre
+        FROM jefes_tecnicos 
+        WHERE nomJefe LIKE ?
+        
+        UNION
+        
+        SELECT 'administracion' AS source, 'Jefe Control Centralizado' AS cargo, nomAdministrador AS nombre
+        FROM administracion
+        WHERE nomAdministrador LIKE ?
+          AND nomAdministrador != 'Isaac Perez'
+    ";
+
+    // Preparamos la consulta
+    if ($stmt = $conexion->prepare($sql)) {
+
+        // Definimos el patrón de búsqueda con los comodines %
+        $parametroLike = '%' . $nombreBuscar . '%';
+
+        /* * Vinculamos los parámetros.
+         * Como hay 3 signos de interrogación (?), pasamos "sss" (tres strings)
+         * y la misma variable para cada uno de los bloques del UNION.
+         */
+        $stmt->bind_param("sss", $parametroLike, $parametroLike, $parametroLike);
+
+        // Ejecutamos la consulta de forma segura
+        $stmt->execute();
+
+        // Obtenemos el set de resultados
+        $resultado = $stmt->get_result();
+
+        // Guardamos las filas en un array asociativo
+        $usuarios = [];
+        while ($fila = $resultado->fetch_assoc()) {
+            $usuarios[] = $fila;
+        }
+
+        // Cerramos el statement para liberar memoria
+        $stmt->close();
+
+        return $usuarios;
+    } else {
+        // En caso de fallo al preparar la consulta, registramos el error en el log del servidor
+        error_log("Error al preparar la consulta en buscarUsuariosPorNombre: " . $conexion->error);
+        return [];
+    }
+}
+
+
+/**
+ * =================================================================================
+ * 1. FUNCIONES MADRE (NÚCLEO SEGURO Y OPTIMIZADO)
+ * =================================================================================
+ * Estas funciones centralizan la lógica y protegen la base de datos de inyecciones SQL.
+ */
+
+/**
+ * Obtiene el detalle de la observación de forma segura usando Prepared Statements.
+ */
+function obtenerAvanceGeneral($idTG, $tipoTrabajo)
+{
+    include('conexion.php');
+
+    $query = "SELECT detalleObs FROM avances_trabajo_general WHERE idTG = ? AND tipoTrabajo = ?";
+    $avance = '';
+
+    if ($stmt = mysqli_prepare($conexion, $query)) {
+        // 'i' para entero (idTG), 's' para string (tipoTrabajo)
+        mysqli_stmt_bind_param($stmt, "is", $idTG, $tipoTrabajo);
+        mysqli_stmt_execute($stmt);
+
+        $res = mysqli_stmt_get_result($stmt);
+        if ($row = mysqli_fetch_assoc($res)) {
+            $avance = $row['detalleObs'];
+        }
+
+        mysqli_stmt_close($stmt);
+    }
+
+    return $avance;
+}
+
+/**
+ * Cuenta registros en cualquier tabla filtrando por idTG y condiciones opcionales.
+ */
+function contarRegistrosGeneral($tabla, $idTG, $condicionExtra = "")
+{
+    include('conexion.php');
+
+    // La tabla se concatena directamente porque es definida internamente por el desarrollador (seguro)
+    $sql = "SELECT COUNT(*) AS TOTAL FROM `$tabla` WHERE idTG = ?";
+
+    if (!empty($condicionExtra)) {
+        $sql .= " AND " . $condicionExtra;
+    }
+
+    $TOTAL = 0;
+
+    if ($stmt = mysqli_prepare($conexion, $sql)) {
+        // Vinculamos el idTG como entero protegiendo la consulta
+        mysqli_stmt_bind_param($stmt, "i", $idTG);
+        mysqli_stmt_execute($stmt);
+
+        $res = mysqli_stmt_get_result($stmt);
+        if ($row = mysqli_fetch_assoc($res)) {
+            $TOTAL = $row['TOTAL'];
+        }
+
+        mysqli_stmt_close($stmt);
+    }
+
+    return $TOTAL;
+}
+
+
+
+function obtenerFechaTerminoTG($idTG)
+{
+    include('conexion.php');
+
+    // Traemos solo el campo necesario en lugar de SELECT * para optimizar la consulta
+    $sqlTermino = "SELECT fechaTermino FROM trabajos_general WHERE idTG = ?";
+    $fechaTermino = '';
+
+    if ($stmt = mysqli_prepare($conexion, $sqlTermino)) {
+        mysqli_stmt_bind_param($stmt, "i", $idTG);
+        mysqli_stmt_execute($stmt);
+
+        $resTermino = mysqli_stmt_get_result($stmt);
+        if ($rowTermino = mysqli_fetch_assoc($resTermino)) {
+            $fechaTermino = $rowTermino['fechaTermino'];
+        }
+
+        mysqli_stmt_close($stmt);
+    }
+
+    return $fechaTermino;
+}
+
+/**
+ * =================================================================================
+ * 2. BLOQUE DE FUNCIONES: CONSULTA DE AVANCES
+ * =================================================================================
+ * Conservan el mismo nombre para no romper tu código actual, pero ahora son seguras.
+ */
+
+function avancesbms($idTG)
+{
+    return obtenerAvanceGeneral($idTG, 'BMS');
+}
+
+function contarRondasTG($idTG)
+{
+    return contarRegistrosGeneral('parametros_ot_rondas', $idTG);
+}
+
+function avanceslle($idTG)
+{
+    return obtenerAvanceGeneral($idTG, 'LLE');
+}
+
+function avancesca($idTG)
+{
+    return obtenerAvanceGeneral($idTG, 'CA');
+}
+
+function avancescctv($idTG)
+{
+    return obtenerAvanceGeneral($idTG, 'CCTV');
+}
+
+function avancesotros($idTG)
+{
+    return obtenerAvanceGeneral($idTG, 'OTROS');
+}
+
+function nocontrolavances($idTG)
+{
+    return obtenerAvanceGeneral($idTG, 'NO-CONTROL');
+}
+
+
+/**
+ * =================================================================================
+ * 3. BLOQUE DE FUNCIONES: CONTADORES DE REGISTROS
+ * =================================================================================
+ * Retornan la cantidad de filas utilizando la lógica centralizada y segura.
+ */
+
+function contarobsgenearl($idTG)
+{
+    return contarRegistrosGeneral('observacion_ot', $idTG);
+}
+
+function contartemperatura($idTG)
+{
+    return contarRegistrosGeneral('temperaturas_rondas', $idTG);
+}
+
+function contarTemperaturaRondas($idTG)
+{
+    return contarRegistrosGeneral('temperaturas_rondas', $idTG);
+}
+
+function contarTablaRondas($idTG)
+{
+    return contarRegistrosGeneral('parametros_ot_rondas', $idTG);
+}
+
+function contarconsolaalarma($idTG)
+{
+    return contarRegistrosGeneral('consola_alarma', $idTG);
+}
+
+function contarparametrosbms($idTG)
+{
+    return contarRegistrosGeneral('parametros_uma_bms', $idTG);
+}
+
+function contarsoli($idTG)
+{
+    return contarRegistrosGeneral('linea_vida_ot', $idTG, "respuestaSoli = 1");
+}
+
+function contarAceptadoPanol($idTG)
+{
+    return contarRegistrosGeneral('linea_vida_ot', $idTG, "respuestaPanol = 1");
+}
+
+function contarDetalleNoControl($idTG)
+{
+    return contarRegistrosGeneral('observacion_ot', $idTG);
+}
+
+/**
+ * FUNCIÓN MAESTRA GENERAL (Segura contra Inyección SQL y eficiente)
+ */
+function procesarColumnaConsola($idTG, $nombreColumna)
+{
+    include('conexion.php');
+
+    // Lista blanca de columnas permitidas para blindar la estructura de la base de datos
+    $columnasValidas = [
+        'analizadores_red', 'fan_coil', 'riego', 'sentina', 'vav',
+        'controladores', 'vigas_frias', 'cw', 'vin_vex', 'uma'
+    ];
+
+    if (!in_array($nombreColumna, $columnasValidas)) {
+        return 'Sin Observación.';
+    }
+
+    $datosConcatenados = '';
+
+    // Consulta preparada para evitar Inyección SQL
+    $sql = "SELECT `$nombreColumna` FROM consola_alarma WHERE idTG = ?";
+
+    if ($stmt = mysqli_prepare($conexion, $sql)) {
+        mysqli_stmt_bind_param($stmt, "i", $idTG);
+        mysqli_stmt_execute($stmt);
+        $res = mysqli_stmt_get_result($stmt);
+
+        while ($row = mysqli_fetch_assoc($res)) {
+            if (trim((string)$row[$nombreColumna]) !== '') {
+                // Usamos salto de línea nativo (\n) para que nl2br() lo convierta en el PDF
+                $datosConcatenados .= $row[$nombreColumna] . "\n";
+            }
+        }
+        mysqli_stmt_close($stmt);
+    }
+
+    if($datosConcatenados == ''){
+        return 'Sin Observación.';
+    }
+
+    return trim($datosConcatenados);
+}
+
+/* =========================================================================
+   FUNCIONES INDIVIDUALES (Actúan como accesos directos a la función maestra)
+   ========================================================================= */
+
+function concatenaranalizadores($idTG) {
+    return procesarColumnaConsola($idTG, 'analizadores_red');
+}
+
+function concatenarfancoil($idTG) {
+    return procesarColumnaConsola($idTG, 'fan_coil');
+}
+
+function concatenarRiego($idTG) {
+    return procesarColumnaConsola($idTG, 'riego');
+}
+
+function concatenarSentina($idTG) {
+    return procesarColumnaConsola($idTG, 'sentina');
+}
+
+function concatenarVAV($idTG) {
+    return procesarColumnaConsola($idTG, 'vav');
+}
+
+function concatenarControladores($idTG) {
+    return procesarColumnaConsola($idTG, 'controladores');
+}
+
+function concatenarvigasfrias($idTG) {
+    return procesarColumnaConsola($idTG, 'vigas_frias');
+}
+
+function concatenarcw($idTG) {
+    return procesarColumnaConsola($idTG, 'cw');
+}
+
+function concatenarvinyvex($idTG) {
+    return procesarColumnaConsola($idTG, 'vin_vex');
+}
+
+function concatenaruma($idTG) {
+    return procesarColumnaConsola($idTG, 'uma');
+}
+
+/**
+ * FUNCIÓN MAESTRA GENERAL PARA UMA (Segura contra Inyección SQL y eficiente)
+ */
+function procesarColumnaUMA($idTG, $nombreColumna)
+{
+    include('conexion.php');
+
+    // Lista blanca de columnas permitidas para blindar la estructura de la tabla parametros_uma_bms
+    $columnasValidas = [
+        'pisosuby2', 'piso3', 'piso7', 'pabellones', 'crd', 'urgencias', 'hospitalizados'
+    ];
+
+    if (!in_array($nombreColumna, $columnasValidas)) {
+        return 'Sin Observación.';
+    }
+
+    $datosConcatenados = '';
+
+    // Consulta preparada para blindar el parámetro idTG
+    $sql = "SELECT $nombreColumna FROM parametros_uma_bms WHERE idTG = ?";
+//    return $sql;
+//    exit();
+    $j = 1;
+
+    if ($stmt = mysqli_prepare($conexion, $sql)) {
+        mysqli_stmt_bind_param($stmt, "i", $idTG);
+        mysqli_stmt_execute($stmt);
+        $res = mysqli_stmt_get_result($stmt);
+
+        while ($row = mysqli_fetch_assoc($res)) {
+            if (trim((string)$row[$nombreColumna]) !== '') {
+                // Usamos salto de línea nativo (\n) compatible con la estructura limpia del PDF
+                $datosConcatenados .= $row[$nombreColumna] . "\n";
+            }
+        }
+        mysqli_stmt_close($stmt);
+    }
+
+
+    if($datosConcatenados == ''){
+        return 'Sin Observación.';
+    }
+
+    return trim($datosConcatenados);
+}
+
+/* =========================================================================
+   FUNCIONES INDIVIDUALES (Accesos directos que no alteran la lógica del PDF)
+   ========================================================================= */
+
+function concatenarpisosub($idTG) {
+    return procesarColumnaUMA($idTG, 'pisosuby2');
+}
+
+function concatenarpiso3($idTG) {
+    return procesarColumnaUMA($idTG, 'piso3');
+}
+
+function concatenarpiso7($idTG) {
+    return procesarColumnaUMA($idTG, 'piso7');
+}
+
+function concatenarpisopabe($idTG) {
+    return procesarColumnaUMA($idTG, 'pabellones');
+}
+
+function concatenarcrd($idTG) {
+    return procesarColumnaUMA($idTG, 'crd');
+}
+
+function concatenarurgencias($idTG) {
+    return procesarColumnaUMA($idTG, 'urgencias');
+}
+
+function concatenarhospitalizados($idTG) {
+    return procesarColumnaUMA($idTG, 'hospitalizados');
+}
+
+// FIN FUNCION
+function getOrdenTrabajoGeneralNuevo($id)
+{
+    include('conexion.php');
+
+    // 1. Usar parámetros preparados (?) en lugar de concatenar
+    $query = 'SELECT * FROM ordenes_trabajos_general WHERE idOrden = ?';
+
+    $stmt = mysqli_prepare($conexion, $query);
+    if ($stmt) {
+        // "i" indica que el parámetro es un entero (integer)
+        mysqli_stmt_bind_param($stmt, "i", $id);
+        mysqli_stmt_execute($stmt);
+        $res = mysqli_stmt_get_result($stmt);
+        $row = mysqli_fetch_assoc($res);
+        mysqli_stmt_close($stmt);
+    }
+
+    mysqli_close($conexion);
+
+    if ($row) {
+        $datos = array();
+        $datos['idOrden'] = $id;
+        $datos['folioOrden'] = $row['folioOrden'];
+        $datos['nomOrden'] = $row['nomOrden'];
+        $datos['fechaOrden'] = $row['fechaOrden'];
+        $datos['nomSolicitante'] = $row['nomSolicitante'];
+        $datos['nomTecnicoRecepcionador'] = $row['nomTecnicoRecepcionador'];
+        $datos['idDepartamento'] = $row['idDepartamento'];
+        $datos['nomDepartamento'] = getNomDepartamento($row['idDepartamento']);
+        $datos['idSubDepartamento'] = $row['idSubDepartamento'];
+        $datos['nomSubDepartamento'] = '';
+
+        if ($datos['idSubDepartamento'] <= 0) {
+            $datos['nomSubDepartamento'] = 'Error';
+        } else {
+            $datos['nomSubDepartamento'] = getNomSubDepartamento($row['idSubDepartamento']);
+        }
+
+        $datos['servicioOrden'] = $row['servicioOrden'];
+        $datos['recintoOrden'] = $row['recintoOrden'];
+        $datos['pmaOrden'] = $row['pmaOrden'];
+        $datos['coordenadasOrden'] = $row['coordenadasOrden'];
+        $datos['tipoMantencion'] = $row['tipoMantencion'];
+        $datos['trabajoRealizado'] = $row['trabajoRealizado'];
+        $datos['problemaPresenta'] = $row['problemaPresenta'];
+        $datos['accionesRealiza'] = $row['accionesRealiza'];
+        $datos['comentariosTrabajos'] = $row['comentariosTrabajos'];
+        $datos['recepcionistaOrden'] = $row['recepcionistaOrden'];
+        $datos['ejecutorOrden'] = $row['ejecutorOrden'];
+        $datos['autorizadorOrden'] = $row['autorizadorOrden'];
+        return $datos;
+    }
+
+    return null; // Buena práctica: retornar algo si no encuentra la orden
+}
+
+
+function getNomSubDepartamentoNuevo($id)
+{
+    include('conexion.php');
+
+    $query = 'SELECT nomSubDepartamento FROM subdepartamentos WHERE idSubDepartamento = ?';
+
+    $stmt = mysqli_prepare($conexion, $query);
+    $nomSubDepartamento = '';
+
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, "i", $id);
+        mysqli_stmt_execute($stmt);
+        $res = mysqli_stmt_get_result($stmt);
+        $dato = mysqli_fetch_assoc($res);
+        $nomSubDepartamento = $dato['nomSubDepartamento'] ?? '';
+        mysqli_stmt_close($stmt);
+    }
+
+    mysqli_close($conexion);
+    return $nomSubDepartamento;
 }
 
 function obtenerRutaCompletaEquipamiento($id)

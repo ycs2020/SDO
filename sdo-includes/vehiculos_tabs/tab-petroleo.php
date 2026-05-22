@@ -10,7 +10,7 @@
         <div class="row justify-content-center">
             <!-- Columna para el botón de Registro -->
             <div class="col-xl-3 col-lg-3 col-md-4 col-12 mb-2">
-                <button class="btn btn-warning btn-block shadow-sm font-weight-bold text-dark" data-toggle="modal" data-target="#gasolinaModal">
+                <button class="btn btn-warning btn-block shadow-sm font-weight-bold" data-toggle="modal" data-target="#gasolinaModal">
                     <i class="fas fa-gas-pump mr-1"></i> Registrar Carga
                 </button>
             </div>
@@ -25,9 +25,10 @@
 
     <div class="table-responsive">
         <table class="table table-hover table-bordered w-100 table-valign-middle table-sm" id="table_gasolina">
-            <thead class="bg-warning text-dark text-center">
+            <thead class="bg-warning text-center">
             <tr>
-                <th>Fecha y Hora</th>
+                <th>Fecha y Hora de Carga</th>
+                <th>Fecha Ingreso Comprobante</th>
                 <th>Nombre Conductor</th>
                 <th>N° Guía</th>
                 <th>Litros</th>
@@ -41,9 +42,10 @@
             </thead>
             <tbody class="text-center align-middle">
             </tbody>
-            <tfoot class="bg-warning text-dark text-center">
+            <tfoot class="bg-warning text-center">
             <tr>
-                <th>Fecha y Hora</th>
+                <th>Fecha y Hora de Carga</th>
+                <th>Fecha Ingreso Comprobante</th>
                 <th>Nombre Conductor</th>
                 <th>N° Guía</th>
                 <th>Litros</th>
@@ -63,7 +65,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-warning">
-                <h5 class="modal-title font-weight-bold text-dark">
+                <h5 class="modal-title font-weight-bold">
                     <i class="fas fa-gas-pump mr-2"></i> Nuevo Registro de Petróleo
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -131,7 +133,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow">
             <div class="modal-header bg-warning">
-                <h5 class="modal-title font-weight-bold text-dark">
+                <h5 class="modal-title font-weight-bold">
                     <i class="fas fa-pen mr-2"></i> Editar Registro de Petróleo
                 </h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">

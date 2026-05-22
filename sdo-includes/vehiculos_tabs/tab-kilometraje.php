@@ -27,7 +27,8 @@
         <table class="table table-hover table-bordered w-100 table-valign-middle table-sm" id="table_kilometro">
             <thead class="bg-secondary text-white text-center">
             <tr>
-                <th>Fecha Registro</th>
+                <th>Fecha Ingreso KM</th>
+                <th>Fecha Medición</th>
                 <th>Kilometraje Actual</th>
                 <th>Modificar</th>
                 <th>Eliminar</th>
@@ -37,7 +38,8 @@
             </tbody>
             <tfoot class="bg-secondary text-white text-center">
             <tr>
-                <th>Fecha Registro</th>
+                <th>Fecha Ingreso KM</th>
+                <th>Fecha Medición</th>
                 <th>Kilometraje Actual</th>
                 <th>Modificar</th>
                 <th>Eliminar</th>

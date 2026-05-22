@@ -1141,7 +1141,7 @@ $contarRondas = contarRonda($idTG);
                                                 </td>
                                                 <td>
                                                     <center>
-                                                        <form action="../sdo-pdf/orden-trabajo.php" target="_blank" method="POST">
+                                                        <form action="../sdo-pdf/SDO-Orden-Trabajo-Visor.php" target="_blank" method="POST">
                                                             <input type="hidden" id="idTG" name="idTG" value="<?php echo $idTG ?>">
                                                             <input type="submit" class="btn btn-block btn-info" value="Ver Orden de Trabajo">
                                                         </form>

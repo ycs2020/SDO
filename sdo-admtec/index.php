@@ -164,6 +164,8 @@ foreach ($toastrMessages as $param => $data) {
 // Mensajes dinámicos
 $toastrMessages = [];
 
+
+
 if ($obtenerSolicitudesSegunNombre > 0) {
     $toastrMessages[] = [
         'type' => 'info',

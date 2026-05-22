@@ -1,6 +1,5 @@
 <?php
 include '../sdo-funciones/conexion.php';
-
 include '../sdo-funciones/funciones.php';
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -8,125 +7,132 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 $descargaConfirma = "";
-$idUsuario = $_SESSION['idUsuario'];
-$nomUsuario = $_SESSION['nomUsuario'];
-$userUsuario = $_SESSION['userUsuario'];
-$rolUsuario = $_SESSION['rolUsuario'];
-$rolUsuario2 = strtolower($rolUsuario);
-$idDepartamento = $_SESSION['idDepartamento'];
+$idUsuario = $_SESSION['idUsuario'] ?? null;
+$nomUsuario = $_SESSION['nomUsuario'] ?? null;
+$userUsuario = $_SESSION['userUsuario'] ?? null;
+$rolUsuario = $_SESSION['rolUsuario'] ?? null;
+$rolUsuario2 = $rolUsuario ? strtolower($rolUsuario) : '';
+$idDepartamento = $_SESSION['idDepartamento'] ?? null;
 
+// Inicialización de variables para evitar Notices
+$folioTG = "";
+$ticket = $estadoTG = $solicitanteTG = $detalleTG = $fechaTG = $turnoTG = $tecnico1 = "";
+$fechaTG3 = $fechaProgramacion = $fechaProgram2 = $detalleTurnoCamara = "";
+$detalleTurnoLLE = $detalleTurnoCA = $detalleTurnoRonda = $detalleOtros = "";
+$departamentos = $formularioRondas = $tipoTrabajo = "";
 
-if(isset($_POST['idTG']) || isset($_SESSION['idTG'])){
-    if(isset($_POST['idTG'])){
+// 1. GESTIÓN SEGURA DE SESIÓN E ID DE OT
+if (isset($_POST['idTG']) || isset($_SESSION['idTG'])) {
+    $idTG = isset($_POST['idTG']) ? (int)$_POST['idTG'] : (int)$_SESSION['idTG'];
 
-        $idTG = $_POST['idTG'];
-
-        if($idTG > 0){
-            $_SESSION['idTG'] = $idTG;
-        }else{
-            header('Location: trabajos_general_listado.php?errorDetalle=true');
-        }
-    }else if(isset($_SESSION['idTG'])){
-        $idTG = $_SESSION['idTG'];
-        if($idTG > 0){
-            $_SESSION['idTG'] = $idTG;
-        }else{
-            header('Location: trabajos_general_listado.php?errorDetalle=true');
-        }
+    if ($idTG > 0) {
+        $_SESSION['idTG'] = $idTG;
+    } else {
+        header('Location: trabajos_general_listado.php?errorDetalle=true');
+        exit;
     }
-    $sql = "SELECT * FROM trabajos_general WHERE idTG = $idTG";
-    $res = mysqli_query($conexion,$sql);
-    while($row = $res->fetch_assoc()) {
-        $ticket = $row['ticketAsociado'];
-        $folioTG = $row['folioTG'];
-        $estadoTG = $row['estadoTG'];
-        $solicitanteTG = $row['solicitanteTG'];
-        $detalleTG = $row['detalleTG'];
-        $fechaTG = $row['fechaTG'];
-        $turnoTG = $row['turnoTG'];
-        $tecnico1 = $row['tecnico1'];
-        $fechaTG2 = strtotime($fechaTG);
-        $fechaTG3 = fechaEspañol2($fechaTG2);
-        $fechaProgramacion = $row['fechaProgramacion'];
-        $fechaProgram1 = strtotime($fechaProgramacion);
-        $fechaProgram2 = fechaEspañol2($fechaProgram1);
-        $detalleTurnoCamara = $row['detalleTurnoCamara'];
-        $detalleTurnoLLE = $row['detalleTurnoLLE'];
-        $detalleTurnoCA = $row['detalleTurnoCA'];
-        $detalleTurnoRonda = $row['detalleTurnoRondas'];
-        $detalleOtros = $row['detalleOtros'];
-        $departamentos = $row['departamento'];
-        $formularioRondas = $row['formularioRondas'];
-        $tipoTrabajo = $row['tipoTrabajo'];
 
+    // Consulta Preparada para obtener los datos de la OT
+    $sql = "SELECT * FROM trabajos_general WHERE idTG = ?";
+    $stmt = mysqli_prepare($conexion, $sql);
+    if ($stmt) {
+        mysqli_stmt_bind_param($stmt, "i", $idTG);
+        mysqli_stmt_execute($stmt);
+        $res = mysqli_stmt_get_result($stmt);
 
-
+        if ($row = mysqli_fetch_assoc($res)) {
+            $ticket             = $row['ticketAsociado'];
+            $folioTG            = $row['folioTG'];
+            $estadoTG           = $row['estadoTG'];
+            $solicitanteTG      = $row['solicitanteTG'];
+            $detalleTG          = $row['detalleTG'];
+            $fechaTG            = $row['fechaTG'];
+            $turnoTG            = $row['turnoTG'];
+            $tecnico1           = $row['tecnico1'];
+            $fechaTG2           = strtotime($fechaTG);
+            $fechaTG3           = fechaEspañol2($fechaTG2);
+            $fechaProgramacion  = $row['fechaProgramacion'];
+            $fechaProgram1      = strtotime($fechaProgramacion);
+            $fechaProgram2      = fechaEspañol2($fechaProgram1);
+            $detalleTurnoCamara = $row['detalleTurnoCamara'];
+            $detalleTurnoLLE    = $row['detalleTurnoLLE'];
+            $detalleTurnoCA     = $row['detalleTurnoCA'];
+            $detalleTurnoRonda  = $row['detalleTurnoRondas'];
+            $detalleOtros       = $row['detalleOtros'];
+            $departamentos      = $row['departamento'];
+            $formularioRondas   = $row['formularioRondas'];
+            $tipoTrabajo        = $row['tipoTrabajo'];
+        }
+        mysqli_stmt_close($stmt);
     }
 }
 
-if (isset($_POST['idTG1'])) {
-    $idTG1 = $_POST['idTG1'];
-    $folioTG = $_POST['folio'];
+// 2. DESCARGA SEGURA DE ARCHIVOS ZIP
+if (isset($_POST['idTG1']) && !empty($_POST['folio'])) {
+    $idTG1 = (int)$_POST['idTG1'];
+    $folioTG_POST = trim($_POST['folio']); // Evitamos sobreescribir la variable principal sin sanitizar
 
     if ($idTG1 > 0) {
-        if (empty($idTG1) || $idTG1 == '') {
+        if ($idTG1 > 116) {
+            $dir = "../sdo-archivosOT/" . basename($folioTG_POST) . "/";
         } else {
-            if($idTG1 > 116){
+            $dir = "../sdo-administrador/archivos-trabajo-general/folio-" . basename($folioTG_POST) . "/carpeta-" . $idTG1 . "/";
+        }
 
-                $dir = "../sdo-archivosOT/". $folioTG ."/";
-            }else{
+        ini_set("memory_limit", "5256M");
+        $zip = new ZipArchive();
+        $archivoZip = "Documentos-" . preg_replace('/[^A-Za-z0-9\-]/', '', $folioTG_POST) . ".zip";
 
-                $dir = "../sdo-administrador/archivos-trabajo-general/folio-". $folioTG ."/carpeta-" . $idTG1 . "/";
-            }
+        if ($zip->open($archivoZip, ZipArchive::CREATE) === true) {
+            agregar_zipSC($dir, $zip);
+            $zip->close();
 
-            ini_set("memory_limit", "5256M");
-            $zip = new ZipArchive();
-            $dir2 = $dir . "/";
-            $rutaFinal = "../sdo-bodega-panol/";
-            $archivoZip = "Documentos-" . $folioTG . ".zip";
-            if ($zip->open($archivoZip, ZIPARCHIVE::CREATE) === true) {
-                agregar_zipSC($dir2, $zip);
-                $zip->close();
-                // echo '<script type="text/javascript">alert("'.$dir.'");</script>';
-                if (file_exists($rutaFinal . $archivoZip)) {
-                    $absoluteFilePath = $rutaFinal . "/" . $archivoZip;
-                    header('Content-Description: File Transfer');
-                    header('Content-Type: application/octet-stream');
-                    header('Content-Disposition: attachment; filename=' . basename($archivoZip));
-                    header('Content-Transfer-Encoding: binary');
-                    header('Expires: 0');
-                    header('Cache-Control: must-revalidate');
-                    header('Pragma: public');
-                    header('Content-Length: ' . filesize($archivoZip));
-                    ob_clean();
-                    flush();
-                    readfile($archivoZip);
-                    unlink($archivoZip); //Esta línea destruye el elemento zip que se genera
-                    exit;
-                } else {
-                    $descargaConfirma .= "N";
-                }
+            if (file_exists($archivoZip)) {
+                header('Content-Description: File Transfer');
+                header('Content-Type: application/octet-stream');
+                header('Content-Disposition: attachment; filename=' . basename($archivoZip));
+                header('Content-Transfer-Encoding: binary');
+                header('Expires: 0');
+                header('Cache-Control: must-revalidate');
+                header('Pragma: public');
+                header('Content-Length: ' . filesize($archivoZip));
+                ob_clean();
+                flush();
+                readfile($archivoZip);
+                unlink($archivoZip);
+                exit;
+            } else {
+                $descargaConfirma .= "N";
             }
         }
     }
-}else {
 }
 
-$sqlTrabajo = "SELECT * FROM ordenes_trabajos_general WHERE noOrdenTrabajo = '$folioTG'";
-$resTrabajo = mysqli_query($conexion,$sqlTrabajo);
-while($rowTrabajo = $resTrabajo->fetch_assoc()){
-    $idOrden = $rowTrabajo['idOrden'];
-    $folio = $rowTrabajo['folioOrden'];
+// 3. CONSULTA PREPARADA PARA ORDENES ASOCIADAS
+$idOrden = $folio = "";
+if (!empty($folioTG)) {
+    $sqlTrabajo = "SELECT * FROM ordenes_trabajos_general WHERE noOrdenTrabajo = ?";
+    $stmtTrabajo = mysqli_prepare($conexion, $sqlTrabajo);
+    if ($stmtTrabajo) {
+        mysqli_stmt_bind_param($stmtTrabajo, "s", $folioTG);
+        mysqli_stmt_execute($stmtTrabajo);
+        $resTrabajo = mysqli_stmt_get_result($stmtTrabajo);
+        if ($rowTrabajo = mysqli_fetch_assoc($resTrabajo)) {
+            $idOrden = $rowTrabajo['idOrden'];
+            $folio   = $rowTrabajo['folioOrden'];
+        }
+        mysqli_stmt_close($stmtTrabajo);
+    }
 
+    // 4. EJECUCIÓN DE CONTEOS OPTIMIZADOS
+    $contarHT     = contarOTPorTipo($conexion, $folioTG);
+    $contarBMS    = contarOTPorTipo($conexion, $folioTG, 'BMS');
+    $contarCA     = contarOTPorTipo($conexion, $folioTG, 'CA');
+    $contarCCTV   = contarOTPorTipo($conexion, $folioTG, 'CCTV');
+    $contarRondas = contarOTPorTipo($conexion, $folioTG, 'Rondas');
+    $contarLLE    = contarOTPorTipo($conexion, $folioTG, 'LLE');
+    $contarOtros  = contarOTPorTipo($conexion, $folioTG, 'OTROS');
 }
-$contarHT = contarHT1($folioTG);
-$contarBMS = contarBMS1($folioTG);
-$contarCA = contarCA1($folioTG);
-$contarCCTV = contarCCTV1($folioTG);
-$contarRondas = contarRondas1($folioTG);
-$contarLLE = contarLLE1($folioTG);
-$contarOtros = contarOtros1($folioTG);
-
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -158,6 +164,8 @@ $contarOtros = contarOtros1($folioTG);
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <!-- include summernote js-->
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
 
     <script>
         $(document).ready(function() {
@@ -194,85 +202,22 @@ $contarOtros = contarOtros1($folioTG);
     <div class="content-wrapper">
         <section class="content-header">
             <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-
-                        <?php
-                        if(isset($_GET['exitoObservacion'])){
-                            ?>
-                            <script>
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Exito',
-                                    text: 'Exito a ingresar la observacion'
-                                })
-                            </script>
-                            <?php
-                        }
-                        if(isset($_GET['errorObservacion'])){
-                            ?>
-                            <script>
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error',
-                                    text: 'Error al ingresar la observacion'
-                                })
-                            </script>
-                            <?php
-                        }
-                        if(isset($_GET['exitocheck'])){
-                            ?>
-                            <script>
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Exito',
-                                    text: 'Exito al chequear la solicitud'
-                                })
-                            </script>
-                            <?php
-                        }
-                        if(isset($_GET['errorcheck1'])){
-                            ?>
-                            <script>
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error',
-                                    text: 'Error al chequear la solicitud'
-                                })
-                            </script>
-                            <?php
-                        }
-                        if(isset($_GET['exitoCancelar'])){
-                        ?>
-                        <script>
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Exito',
-                                text: 'Exito  al cancelar la solicitud'
-                            })
-                        </script>
-                        <?php
-                        }
-                        if(isset($_GET['errorcancelar'])){
-                            ?>
-                            <script>
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Error',
-                                    text: 'Error al cancelar la solicitud'
-                                })
-                            </script>
-                            <?php
-                        }
-
-                        ?>
-
+                <div class="row">
+                    <!-- Título con bordes redondeados -->
+                    <div class="col-xl-9 col-lg-9 col-md-6 col-12 mb-3 d-flex">
+                        <div class="card w-100 m-0 rounded-3 overflow-hidden border-0 evaluation-card">
+                            <div class="card-body d-flex align-items-center bg-gradient-primary p-3">
+                                <h5 class="mb-0 text-white font-weight-bold">Orden de Trabajo N° <?php echo $folioTG?></h5>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="index.php" id="hrefInicio" class="text-dark">Inicio</a>
-                            </li>
-                        </ol>
+                    <!-- Botón Volver (Toda la tarjeta es el botón y es redondeada) -->
+                    <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-3 d-flex">
+                        <div class="card w-100 m-0 rounded-3 overflow-hidden border-0 bg-gradient-danger p-0 shadow-sm">
+                            <a href="trabajos_general_listado.php" class="text-white w-100 h-100 d-flex align-items-center justify-content-center p-3 text-decoration-none btn-block transition-all" style="transition: background 0.2s ease;">
+                                <i class="fa fa-chevron-left mr-2"></i> Volver Atrás
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div><!-- /.container-fluid -->
@@ -282,21 +227,7 @@ $contarOtros = contarOtros1($folioTG);
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card card-primary">
-                            <div class="card-header">
-                                <h4>Orden de Trabajo N° <?php echo $folioTG?></h4>
-                            </div>
                             <div class="card-body">
-                                <div class="col-lg-3 col-md-6 col-12 float-right" id="volverAtras2" name="volverAtras2">
-                                    <!-- small box -->
-                                    <a href="trabajos_general_listado.php" style="float: right;"
-                                       class="btn bg-gradient-red float-right btn-md text-white"><i
-                                            class="fa fa-chevron-left"></i>&nbsp;&nbsp;Volver Atras</a>
-
-                                </div>
-
-                                <br>
-                                <br>
-                                <hr>
                                 <div style="text-align:center;">
                                     <button class="btn bg-yellow show-listar" id="registrarAC" name="registrarAC"><i class="fas fa-eye"></i>&nbsp;Ver Linea de Vida de la OT </button>
                                     <button class="btn bg-yellow show-listar-detalle" id="listarAC" style="display:none;" name="listarAC"><i class="fas fa-list"></i>&nbsp;Ver Detalle de la OT</button>
@@ -307,7 +238,7 @@ $contarOtros = contarOtros1($folioTG);
                                         <?php
                                     }else{
                                         ?>
-                                        <form style="margin: 0; text-align: center;" class="" action="../sdo-pdf/orden-trabajo.php" target="_blank" method="post">
+                                        <form style="margin: 0; text-align: center;" class="" action="../sdo-pdf/SDO-Orden-Trabajo-Visor.php" target="_blank" method="post">
 
                                             <input type="hidden" name="idTG" value="<?php echo $idTG; ?>">
 
@@ -1071,6 +1002,55 @@ $contarOtros = contarOtros1($folioTG);
 <script src="../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../dist/js/adminlte.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<script>
+    toastr.options = {
+        "positionClass": "toast-top-right",
+        "timeOut": "4000",
+        "closeButton": true,
+        "progressBar": true
+    };
+</script>
+
+<?php
+
+$toastrMessages = [
+    'exitoObservacion' => [
+        'type' => 'success',
+        'msg' => 'Observación Ingresada con Éxito.'
+    ],
+    'errorObservacion' => [
+        'type' => 'error',
+        'msg' => 'Error al Ingresar la Observación. Reintente.'
+    ],
+    'exitocheck' => [
+        'type' => 'success',
+        'msg' => 'Solicitud Procesada con Éxito.'
+    ],
+    'errorcheck1' => [
+        'type' => 'error',
+        'msg' => 'Error al Procesar Solicitud. Reintente.'
+    ],
+    'exitoCancelar' => [
+        'type' => 'success',
+        'msg' => 'Solicitud Cancelada con Éxito.'
+    ],
+    'errorcancelar' => [
+        'type' => 'error',
+        'msg' => 'Error al Cancelar Solicitud. Reintente.'
+    ],
+];
+
+foreach ($toastrMessages as $param => $data) {
+    if (isset($_GET[$param])) {
+        echo "<script>toastr.{$data['type']}('{$data['msg']}');</script>";
+    }
+}
+?>
+
+
 <script>
     $(function () {
         $('#observacionTotal').DataTable({

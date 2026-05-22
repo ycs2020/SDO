@@ -30,7 +30,7 @@ $modulosInicio = [
         'items' => [
             [
                 'icono' => '<i class="fas fa-archive fa-2x"></i>',
-                'nombre' => 'OT en Ejecución',
+                'nombre' => 'Listado de OTs',
                 'ruta' => '../sdo-bodega-panol/trabajos_general_listado.php',
             ],
         ]

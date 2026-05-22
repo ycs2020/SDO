@@ -325,7 +325,7 @@ $buscarNombreServicio = buscarNombreServicio($servicio);
                                     &nbsp;
                                     <div class="col-lg-3 col-12">
 
-                                        <form style="margin: 0; text-align: center;" class="" action="../sdo-pdf/orden-trabajo.php" method="POST" target="_blank">
+                                        <form style="margin: 0; text-align: center;" class="" action="../sdo-pdf/SDO-Orden-Trabajo-Visor.php" method="POST" target="_blank">
                                             <input type="hidden" name="idTG" id="idTG" value="<?php echo $idTG ?>">
                                             <button type="submit" class="btn btn-block bg-gradient-primary btn-md text-white">
                                                 <i class="fas fa-clipboard"></i>&nbsp;Pre-visualizar OT

@@ -759,7 +759,7 @@ $contarNoControl = contarRespuestaNocontrol($idTG);
                                     <button class="btn bg-yellow show-listar-detalle" id="listarAC"
                                             style="display:none;" name="listarAC"><i class="fas fa-list"></i>&nbsp;Ver
                                         Detalle de la OT</button>
-                                    <form action="../sdo-pdf/orden-trabajo.php" method="POST" target="_blank">
+                                    <form action="../sdo-pdf/SDO-Orden-Trabajo-Visor.php" method="POST" target="_blank">
                                         <input type="hidden" name="idTG" id="idTG" value="<?php echo $idTG?>">
                                         <button type="submit" class="btn bg-primary" style="float: right;"><i
                                                     class="fas fa-clipboard"></i>&nbsp;Pre-visualizar OT</button>

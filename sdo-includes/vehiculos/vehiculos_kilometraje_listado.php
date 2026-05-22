@@ -23,6 +23,24 @@ function formatearFechaCompletaAJAX($fechaRaw)
     return $fechaCompleta;
 }
 
+
+function formatearSoloFechaAJAX($fechaRaw)
+{
+    if (empty($fechaRaw) || $fechaRaw == '0000-00-00 00:00:00' || $fechaRaw == '0000-00-00') {
+        return 'Sin fecha';
+    }
+
+    $timestamp = strtotime($fechaRaw);
+
+    if ($timestamp !== false) {
+        // Usamos tu función fechaEspañol2 para el día y date para la hora
+        $inicioFecha = fechaEspañol2($timestamp);
+        return "<b>$inicioFecha</b>";
+    }
+
+    return 'Fecha inválida';
+}
+
 function h($valor)
 {
     return htmlspecialchars((string)($valor ?? ''), ENT_QUOTES, 'UTF-8');
@@ -35,7 +53,7 @@ function m($valor)
 
 
 if ($idMovil > 0) {
-    $sql = "SELECT idKilometraje, fechaRegistro, cantKilometraje, registroMantenimiento 
+    $sql = "SELECT idKilometraje, fechaRegistro, cantKilometraje, registroMantenimiento, fechaSubida
             FROM historial_kilometraje_moviles 
             WHERE idMovil = ? 
             ORDER BY fechaRegistro DESC";
@@ -50,7 +68,7 @@ if ($idMovil > 0) {
             $idKilometraje = (int)$row['idKilometraje'];
             $valorLimpio = $row['cantKilometraje'];
             $fechaRegistro = $row['fechaRegistro'];
-
+            $fechaSubida = $row['fechaSubida'];
             $btnModificar = 'Deshabilitado';
             $btnEliminar = 'Deshabilitado';
 
@@ -65,6 +83,8 @@ if ($idMovil > 0) {
 
              // Formateamos la fecha para mostrar en la tabla
             $fechaRegistroTime = formatearFechaCompletaAJAX($fechaRegistro);
+            $fechaSubidaTime = formatearSoloFechaAJAX($fechaSubida);
+
 
             // Creamos una versión formateada para mostrar en la tabla (ej: 150.000)
             $row['cantKilometraje'] = number_format($valorLimpio, 0, ',', '.');
@@ -72,6 +92,7 @@ if ($idMovil > 0) {
             // Pasamos el valor numérico real en una llave oculta para que el botón de editar no falle
             $row['valorNumerico'] = $valorLimpio;
             $row['fechaRegistroFormateada'] = $fechaRegistroTime;
+            $row['fechaSubidaFormateada'] = $fechaSubidaTime;
             $row['btnModificar'] = $btnModificar;
             $row['btnEliminar'] = $btnEliminar;
 

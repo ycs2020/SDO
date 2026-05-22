@@ -13,6 +13,7 @@ $(document).ready(function () {
             // dataSrc: ""  <-- ELIMINADO: Tu PHP ya devuelve el objeto con la llave "data"
         },
         columns: [
+            { "data": "fechaSubidaFormateada" },
             { "data": "fechaRegistroFormateada" },
             { "data": "cantKilometraje" },
             { "data": "btnModificar" },

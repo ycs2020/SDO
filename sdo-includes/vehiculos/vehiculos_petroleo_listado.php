@@ -7,7 +7,7 @@ $idMovil = $_POST['idMovilAjax'] ?? null;
 // Función optimizada para mostrar Fecha y Hora en la tabla
 function formatearFechaCompletaAJAX($fechaRaw)
 {
-    if (empty($fechaRaw) || $fechaRaw == '0000-00-00 00:00:00') {
+    if (empty($fechaRaw) || $fechaRaw == '0000-00-00 00:00:00' || $fechaRaw == '0000-00-00') {
         return 'Sin fecha';
     }
 
@@ -18,6 +18,23 @@ function formatearFechaCompletaAJAX($fechaRaw)
         $inicioFecha = fechaEspañol2($timestamp);
         $horaFecha = date('H:i', $timestamp);
         return "<b>$inicioFecha</b><br><small><i class='far fa-clock mr-1'></i>$horaFecha hrs.</small>";
+    }
+
+    return 'Fecha inválida';
+}
+
+function formatearSoloFechaAJAX($fechaRaw)
+{
+    if (empty($fechaRaw) || $fechaRaw == '0000-00-00 00:00:00' || $fechaRaw == '0000-00-00') {
+        return 'Sin fecha';
+    }
+
+    $timestamp = strtotime($fechaRaw);
+
+    if ($timestamp !== false) {
+        // Usamos tu función fechaEspañol2 para el día y date para la hora
+        $inicioFecha = fechaEspañol2($timestamp);
+        return "<b>$inicioFecha</b>";
     }
 
     return 'Fecha inválida';
@@ -45,6 +62,7 @@ if ($idMovil) {
 
         // 2. Formateamos la visualización para la tabla
         $row['fechaFormateada'] = formatearFechaCompletaAJAX($row['fechaRegistro']);
+        $row['fechaSubidaFormateada'] = formatearSoloFechaAJAX($row['fechaSubida']);
 
         // 3. Formateo de valores monetarios y litros
         $row['numGuiaFormateada'] = h($row['numGuia']);

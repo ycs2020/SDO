@@ -1069,7 +1069,7 @@ while ($rowObs = $resObs->fetch_assoc()) {
                                                                     } else {
                                                                         ?>
 
-                                                                        <form action="../sdo-pdf/SDO-Formulario-SolicitudAcceso-Nuevo-Con-Listado.php" target="_blank" method="POST">
+                                                                        <form action="../sdo-pdf/SDO-Form-Solic-Acceso.php" target="_blank" method="POST">
                                                                             <input type="hidden" name="idFormRegAcceso" id="idFormRegAcceso" value="<?php echo $idSolicitud ?>">
                                                                             <button type="submit" class="btn btn-success"><i class="fas fa-file-pdf"></i></button>
                                                                         </form>

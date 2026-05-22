@@ -1,63 +1,42 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
 
-// Conexión global
 include_once '../sdo-funciones/conexion.php';
+include_once '../sdo-funciones/funciones.php';
 
-// 3. Verificar conexión
-if ($conexion->connect_errno) {
-    die("Fallo al conectar a MySQL: " . $conexion->connect_error);
-}
+$idTG = 5066;
+$nombreColumna = 'piso3';
 
-// 4. Consulta a la tabla
-$sql = "SELECT imagenCategoria FROM categorias_equipos";
-$result = $conexion->query($sql);
 
-// 5. Crear array con rutas
-$imagenes = [];
+// Control 1: Ver qué columna y qué ID estás intentando buscar
+echo "DEBUG - Columna: " . $nombreColumna . " | ID: " . $idTG . "<br>";
 
-if ($result && $result->num_rows > 0) {
-    while ($fila = $result->fetch_assoc()) {
-        $imagenes[] = $fila['imagenCategoria'];
-    }
-} else {
-    die("No se encontraron rutas en la tabla.");
-}
+$sql = "SELECT `$nombreColumna` FROM parametros_uma_bms WHERE idTG = ?";
 
-// 6. Carpeta de destino
-$carpetaDestino = "imgEquipos1/";
+if ($stmt = mysqli_prepare($conexion, $sql)) {
+    mysqli_stmt_bind_param($stmt, "i", $idTG);
 
-if (!file_exists($carpetaDestino)) {
-    if (!mkdir($carpetaDestino, 0777, true) && !is_dir($carpetaDestino)) {
-        throw new \RuntimeException(sprintf('Directory "%s" was not created', $carpetaDestino));
-    }
-}
-
-// 7. Copiar imágenes
-foreach ($imagenes as $ruta) {
-    $nombreArchivo = basename($ruta);
-    $rutaOrigen = realpath($ruta); // Intentar obtener ruta absoluta
-
-    // Si realpath falla (porque la ruta es relativa o externa), usar la ruta tal cual
-    if (!$rutaOrigen || !file_exists($rutaOrigen)) {
-        $rutaOrigen = $ruta;
+    // Control 2: Ver si la ejecución falla
+    if (!mysqli_stmt_execute($stmt)) {
+        echo "Error al ejecutar la consulta: " . mysqli_stmt_error($stmt) . "<br>";
     }
 
-    $rutaDestino = $carpetaDestino . $nombreArchivo;
+    $res = mysqli_stmt_get_result($stmt);
 
-    if (file_exists($rutaOrigen)) {
-        if (copy($rutaOrigen, $rutaDestino)) {
-            echo "✅ Copiado: $nombreArchivo<br>";
-        } else {
-            echo "❌ Error al copiar: $nombreArchivo<br>";
+    // Control 3: Ver cuántas filas devolvió la base de datos
+    echo "DEBUG - Filas encontradas: " . mysqli_num_rows($res) . "<br>";
+
+    while ($row = mysqli_fetch_assoc($res)) {
+        // Control 4: Ver qué datos están llegando realmente en cada fila
+        echo "DEBUG - Fila encontrada: ";
+        var_dump($row);
+        echo "<br>";
+
+        if (trim((string)$row[$nombreColumna]) !== '') {
+            $datosConcatenados .= $row[$nombreColumna] . "\n";
         }
-    } else {
-        echo "⚠️ No encontrado: $ruta<br>";
     }
+    mysqli_stmt_close($stmt);
+} else {
+    // Control 5: Si mysqli_prepare devuelve false, aquí verás por qué
+    echo "Error en la preparación de la consulta: " . mysqli_error($conexion) . "<br>";
 }
-
-// 8. Cerrar conexión
-$conexion->close();
-?>

@@ -884,7 +884,7 @@ $contarRondas = contarRonda($idTG);
 
             // Crear un formulario dinámico
             var form = $('<form>', {
-                'action': '../sdo-pdf/orden-trabajo.php', // Reemplaza 'tu_url_destino' con la URL de destino
+                'action': '../sdo-pdf/SDO-Orden-Trabajo-Visor.php', // Reemplaza 'tu_url_destino' con la URL de destino
                 'method': 'POST',
                 'target': '_blank',
             });

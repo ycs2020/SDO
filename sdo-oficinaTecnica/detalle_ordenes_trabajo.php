@@ -258,7 +258,7 @@ $contarOtros = contarOtros1($folioTG);
                                         <?php
                                     }else{
                                         ?>
-                                        <form style="margin: 0; text-align: center;" class="" action="../sdo-pdf/orden-trabajo.php" target="_blank" method="post">
+                                        <form style="margin: 0; text-align: center;" class="" action="../sdo-pdf/SDO-Orden-Trabajo-Visor.php" target="_blank" method="post">
 
                                             <input type="hidden" name="idTG" value="<?php echo $idTG; ?>">
 

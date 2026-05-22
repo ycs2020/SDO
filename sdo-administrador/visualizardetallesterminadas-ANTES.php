@@ -346,7 +346,7 @@ $contarRondas = contarRonda($idTG);
                                         </form>
                                         <br>
                                         <br>
-                                        <form action="../sdo-pdf/orden-trabajo.php" target="_blank" method="POST">
+                                        <form action="../sdo-pdf/SDO-Orden-Trabajo-Visor.php" target="_blank" method="POST">
                                             <input type="hidden" id="idTG" name="idTG" value="<?php echo $idTG?>">
                                             <input type="submit" id="inputMozi" style="float: right;" class="btn  btn-info" value="Ver Orden de Trabajo">
                                         </form>
@@ -1011,7 +1011,7 @@ $contarRondas = contarRonda($idTG);
 
                                                 </td>
                                                 <td>
-                                                    <form action="../sdo-pdf/orden-trabajo.php" target="_blank" method="POST">
+                                                    <form action="../sdo-pdf/SDO-Orden-Trabajo-Visor.php" target="_blank" method="POST">
                                                         <input type="hidden" id="idTG" name="idTG" value="<?php echo $idTG?>">
                                                         <input type="submit" id="inputMozi" class="btn btn-block btn-info" value="Ver Orden de Trabajo">
                                                     </form>

@@ -181,7 +181,7 @@ include '../sdo-funciones/funciones.php';
 
                                                         <form target="_blank" style="margin: 0; text-align: center;" class="" action="../sdo-pdf/SDO-TurnoTrabajado.php" method="post">
 
-                                                            <input type="hidden" name="idReporte" value="<?php echo $idReporte; ?>">
+                                                            <input type="hidden" name="idReporteVisual" value="<?php echo $idReporte; ?>">
                                                             <button type="submit" id="inputMozi" class="btn btn-block btn-success"><i class="fa fa-download"></i></button>
 
                                                         </form>

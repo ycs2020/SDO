@@ -9,19 +9,48 @@ if (session_status() == PHP_SESSION_NONE) {
 date_default_timezone_set('America/Santiago');
 $nomUsuario = $_SESSION['nomUsuario'] ?? '';
 
+function formatearFechaCompletaAJAX($fechaRaw)
+{
+    $fechaCompleta = 'FECHA NO INGRESADA';
+    if (!empty($fechaRaw)) {
+        $timestamp = strtotime(str_replace('/', '-', $fechaRaw));
+        if ($timestamp !== false && $timestamp > 0) {
+            $fechaCompleta = fechaEspañol2($timestamp);
+        }
+    }
+    return $fechaCompleta;
+}
+
 $response = [
     "data" => []
 ];
 
-/**
- * MEJORA CON NOT LIKE:
- * Al usar NOT LIKE '%trabajo terminado%' nos aseguramos de excluir cualquier registro
- * que contenga esa frase, ignorando espacios de más antes o después y problemas de Case Sensitivity.
- */
-$queryTG = "SELECT * FROM trabajos_general 
-            WHERE estadoTG NOT LIKE '%trabajo terminado%' 
-              AND estadoTG NOT LIKE '%trabajoTerminado%' 
-            ORDER BY fechaProgramacion DESC, folioTG DESC";
+// Query optimizada con el LEFT JOIN a departamentos
+$queryTG = "SELECT tg.*,
+       d.nomDepartamento,
+       d.iconoDepartamento,
+       COALESCE(obs.total_obs, 0) AS contarObs,
+       COALESCE(lv.material, 0) AS contarMaterial,
+       COALESCE(lv.panol, 0) AS contarPanol,
+       COALESCE(lv.rechazado, 0) AS contarRechazadoPanol,
+       COALESCE(lv.aceptado, 0) AS contarAceptadoPanol
+FROM trabajos_general tg
+LEFT JOIN departamentos d ON tg.departamento = d.idDepartamento 
+LEFT JOIN (
+    SELECT idTG, COUNT(*) AS total_obs 
+    FROM observacion_ot 
+    GROUP BY idTG
+) obs ON tg.idTG = obs.idTG
+LEFT JOIN (
+    SELECT idTG,
+           SUM(IF(isMaterialSoliCompra = 1, 1, 0)) AS material,
+           SUM(IF(isPanol = 1, 1, 0)) AS panol,
+           SUM(IF(rechazadoPanol = 1, 1, 0)) AS rechazado,
+           SUM(IF(respuestaPanol = 1, 1, 0)) AS aceptado
+    FROM linea_vida_ot
+    GROUP BY idTG
+) lv ON tg.idTG = lv.idTG
+ORDER BY tg.fechaProgramacion DESC, tg.folioTG DESC;";
 
 $resTG = mysqli_query($conexion, $queryTG);
 
@@ -29,7 +58,6 @@ if ($resTG) {
     while ($rowTG = $resTG->fetch_assoc()) {
 
         $idTG              = isset($rowTG['idTG']) ? trim($rowTG['idTG']) : '';
-        $fechaTG           = $rowTG['fechaTG'] ?? '';
         $fechaProgramacion = $rowTG['fechaProgramacion'] ?? '';
         $turnoTG           = isset($rowTG['turnoTG']) ? trim($rowTG['turnoTG']) : '';
         $solicitanteTG     = isset($rowTG['solicitanteTG']) ? trim($rowTG['solicitanteTG']) : '';
@@ -38,78 +66,76 @@ if ($resTG) {
         $folioTG           = $rowTG['folioTG'] ?? '';
         $descripcion       = isset($rowTG['descripcion']) ? trim($rowTG['descripcion']) : '';
 
-        // Contadores
-        $contarMaterial       = contarMaterial($idTG);
-        $contarObs            = contarObs($idTG);
-        $contarPanol          = contarPanol($idTG);
-        $contarRechazadoPanol = contarRechazadoPanol($idTG);
-        $contarAceptadoPanol  = contarAceptadoPanol($idTG);
-
-        // Lógica de prioridad de colores
-        $styleRow = "";
-        if ($tecnico1 == $nomUsuario) {
-            $styleRow = "background-color: #FFC107; color: black;";
-        } else if ($contarMaterial > 0) {
-            $styleRow = "background-color: indianred; color: white;";
-        } else if ($contarPanol > 0) {
-            $styleRow = "background-color: blue; color: white;";
-        } else if ($contarAceptadoPanol > 0) {
-            $styleRow = "background-color: green; color: white;";
-        } else if ($contarRechazadoPanol > 0) {
-            $styleRow = "background-color: red; color: white;";
+        // Capturar el nombre del departamento y armar HTML con comillas corregidas
+        $nomDepartamento = isset($rowTG['nomDepartamento']) ? trim($rowTG['nomDepartamento']) : 'SIN DEPARTAMENTO';
+        // FORZAR EL CAMBIO DE NOMBRE
+        if (strcasecmp($nomDepartamento, 'Instrumentación') == 0) {
+            $nomDepartamento = 'CONTROL CENTRALIZADO';
         }
 
-        // Formateo seguro de fechaProgramacion
-        $txtFechaProg = "No registra fecha";
-        if ($fechaProgramacion != '0' && !empty($fechaProgramacion) && $fechaProgramacion != '0000-00-00') {
-            $txtFechaProg = date('d/m/Y', strtotime(str_replace('/', '-', $fechaProgramacion)));
+        $iconoDep        = !empty($rowTG['iconoDepartamento']) ? trim($rowTG['iconoDepartamento']) : '<i class="fas fa-laptop"></i>';
+        $departamentoHTML = $iconoDep.' '. mb_strtoupper($nomDepartamento, 'UTF-8');
+
+        // --- LÓGICA DE COLORES POR ESTADO DE TRABAJO ---
+        $badgeEstado = "badge-warning"; // Por defecto: Amarillo
+        $txtEstado   = "NO REGISTRA ESTADO";
+
+        if (!empty($estadoTG)) {
+            $estadoNormalizado = strtolower(preg_replace('/\s+/', '', $estadoTG));
+
+            if ($estadoNormalizado === 'trabajoingresado') {
+                $badgeEstado = "badge-success"; // Verde
+                $txtEstado   = "TRABAJO INGRESADO";
+            } elseif ($estadoNormalizado === 'trabajoterminado') {
+                $badgeEstado = "badge-danger"; // Rojo
+                $txtEstado   = "TRABAJO TERMINADO";
+            } else {
+                $badgeEstado = "badge-warning text-dark"; // Amarillo
+                $txtEstado   = $estadoTG;
+            }
         }
 
-        $txtTurno       = empty($turnoTG) ? "No registra Turno" : $turnoTG;
-        $txtSolicitante = empty($solicitanteTG) ? "No registra Solicitante" : $solicitanteTG;
-        $txtDesc        = empty($descripcion) ? "Sin informacion" : $descripcion;
+        // HTML del Estado usando los badges estéticos
+        $estadoHTML = '<span class="badge ' . $badgeEstado . ' p-2 text-wrap d-block" style="font-size:11px; font-weight:600; letter-spacing: 0.5px;">' . mb_strtoupper($txtEstado, 'UTF-8') . '</span>';
 
-        if (empty($estadoTG)) {
-            $txtEstado = "No registra Estado";
-        } else {
-            $txtEstado = (strpos(strtolower($estadoTG), 'trabajoterminado') !== false || strpos(strtolower($estadoTG), 'trabajo terminado') !== false) ? "Trabajo Terminado" : $estadoTG;
+        // Estilizado del Folio
+        $folioHTML = '<span class="text-primary font-weight-bold" style="font-size: 1.05rem;">' . mb_strtoupper($folioTG, 'UTF-8') . '</span>';
+
+        // Destacar si la fila es del técnico logueado
+        $rowClass = "";
+        if (!empty($tecnico1) && !empty($nomUsuario) && strcasecmp($tecnico1, $nomUsuario) == 0) {
+            $rowClass = "ot-asignada-usuario";
         }
 
-        // Lógica informativa de estados internos
-        $txtInfo = "Sin Informacion";
-        if ($contarPanol > 0) {
-            $txtInfo = "Funcionario asignado ha solicitado materiales y/o herramientas";
-        } else if ($contarMaterial > 0) {
-            $txtInfo = "EL FUNCIONARIO ASIGNADO HA SOLICITADO MATERIALES POR SOLICITUD DE COMPRA";
-        } else if ($contarAceptadoPanol > 0) {
-            $txtInfo = "La solicitud hacia pañol se ha entregado con exito";
-        } else if ($contarRechazadoPanol > 0) {
-            $txtInfo = "La solicitud se ha rechazado por personal de pañol";
-        }
-
-        // Botón de acción para el detalle
+        // Botón Detalle
         if (empty($idTG) || $idTG == "0") {
-            $txtDetalles = "Error al Cargar Datos.";
+            $txtDetalles = '<span class="text-danger small">Error al Cargar Datos</span>';
         } else {
-            $txtDetalles = '<form style="margin: 0; text-align: center;" action="detalle_ordenes_trabajo.php" method="post">
+            $txtDetalles = '<form style="margin: 0; text-align: center;" action="../sdo-pdf/SDO-Orden-Trabajo-Visor.php" method="post" target="_blank">
                                 <input type="hidden" name="idTG" value="' . $idTG . '">
-                                <button type="submit" class="btn btn-sm btn-block btn-info"><i class="fa fa-eye"></i></button>
+                                <button type="submit" class="btn btn-sm btn-info btn-circle shadow-sm" title="Ver Detalles"><i class="fa fa-eye"></i></button>
                             </form>';
         }
 
+        $txtFechaProg   = formatearFechaCompletaAJAX($fechaProgramacion);
+        $txtTurno       = empty($turnoTG) ? "NO REGISTRA TURNO" : $turnoTG;
+        $txtSolicitante = empty($solicitanteTG) ? "NO REGISTRA SOLICITANTE" : $solicitanteTG;
+        $txtDesc        = empty($descripcion) ? "SIN INFORMACION" : $descripcion;
+
         $response["data"][] = [
-            "fecha_programacion"  => $txtFechaProg,
-            "folio_trabajo"       => $folioTG,
-            "turno_trabajo"       => $txtTurno,
-            "solicitante"         => $txtSolicitante,
-            "tecnico_responsable" => $tecnico1,
-            "estado"              => $txtEstado,
-            "descripcion"         => $txtDesc,
-            "informacion"         => $txtInfo,
+            "fecha_programacion"  => mb_strtoupper($txtFechaProg, 'UTF-8'),
+            "folio_trabajo"       => $folioHTML,
+            "turno_trabajo"       => mb_strtoupper($txtTurno, 'UTF-8'),
+            "departamento"        => $departamentoHTML,
+            "solicitante"         => mb_strtoupper($txtSolicitante, 'UTF-8'),
+            "tecnico_responsable" => mb_strtoupper($tecnico1, 'UTF-8'),
+            "estado"              => $estadoHTML,
+            "descripcion"         => mb_strtoupper($txtDesc, 'UTF-8'),
             "detalles"            => $txtDetalles,
-            "DT_RowStyle"         => $styleRow
+            "DT_RowClass"         => $rowClass
         ];
     }
+    $resTG->free();
 }
 
 header('Content-Type: application/json');
