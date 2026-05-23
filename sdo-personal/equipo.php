@@ -321,12 +321,17 @@ if($_POST['idEquipo']){
     <?php
     include '../sdo-templates/user-sidebar.php';
 
+    $textoExtra = '';
+    if($nomUsuario === 'Shai Emmanuel Santibañez Osses'){
+        $textoExtra = 'Shai, por favor verifica si los cambios se guardaron correctamente.';
+    }
+
     if(isset($_GET['exitoEditarEquipo'])){
         ?>
         <script>
             Swal.fire(
                 'Exito!',
-                'Se guardo los cambios correctamente ',
+                'Cambios Guardados con Exito. <?php echo "<br><b>$textoExtra</b>"; ?>',
                 'success'
             )
         </script>

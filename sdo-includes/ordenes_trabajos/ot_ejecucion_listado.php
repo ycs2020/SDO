@@ -8,6 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
 
 date_default_timezone_set('America/Santiago');
 $nomUsuario = $_SESSION['nomUsuario'] ?? '';
+$rolBtn = $_POST['rolBtn'] ?? '';
 
 function formatearFechaCompletaAJAX($fechaRaw)
 {
@@ -57,14 +58,14 @@ $resTG = mysqli_query($conexion, $queryTG);
 if ($resTG) {
     while ($rowTG = $resTG->fetch_assoc()) {
 
-        $idTG              = isset($rowTG['idTG']) ? trim($rowTG['idTG']) : '';
+        $idTG = isset($rowTG['idTG']) ? trim($rowTG['idTG']) : '';
         $fechaProgramacion = $rowTG['fechaProgramacion'] ?? '';
-        $turnoTG           = isset($rowTG['turnoTG']) ? trim($rowTG['turnoTG']) : '';
-        $solicitanteTG     = isset($rowTG['solicitanteTG']) ? trim($rowTG['solicitanteTG']) : '';
-        $estadoTG          = isset($rowTG['estadoTG']) ? trim($rowTG['estadoTG']) : '';
-        $tecnico1          = $rowTG['tecnico1'] ?? '';
-        $folioTG           = $rowTG['folioTG'] ?? '';
-        $descripcion       = isset($rowTG['descripcion']) ? trim($rowTG['descripcion']) : '';
+        $turnoTG = isset($rowTG['turnoTG']) ? trim($rowTG['turnoTG']) : '';
+        $solicitanteTG = isset($rowTG['solicitanteTG']) ? trim($rowTG['solicitanteTG']) : '';
+        $estadoTG = isset($rowTG['estadoTG']) ? trim($rowTG['estadoTG']) : '';
+        $tecnico1 = $rowTG['tecnico1'] ?? '';
+        $folioTG = $rowTG['folioTG'] ?? '';
+        $descripcion = isset($rowTG['descripcion']) ? trim($rowTG['descripcion']) : '';
 
         // Capturar el nombre del departamento y armar HTML con comillas corregidas
         $nomDepartamento = isset($rowTG['nomDepartamento']) ? trim($rowTG['nomDepartamento']) : 'SIN DEPARTAMENTO';
@@ -73,25 +74,25 @@ if ($resTG) {
             $nomDepartamento = 'CONTROL CENTRALIZADO';
         }
 
-        $iconoDep        = !empty($rowTG['iconoDepartamento']) ? trim($rowTG['iconoDepartamento']) : '<i class="fas fa-laptop"></i>';
-        $departamentoHTML = $iconoDep.' '. mb_strtoupper($nomDepartamento, 'UTF-8');
+        $iconoDep = !empty($rowTG['iconoDepartamento']) ? trim($rowTG['iconoDepartamento']) : '<i class="fas fa-laptop"></i>';
+        $departamentoHTML = $iconoDep . ' ' . mb_strtoupper($nomDepartamento, 'UTF-8');
 
         // --- LÓGICA DE COLORES POR ESTADO DE TRABAJO ---
         $badgeEstado = "badge-warning"; // Por defecto: Amarillo
-        $txtEstado   = "NO REGISTRA ESTADO";
+        $txtEstado = "NO REGISTRA ESTADO";
 
         if (!empty($estadoTG)) {
             $estadoNormalizado = strtolower(preg_replace('/\s+/', '', $estadoTG));
 
             if ($estadoNormalizado === 'trabajoingresado') {
                 $badgeEstado = "badge-success"; // Verde
-                $txtEstado   = "TRABAJO INGRESADO";
+                $txtEstado = "TRABAJO INGRESADO";
             } elseif ($estadoNormalizado === 'trabajoterminado') {
                 $badgeEstado = "badge-danger"; // Rojo
-                $txtEstado   = "TRABAJO TERMINADO";
+                $txtEstado = "TRABAJO TERMINADO";
             } else {
                 $badgeEstado = "badge-warning text-dark"; // Amarillo
-                $txtEstado   = $estadoTG;
+                $txtEstado = $estadoTG;
             }
         }
 
@@ -111,28 +112,52 @@ if ($resTG) {
         if (empty($idTG) || $idTG == "0") {
             $txtDetalles = '<span class="text-danger small">Error al Cargar Datos</span>';
         } else {
-            $txtDetalles = '<form style="margin: 0; text-align: center;" action="../sdo-pdf/SDO-Orden-Trabajo-Visor.php" method="post" target="_blank">
+            if ($rolBtn == 'detalle') {
+
+                switch ($txtEstado) {
+                    case 'TRABAJO INGRESADO':
+                        $txtDetalles = '<form style="margin: 0; text-align: center;" action="detalle_ordenes_trabajo.php" method="post" target="_blank">
+                                        <input type="hidden" name="idTG" value="' . $idTG . '">
+                                        <button type="submit" class="btn btn-sm btn-info btn-block shadow-sm" title="Ver Detalles"><i class="fa fa-eye"></i></button>
+                                    </form>';
+                        break;
+                    case 'TRABAJO TERMINADO':
+                        $txtDetalles = '<form style="margin: 0; text-align: center;" action="visualizardetallesterminadas.php" method="post" target="_blank">
+                                        <input type="hidden" name="idTG" value="' . $idTG . '">
+                                        <button type="submit" class="btn btn-sm btn-info btn-block shadow-sm" title="Ver Detalles"><i class="fa fa-eye"></i></button>
+                                    </form>';
+                        break;
+                    default:
+                        $txtDetalles = '<form style="margin: 0; text-align: center;" action="../sdo-pdf/SDO-Orden-Trabajo-Visor.php" method="post" target="_blank">
+                                        <input type="hidden" name="idTG" value="' . $idTG . '">
+                                        <button type="submit" class="btn btn-sm btn-info btn-block shadow-sm" title="Ver Detalles"><i class="fa fa-eye"></i></button>
+                                    </form>';
+                        break;
+                }
+            } else {
+                $txtDetalles = '<form style="margin: 0; text-align: center;" action="../sdo-pdf/SDO-Orden-Trabajo-Visor.php" method="post" target="_blank">
                                 <input type="hidden" name="idTG" value="' . $idTG . '">
-                                <button type="submit" class="btn btn-sm btn-info btn-circle shadow-sm" title="Ver Detalles"><i class="fa fa-eye"></i></button>
+                                <button type="submit" class="btn btn-sm btn-info btn-block shadow-sm" title="Ver Detalles"><i class="fa fa-eye"></i></button>
                             </form>';
+            }
         }
 
-        $txtFechaProg   = formatearFechaCompletaAJAX($fechaProgramacion);
-        $txtTurno       = empty($turnoTG) ? "NO REGISTRA TURNO" : $turnoTG;
+        $txtFechaProg = formatearFechaCompletaAJAX($fechaProgramacion);
+        $txtTurno = empty($turnoTG) ? "NO REGISTRA TURNO" : $turnoTG;
         $txtSolicitante = empty($solicitanteTG) ? "NO REGISTRA SOLICITANTE" : $solicitanteTG;
-        $txtDesc        = empty($descripcion) ? "SIN INFORMACION" : $descripcion;
+        $txtDesc = empty($descripcion) ? "SIN INFORMACION" : $descripcion;
 
         $response["data"][] = [
-            "fecha_programacion"  => mb_strtoupper($txtFechaProg, 'UTF-8'),
-            "folio_trabajo"       => $folioHTML,
-            "turno_trabajo"       => mb_strtoupper($txtTurno, 'UTF-8'),
-            "departamento"        => $departamentoHTML,
-            "solicitante"         => mb_strtoupper($txtSolicitante, 'UTF-8'),
+            "fecha_programacion" => mb_strtoupper($txtFechaProg, 'UTF-8'),
+            "folio_trabajo" => $folioHTML,
+            "turno_trabajo" => mb_strtoupper($txtTurno, 'UTF-8'),
+            "departamento" => $departamentoHTML,
+            "solicitante" => mb_strtoupper($txtSolicitante, 'UTF-8'),
             "tecnico_responsable" => mb_strtoupper($tecnico1, 'UTF-8'),
-            "estado"              => $estadoHTML,
-            "descripcion"         => mb_strtoupper($txtDesc, 'UTF-8'),
-            "detalles"            => $txtDetalles,
-            "DT_RowClass"         => $rowClass
+            "estado" => $estadoHTML,
+            "descripcion" => mb_strtoupper($txtDesc, 'UTF-8'),
+            "detalles" => $txtDetalles,
+            "DT_RowClass" => $rowClass
         ];
     }
     $resTG->free();

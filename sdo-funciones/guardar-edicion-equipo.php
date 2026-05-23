@@ -82,33 +82,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $numSerie = $_POST['numSerie'];
             $tipoControlador = $_POST['tipoControlador'];
 
-//            if($tipoControlador == 'esclavo'){
-            $device = $_POST['device'];
-            $network = $_POST['network'];
-            $mac = $_POST['mac'];
-            $tcc = $_POST['tcc'];
-            $ejestcc = $_POST['ejestcc'];
-            $alimentaciontcc = $_POST['alimentaciontcc'];
-            $ejesECBOSS = '';
-            $ejesRack = '';
-            $rack = '';
-            $puerto = '';
-            $direccionIP = '';
-//            }
-//            if($tipoControlador == 'maestro'){
-            $ejesECBOSS = $_POST['ejesECBOSS'];
-            $ejesRack = $_POST['ejesRack'];
-            $rack = $_POST['rack'];
-            $puerto = $_POST['puerto'];
-            $direccionIP = $_POST['direccionIP'];
-            $device = '';
-            $network = '0';
-            $mac = '0';
-            $tcc = '';
-            $ejestcc = '';
-            $alimentaciontcc = '';
+            if ($tipoControlador === 'esclavo') {
+                $device = $_POST['device'];
+                $network = $_POST['network'];
+                $mac = $_POST['mac'];
+                $tcc = $_POST['tcc'];
+                $ejestcc = $_POST['ejestcc'];
+                $alimentaciontcc = $_POST['alimentaciontcc'];
+                $ejesECBOSS = '';
+                $ejesRack = '';
+                $rack = '';
+                $puerto = '';
+                $direccionIP = '';
+            }
+            if ($tipoControlador === 'maestro') {
+                $ejesECBOSS = $_POST['ejesECBOSS'];
+                $ejesRack = $_POST['ejesRack'];
+                $rack = $_POST['rack'];
+                $puerto = $_POST['puerto'];
+                $direccionIP = $_POST['direccionIP'];
+                $device = '';
+                $network = '0';
+                $mac = '0';
+                $tcc = '';
+                $ejestcc = '';
+                $alimentaciontcc = '';
 
-//            }
+            }
             $umaControl = $_POST['umaControl'];
 
             //UBICACIÓN
@@ -164,6 +164,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             //INSERTAMOS EN LA TABLA CORRESPONDIENTE
             $sqlInsert = "UPDATE equipamiento_hbqp SET alimentaciontcc = '$alimentaciontcc', device_id = '$device', mac_address = '$mac', tcc = '$tcc', ejesTCC = '$ejestcc', network = '$network', rack = '$rack' , puerto = '$puerto', direccionIP = '$direccionIP', ejesRack = '$ejesRack' , ejesECBoss = '$ejesECBOSS', numeroInventario = '$inputInventario', fechaRecepcion = '$fechaRecepcion', nombreEquipo = '$nombreEquipo' , marca = '$marcaEquipo' , modelo = '$modeloEquipo', idServicio = $servicio, recinto = '$recinto' , pma = '$pma', coordenadas = '$coordenadas', fechaCompra = '$fechaCompra', valorConIva = '$valorConIva', idLicitacion = '$IDLicitacion', ordenCompra = '$ordenCompra', fechaMarcha = '$fechaMarcha', clase = '$clase', subclase = '$subClase', complejidadTec = '$complejidad', nivelRiesgo = '$riesgo', AhnoFrabricacion = '$fechaFabricación', vidaUtil = '$vidaUtil', versionSoftware = '$versionSoftware', paisOrigen = '$paisOrigen', terminoGarantia = '$terminoGarantia', costoMantAnual = '$costoMantencion', frecuenciaMantenimiento = '$inputMantenimiento',numeroSerie = '$numSerie', piso = '$piso', equipo_controla = '$equipoQueControla2', sourceAlarma = '$sourceAlarmaMod2', tipoMenu = '$tipoInterfaz2', umaControl = '$umaControl' WHERE id = $idEquipo";
+
+
             $resInsert = mysqli_query($conexion, $sqlInsert);
             if ($resInsert) {
                 header('Location: ../' . $rutaUsuario . '/' . $sitioWeb . '?exitoEditarEquipo=true');

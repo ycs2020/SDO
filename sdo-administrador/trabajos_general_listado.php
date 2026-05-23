@@ -1,63 +1,77 @@
 <?php
 include '../sdo-funciones/conexion.php';
-
 include '../sdo-funciones/funciones.php';
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+
 $descargaConfirma = "";
-$idUsuario = $_SESSION['idUsuario'];
-$userUsuario = $_SESSION['userUsuario'];
-$rolUsuario = $_SESSION['rolUsuario'];
-$rolUsuario2 = strtolower($rolUsuario);
-$nomUsuario = $_SESSION['nomUsuario'];
-
-
+$idUsuario = $_SESSION['idUsuario'] ?? null;
+$userUsuario = $_SESSION['userUsuario'] ?? null;
+$rolUsuario = $_SESSION['rolUsuario'] ?? null;
+$rolUsuario2 = $rolUsuario ? strtolower($rolUsuario) : null;
+$nomUsuario = $_SESSION['nomUsuario'] ?? null;
 
 date_default_timezone_set('America/Santiago');
 
+// Verificar que las variables necesarias existan y no estén vacías
+if (isset($_POST['folio']) && isset($_POST['idTG1']) && !empty($_POST['idTG1'])) {
 
-if (isset($_POST['folio'])) {
-    $folioTG = $_POST['folio'];
-    $idTG1 = $_POST['idTG1'];
-    //$directorio = "../sdo-administrador/archivos-recepcion-documentos/folio-". $folio2 ."/numDocumento-" . $numDocumento . "/";
-    if ($idTG1 > 0) {
-        if (empty($idTG1) || $idTG1 == '') {
-        }else{
-            ini_set("memory_limit", "1256M");
+    // Sanitización básica para evitar Path Traversal (Inyección de rutas)
+    $folioTG = preg_replace('/[^a-zA-Z0-9_\-]/', '', $_POST['folio']);
+    $idTG1 = intval($_POST['idTG1']);
+
+    if ($idTG1 > 0 && !empty($folioTG)) {
+        ini_set("memory_limit", "1256M");
+
+        // Definición de rutas consistentes
+        $dirOrigen = "../sdo-administrador/archivos-recepcion-documentos/folio-" . $folioTG . "/";
+        $rutaDestino = "../sdo-administrador/";
+        $nombreZip = "Documentos-" . $folioTG . ".zip";
+        $rutaCompletaZip = $rutaDestino . $nombreZip;
+
+        // Validar que la carpeta de origen exista antes de hacer nada
+        if (is_dir($dirOrigen)) {
             $zip = new ZipArchive();
-            $dir = "../sdo-administrador/archivos-recepcion-documentos/folio-". $folioTG ."/";
-            $dir2 = $dir . "/";
-            $rutaFinal = "../sdo-administrador/";
-            $archivoZip = "Documentos-" . $folioTG . ".zip";
-            if ($zip->open($archivoZip, ZIPARCHIVE::CREATE) === true) {
-                agregar_zip($dir2, $zip);
+
+            if ($zip->open($rutaCompletaZip, ZipArchive::CREATE | ZipArchive::OVERWRITE) === true) {
+                // Se asume que agregar_zip() está definida en funciones.php
+                agregar_zip($dirOrigen, $zip);
                 $zip->close();
-                // echo '<script type="text/javascript">alert("'.$dir.'");</script>';
-                if (file_exists($rutaFinal . $archivoZip)) {
-                    $absoluteFilePath = $rutaFinal . "/" . $archivoZip;
+
+                // Verificar la existencia real del archivo ZIP creado
+                if (file_exists($rutaCompletaZip)) {
+                    // Limpiar buffers de salida para evitar corrupción del ZIP
+                    if (ob_get_level()) {
+                        ob_end_clean();
+                    }
+
+                    // Cabeceras HTTP para forzar la descarga masiva y segura
                     header('Content-Description: File Transfer');
-                    header('Content-Type: application/octet-stream');
-                    header('Content-Disposition: attachment; filename=' . basename($archivoZip));
+                    header('Content-Type: application/zip'); // Tipo de contenido correcto para ZIP
+                    header('Content-Disposition: attachment; filename="' . basename($nombreZip) . '"');
                     header('Content-Transfer-Encoding: binary');
                     header('Expires: 0');
-                    header('Cache-Control: must-revalidate');
+                    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
                     header('Pragma: public');
-                    header('Content-Length: ' . filesize($archivoZip));
-                    ob_clean();
-                    flush();
-                    readfile($archivoZip);
-                    unlink($archivoZip); //Esta línea destruye el elemento zip que se genera
+                    header('Content-Length: ' . filesize($rutaCompletaZip));
+
+                    // Descargar y eliminar de inmediato
+                    readfile($rutaCompletaZip);
+                    unlink($rutaCompletaZip);
                     exit;
                 } else {
-                    $descargaConfirma .= "N";
+                    $descargaConfirma = "N"; // Error: El archivo no se creó
                 }
+            } else {
+                $descargaConfirma = "E"; // Error: No se pudo abrir/crear el ZIP
             }
+        } else {
+            $descargaConfirma = "D"; // Error: El directorio de origen no existe
         }
     }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -93,14 +107,6 @@ if (isset($_POST['folio'])) {
     <!-- include summernote js-->
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
     <style>
-        .reset {
-            all: revert;
-        }
-
-        #cargaCombustible,
-        #medicionNormal {
-            display: none;
-        }
         .select2-container .select2-selection--single {
             height: calc(2.25rem + 2px);
             border: 1px solid #ced4da;
