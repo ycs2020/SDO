@@ -451,8 +451,13 @@ $contarRondas = contarRonda($idTG);
 
                                                     // Generar las filas de la tabla
                                                     foreach ($filas2 as $fila2) {
-                                                        // Para el estado de credencial aplicamos los estilos condicionales
-                                                        echo "<tr><td style='width: 25%'><b>{$fila2[0]}:</b></td><td style='width: 75%'>{$fila2[1]}</td></tr>";
+                                                        if (!empty(trim($fila2[1]))) {
+                                                            // Aplicamos htmlspecialchars para seguridad y nl2br para respetar los saltos de línea
+                                                            $contenidoFormateado = nl2br(htmlspecialchars($fila2[1], ENT_QUOTES, 'UTF-8'));
+                                                            echo "<tr><td style='width: 25%'><b>{$fila2[0]}:</b></td><td style='width: 75%'>{$contenidoFormateado}</td></tr>";
+                                                        }else{
+                                                            echo "<tr><td style='width: 25%'><b>{$fila2[0]}:</b></td><td style='width: 75%'>Sin Trabajos Programados.</td></tr>";
+                                                        }
                                                     }
                                                     ?>
 

@@ -392,6 +392,7 @@ date_default_timezone_set('America/Santiago');
                                         while ($rowTG = $resTG->fetch_assoc()) {
 
                                             $fechaTG = $rowTG['fechaTG'];
+                                            $fechaProgramacion = $rowTG['fechaProgramacion'];
 
                                             $turnoTG = $rowTG['turnoTG'];
                                             $turnoTG = trim($turnoTG);
@@ -416,16 +417,16 @@ date_default_timezone_set('America/Santiago');
 
                                             <tr style="<?php echo $colorTR?>">
                                                 <td style="vertical-align:middle;" nowrap="nowrap" align="center">
-                                                    <?php if ($fechaTG == 0) {
+                                                    <?php if ($fechaProgramacion == 0) {
                                                         echo "No registra fecha";
                                                     } else {
 
-                                                        $registrofechaTG = date('d/m/Y', strtotime(str_replace('/', '-', $fechaTG)));
-                                                        $registroHoraTG = date('H:i', strtotime($fechaTG));
+                                                        $registrofechaProgramacion = date('d/m/Y', strtotime(str_replace('/', '-', $fechaProgramacion)));
+//                                                        $registroHoraProgramacion = date('H:i', strtotime($fechaProgramacion));
 
                                                         // echo $registrofechaAC . ' a las ' . $registroHoraMC.' hrs.';
 
-                                                        echo $registrofechaTG . ' a las ' . $registroHoraTG . ' hrs';
+                                                        echo $registrofechaProgramacion;
                                                     } ?>
 
                                                 </td>

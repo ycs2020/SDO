@@ -12507,6 +12507,11 @@ function contarDetalleNoControl($idTG)
     return contarRegistrosGeneral('observacion_ot', $idTG);
 }
 
+function contarArchivosOT($idTG)
+{
+    return contarRegistrosGeneral('Archivos_Trabajo_General', $idTG);
+}
+
 /**
  * FUNCIÓN MAESTRA GENERAL (Segura contra Inyección SQL y eficiente)
  */
@@ -12751,6 +12756,144 @@ function getNomSubDepartamentoNuevo($id)
     mysqli_close($conexion);
     return $nomSubDepartamento;
 }
+
+function contardatosfuncionario($idTG)
+{
+    include 'conexion.php';
+    $sqlBuscar = "SELECT COUNT(*) AS TOTAL FROM `datos_credencial_funcionarios` WHERE idTG = $idTG";
+    $resBuscar = mysqli_query($conexion, $sqlBuscar);
+    $total = 0;
+    if($resBuscar){
+        while($rowBuscar = $resBuscar->fetch_assoc()){
+            $total = $rowBuscar['TOTAL'];
+        }
+    }
+    return $total;
+}
+
+function consultarObs($idCredencial,$idTG)
+{
+    include 'conexion.php';
+    $sql = "SELECT COUNT(*) AS TOTAL FROM `observaciones_rrhh_control` WHERE idCredencial = $idCredencial AND idTG = $idTG";
+    $res = mysqli_query($conexion, $sql);
+    $total = 0;
+    if($res){
+        while($row = $res->fetch_assoc()){
+            $total = $row['TOTAL'];
+        }
+    }
+    return $total;
+}
+
+function revisadoOperadores($idCredencial,$idTG)
+{
+    include 'conexion.php';
+    $sql = "SELECT COUNT(*) AS TOTAL FROM `datos_credencial_funcionarios` WHERE idCredencial = $idCredencial AND idTG = $idTG AND revisadoOperadores = 1";
+    $res = mysqli_query($conexion, $sql);
+    $total = 0;
+    if($res){
+        while($row = $res->fetch_assoc()){
+            $total = $row['TOTAL'];
+        }
+    }
+    return $total;
+}
+
+function contarTodoListo($idTG)
+{
+    include 'conexion.php';
+    $sql = "SELECT COUNT(*) AS TOTAL FROM `datos_credencial_funcionarios` WHERE idTG = $idTG AND revisadoOperadores = 1";
+    $res = mysqli_query($conexion, $sql);
+    $total = 0;
+    if($res){
+        while($row = $res->fetch_assoc()){
+            $total = $row['TOTAL'];
+        }
+    }
+    return $total;
+}
+
+function contarDatosFunc($idTG)
+{
+    include 'conexion.php';
+    $sql = "SELECT COUNT(*) AS TOTAL FROM `datos_credencial_funcionarios` WHERE idTG = $idTG";
+    $res = mysqli_query($conexion, $sql);
+    $total = 0;
+    if($res){
+        while($row = $res->fetch_assoc()){
+            $total = $row['TOTAL'];
+        }
+    }
+    return $total;
+}
+
+function contarCredencialesHabilitadas($idCredencialVer)
+{
+    include 'conexion.php';
+    $sql = "SELECT COUNT(*) AS TOTAL FROM `credenciales_rrhh_registro_tarjetas` WHERE idCredencial = $idCredencialVer AND activacionCredencial = 2";
+    $res = mysqli_query($conexion, $sql);
+    $total = 0;
+    if($res){
+        while($row = $res->fetch_assoc()){
+            $total = $row['TOTAL'];
+        }
+    }
+    return $total;
+}
+
+function contarCredencialesDeshabilitadas($idCredencialVer)
+{
+    include 'conexion.php';
+    $sql = "SELECT COUNT(*) AS TOTAL FROM `credenciales_rrhh_registro_tarjetas` WHERE idCredencial = $idCredencialVer AND activacionCredencial = 3";
+    $res = mysqli_query($conexion, $sql);
+    $total = 0;
+    if($res){
+        while($row = $res->fetch_assoc()){
+            $total = $row['TOTAL'];
+        }
+    }
+    return $total;
+}
+
+
+function contarNotificacionesPersonal()
+{
+    include 'conexion.php';
+    $sql = "SELECT COUNT(*) AS total
+            FROM credenciales_rrhh_observaciones
+            WHERE notificado = 0
+            AND tipoObservacion <> 'Trabajo Realizado'";
+
+    $res = $conexion->query($sql);
+
+    $total = 0;
+    if($res){
+        while($row = $res->fetch_assoc()){
+            $total = $row['total'];
+        }
+    }
+    return $total;
+}
+
+function contarNotificacionesPersonalRRHH()
+{
+    include 'conexion.php';
+    $sql = "SELECT COUNT(*) AS total
+            FROM credenciales_rrhh_observaciones
+            WHERE notificado = 0
+            AND tipoObservacion = 'Trabajo Realizado'";
+
+    $res = $conexion->query($sql);
+
+    $total = 0;
+    if($res){
+        while($row = $res->fetch_assoc()){
+            $total = $row['total'];
+        }
+    }
+    return $total;
+}
+
 
 function obtenerRutaCompletaEquipamiento($id)
 {

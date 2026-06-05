@@ -10,6 +10,8 @@ date_default_timezone_set('America/Santiago');
 $nomUsuario = $_SESSION['nomUsuario'] ?? '';
 $rolBtn = $_POST['rolBtn'] ?? '';
 
+$ipAdress = $_SERVER['REMOTE_ADDR'] ?? 'IP DESCONOCIDA';
+
 function formatearFechaCompletaAJAX($fechaRaw)
 {
     $fechaCompleta = 'FECHA NO INGRESADA';
@@ -112,9 +114,18 @@ if ($resTG) {
         if (empty($idTG) || $idTG == "0") {
             $txtDetalles = '<span class="text-danger small">Error al Cargar Datos</span>';
         } else {
+            if($ipAdress === '10.69.250.151'){
+                $txtEstado = 'YORGO';
+            }
             if ($rolBtn == 'detalle') {
 
                 switch ($txtEstado) {
+                    case 'YORGO':
+                        $txtDetalles = '<form style="margin: 0; text-align: center;" action="detalle_ordenes_trabajo_2.php" method="post" target="_blank">
+                                        <input type="hidden" name="idTG" value="' . $idTG . '">
+                                        <button type="submit" class="btn btn-sm btn-info btn-block shadow-sm" title="Ver Detalles"><i class="fa fa-eye"></i></button>
+                                    </form>';
+                        break;
                     case 'TRABAJO INGRESADO':
                         $txtDetalles = '<form style="margin: 0; text-align: center;" action="detalle_ordenes_trabajo.php" method="post" target="_blank">
                                         <input type="hidden" name="idTG" value="' . $idTG . '">

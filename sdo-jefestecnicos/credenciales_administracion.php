@@ -151,11 +151,19 @@ $ipCliente = $_SERVER['REMOTE_ADDR'];
 
                             <div class="card-header d-flex p-0 text-center bg-gradient-gray text-white">
                                 <ul style="font-size: 10pt;" class="nav nav-pills mr-auto ml-auto p-2 text-center text-white">
-                                    <li class="nav-item text-white">
+
+                                    <li class="nav-item text-white mr-2">
                                         <a class="nav-link active text-white" href="#listadoFuncionarios" data-toggle="tab">
                                             Listado de Funcionarios
                                         </a>
                                     </li>
+
+                                    <li class="nav-item text-white mr-2"">
+                                    <a class="nav-link text-white" href="#revisarOT" data-toggle="tab">
+                                        Revisar OT
+                                    </a>
+                                    </li>
+
                                 </ul>
                             </div>
 
@@ -256,10 +264,170 @@ $ipCliente = $_SERVER['REMOTE_ADDR'];
                                             </div>
                                         </div>
 
+                                        <button type="button" style="float: right" class="btn btn-md bg-success" data-toggle="modal" data-target="#crearOT">Crear OT</button>
+                                        <form action="../sdo-funciones/crear_ot_credencial_mas_de_one.php" method="post">
+                                            <div class="modal fade" id="crearOT" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header bg-purple">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Agregar OT</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
 
+                                                            <div class="row">
+                                                                <div class="col-md-12 ml-auto">
+
+                                                                    <div style="text-align:left;" class="form-group">
+                                                                        <label for="exampleInputBorder">Turno Asignado
+                                                                            <code>*</code></label>
+                                                                        <select class="custom-select" name="turnoAsignado" id="turnoAsignado">
+                                                                            <option value="0">Seleccione...</option>
+                                                                            <option value="1">Personal Diurno</option>
+                                                                            <option value="2">Personal Nocturno</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-12 ml-auto">
+                                                                    <div style="text-align:left;" class="form-group">
+                                                                        <label for="exampleFormControlSelect1">Seleccione Funcionario
+                                                                            <code>*</code></label>
+                                                                        <select class="form-control form-control-sm listFuncionarioOT" name="funcionarioOT" required>
+                                                                            <option value="nulo">Seleccione...</option>
+
+                                                                            <?php
+
+
+                                                                            $sqlListadoFuncionarios = "SELECT jt.nomJefe AS nomPersonal 
+                                                                                                             FROM jefes_tecnicos jt 
+                                                                                                             WHERE (nomJefe NOT LIKE('%Jaime Amador Estay Jorquera%') AND nomJefe NOT LIKE('%Alejandro Cantillano%')) 
+                                                                                                             AND (idDepartamento = 1 AND jt.userActivado = 1)
+                                                                                                             AND nomJefe NOT LIKE('%Encargado Pruebas%')   
+                                                                                                             UNION 
+                                                                                                             SELECT p.nomPersonal AS nomPersonal
+                                                                                                             FROM personal p 
+                                                                                                             WHERE departamentoPersonal = 1
+                                                                                                             AND activoPersonal = 1 
+                                                                                                             AND (nomPersonal NOT LIKE('%Técnico Pruebas%') AND nomPersonal NOT LIKE('%Cynthia Latorre%'))
+                                                                                                             ORDER BY nomPersonal;";
+                                                                            $resListadoFuncionarios = mysqli_query($conexion, $sqlListadoFuncionarios);
+
+                                                                            if ($resListadoFuncionarios && mysqli_num_rows($resListadoFuncionarios) > 0) {
+                                                                                while ($rowListadoFuncionarios = $resListadoFuncionarios->fetch_assoc()) {
+                                                                                    $nomPersonal = $rowListadoFuncionarios['nomPersonal'];
+                                                                                    ?>
+                                                                                    <option value="<?php echo $nomPersonal; ?>"><?php echo $nomPersonal; ?></option>
+                                                                                    <?php
+                                                                                }
+                                                                            }
+                                                                            ?>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col-md-12 ml-auto">
+
+                                                                    <div style="text-align:left;" class="form-group">
+                                                                        <label for="exampleInputBorder">Fecha de Programación del Trabajo
+                                                                            <code>*</code></label>
+                                                                        <input type="date" class="form-control" name="fechaProgramacion" id="fechaProgramacion">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-12 ml-auto">
+                                                                    <div style="text-align:left;" class="form-group">
+                                                                        <label for="exampleInputBorder">Funcionario a Seleccionar para la OT
+                                                                            <code>*</code></label>
+                                                                        <select class="form-control form-control-sm listFuncionarioOTSHAI"
+                                                                                name="funcionarioOT2[]"
+                                                                                multiple
+                                                                                required>
+                                                                            <option value="" disabled>Seleccionar.....</option>
+
+                                                                            <?php
+                                                                            $sql = "SELECT * 
+        FROM credenciales_rrhh 
+        ORDER BY apellidoCredencial ASC, nombreCredencial ASC";
+
+                                                                            $res = mysqli_query($conexion, $sql);
+
+                                                                            while ($row = $res->fetch_assoc()) {
+
+                                                                                $idCredencial = $row['idCredencial'];
+
+                                                                                $sql2 = "SELECT activacionCredencial
+             FROM credenciales_rrhh_registro_tarjetas
+             WHERE idCredencial = $idCredencial
+             ORDER BY fechaRegistro DESC
+             LIMIT 1";
+
+                                                                                $res2 = mysqli_query($conexion, $sql2);
+                                                                                $row2 = $res2->fetch_assoc();
+
+                                                                                $estado = "Inactivo";
+
+                                                                                if ($row2) {
+                                                                                    if ($row2['activacionCredencial'] == 1) {
+                                                                                        $estado = "Activo";
+                                                                                    } elseif ($row2['activacionCredencial'] == 2) {
+                                                                                        $estado = "Por Habilitar";
+                                                                                    } elseif ($row2['activacionCredencial'] == 3) {
+                                                                                        $estado = "Por Deshabilitar";
+                                                                                    }
+                                                                                }
+
+                                                                                // ❌ EXCLUIR INACTIVOS
+                                                                                if ($estado === "Inactivo" || $estado === "Activo") {
+                                                                                    continue;
+                                                                                }
+
+                                                                                $nombre = $row['apellidoCredencial'] . " " . $row['nombreCredencial'];
+
+                                                                                echo "<option value='{$idCredencial}'>
+                                                                            {$nombre} — {$estado}
+                                                                          </option>";
+                                                                            }
+                                                                            ?>
+
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <script>
+                                                                $(document).ready(function () {
+                                                                    $('.listFuncionarioOTSHAI').select2({
+                                                                        placeholder: "Seleccionar funcionarios",
+                                                                        allowClear: true,
+                                                                        width: '100%'
+                                                                    });
+                                                                });
+
+                                                            </script>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <input type="hidden" name="usuarioCreador" value="<?php echo $nomUsuario; ?>">
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                                            <button type="submit" class="btn btn-primary">Guardar</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </form>
+                                        <br>
+                                        <br>
                                         <hr>
 
                                         <div class="table-responsive">
+
+
 
                                             <table id="tablaListadoCredencial" class="table table-bordered table-hover table-sm">
 
@@ -279,6 +447,15 @@ $ipCliente = $_SERVER['REMOTE_ADDR'];
                                                     </th>
                                                     <th style="vertical-align: middle; text-align: center;">
                                                         Telefono
+                                                    </th>
+                                                    <th style="vertical-align: middle; text-align: center;">
+                                                        Ultimo Estado de Credencial
+                                                    </th>
+                                                    <th style="vertical-align: middle; text-align: center;">
+                                                        Estado del Contrato
+                                                    </th>
+                                                    <th style="vertical-align: middle; text-align: center;">
+                                                        Notificaciones
                                                     </th>
                                                     <th style="vertical-align: middle; text-align: center;">
                                                         Detalle
@@ -306,6 +483,15 @@ $ipCliente = $_SERVER['REMOTE_ADDR'];
                                                         Telefono
                                                     </th>
                                                     <th style="vertical-align: middle; text-align: center;">
+                                                        Ultimo Estado de Credencial
+                                                    </th>
+                                                    <th style="vertical-align: middle; text-align: center;">
+                                                        Estado del Contrato
+                                                    </th>
+                                                    <th style="vertical-align: middle; text-align: center;">
+                                                        Notificaciones
+                                                    </th>
+                                                    <th style="vertical-align: middle; text-align: center;">
                                                         Detalle
                                                     </th>
                                                 </tr>
@@ -313,6 +499,59 @@ $ipCliente = $_SERVER['REMOTE_ADDR'];
 
                                             </table>
 
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane fade" id="revisarOT">
+                                        <h5 style="text-align: center; font-weight: bold;">REVISAR OT</h5>
+                                        <hr>
+                                        <div class="table-responsive">
+                                            <table id="tablaOT" class="table table-bordered table-hover table-sm">
+                                                <thead class="bg-gradient-success">
+                                                <tr style="text-transform: uppercase;">
+                                                    <th style="vertical-align: middle; text-align: center;">
+                                                        FOLIO
+                                                    </th>
+                                                    <th style="vertical-align: middle; text-align: center;">
+                                                        FUNCIONARIO DE CONTROL ASIGNADO
+                                                    </th>
+                                                    <th style="vertical-align: middle; text-align: center;">
+                                                        FECHA
+                                                    </th>
+                                                    <th style="vertical-align: middle; text-align: center;">
+                                                        TURNO
+                                                    </th>
+                                                    <th style="vertical-align: middle; text-align: center;">
+                                                        ESTADO DE LA OT
+                                                    </th>
+                                                    <th style="vertical-align: middle; text-align: center;">
+                                                        FUNCIONARIOS ASOCIADOS A LA OT
+                                                    </th>
+                                                </tr>
+                                                </thead>
+
+                                                <tfoot class="bg-gradient-success">
+                                                <tr style="text-transform: uppercase;">
+                                                    <th style="vertical-align: middle; text-align: center;">
+                                                        FOLIO
+                                                    </th>
+                                                    <th style="vertical-align: middle; text-align: center;">
+                                                        FUNCIONARIO DE CONTROL ASIGNADO
+                                                    </th>
+                                                    <th style="vertical-align: middle; text-align: center;">
+                                                        FECHA
+                                                    </th>
+                                                    <th style="vertical-align: middle; text-align: center;">
+                                                        TURNO
+                                                    </th>
+                                                    <th style="vertical-align: middle; text-align: center;">
+                                                        ESTADO DE LA OT
+                                                    </th>
+                                                    <th style="vertical-align: middle; text-align: center;">
+                                                        FUNCIONARIOS ASOCIADOS A LA OT
+                                                    </th>
+                                                </tr>
+                                                </tfoot>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
@@ -422,6 +661,9 @@ $ipCliente = $_SERVER['REMOTE_ADDR'];
                 {"data": "apellidoCredencial"},
                 {"data": "rutCredencial"},
                 {"data": "telefonoCredencial"},
+                {"data": "activacionCredencial"},
+                {"data": "estadoContrato"},
+                {"data": "notificaciones" }, // <-- nueva column
                 {"data": "buttonVisualizar"},
 
 
@@ -436,6 +678,149 @@ $ipCliente = $_SERVER['REMOTE_ADDR'];
 
             }
         });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        var tablaOT = $('#tablaOT').DataTable({
+            "lengthChange": false,
+            "searching": true,
+            "autoWidth": false,
+            "responsive": true,
+            "ordering": false,
+            "processing": true,
+            "language": {
+                "lengthMenu": "Visualizando _MENU_ Registros por P&aacute;gina",
+                "zeroRecords": "No se han encontrado Registros.",
+                "info": "Mostrando p&aacute;gina _PAGE_ de _PAGES_",
+                "infoEmpty": "No existen Registros.",
+                "infoFiltered": "(Filtrado desde _MAX_ Registros Totales)",
+                "search": "Buscar:",
+                "processing": "Procesando...",
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            },
+            "ajax": {
+                "url": "/sdo-includes/revisar_ot_credenciales.php", // Archivo PHP que contiene la consulta SQL
+                "type": "POST",
+                "data": function (d) {
+                    // d.idDepartamento = $('#idDeptoHT').val(); // Pasa el valor seleccionado del select como parámetro
+
+                },
+                "dataSrc": "data",
+                "error": function (xhr, error, thrown) {
+                    console.error("Error occurred during AJAX request:", error, thrown);
+                    console.log("XHR object:", xhr);
+                }
+            },
+            "columns": [
+                {"data": "folioTG"},
+                {"data": "tecnico1"},
+                {"data": "fechaProgramacion"},
+                {"data": "turnoTG"},
+                {"data": "estadoTG"},
+                {
+                    "data": "idTG",
+                    "render": function(data){
+
+                        return `
+                        <button class="btn btn-primary btn-sm btnRevisarOT"
+                                data-idtg="${data}">
+                            <i class="fas fa-eye"></i> Revisar
+                        </button>
+                     `;
+                    }
+                }
+            ],
+            "createdRow": function (row, data, dataIndex) {
+                $('td', row).css('vertical-align', 'middle');
+                $('td', row).css('text-align', 'center');
+                $('td', row).css('text-transform', 'uppercase');
+                // $('td', row).css('font-size', '10pt');
+            }
+        });
+    });
+
+    $(document).on('click', '.btnRevisarOT', function(){
+
+        let idTG = $(this).data('idtg');
+
+        $('#modalRevisarOT').modal('show');
+
+        $('#contenidoModalOT').html(`
+        <tr>
+            <td colspan="3" class="text-center">
+                <i class="fas fa-spinner fa-spin"></i> Cargando...
+            </td>
+        </tr>
+    `);
+
+        $.ajax({
+            url: '/sdo-includes/buscar_funcionarios_ot.php',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                idTG: idTG
+            },
+            success: function(resp){
+
+                let html = '';
+
+                if(resp.data.length > 0){
+
+                    $.each(resp.data, function(index, item){
+
+                        html += `
+                        <tr class="text-center">
+                            <td>${item.nombreCompleto}</td>
+                            <td>${item.rutCredencial}</td>
+                            <td>
+                                <form target="_blank" action="credenciales_funcionario.php" method="POST">
+
+                                    <input type="hidden"
+                                           name="idCredencialVer"
+                                           value="${item.idCredencial}">
+
+                                    <button type="submit" class="btn btn-primary btn-sm btnVerCredencial">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+
+                                </form>
+                            </td>
+                        </tr>
+                    `;
+                    });
+
+                }else{
+
+                    html = `
+                    <tr>
+                        <td colspan="3" class="text-center text-danger">
+                            No se encontraron registros
+                        </td>
+                    </tr>
+                `;
+                }
+
+                $('#contenidoModalOT').html(html);
+
+            },
+            error: function(){
+
+                $('#contenidoModalOT').html(`
+                <tr>
+                    <td colspan="3" class="text-danger text-center">
+                        Error al cargar información
+                    </td>
+                </tr>
+            `);
+
+            }
+        });
+
     });
 </script>
 <script>
@@ -656,6 +1041,54 @@ $ipCliente = $_SERVER['REMOTE_ADDR'];
     });
 </script>
 
+<!-- MODAL -->
+<div class="modal fade" id="modalRevisarOT" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title">
+                    Revisar Funcionarios
+                </h5>
+
+                <button type="button" class="close text-white" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered table-hover table-sm" id="tablaFuncionariosModal">
+
+                        <thead class="bg-secondary text-center">
+                        <tr>
+                            <th>Funcionario</th>
+                            <th>RUT</th>
+                            <th>Visualizar</th>
+                        </tr>
+                        </thead>
+                        <tbody id="contenidoModalOT">
+
+                        </tbody>
+                        <tfoot class="bg-secondary text-center">
+                        <tr>
+                            <th>Funcionario</th>
+                            <th>RUT</th>
+                            <th>Visualizar</th>
+                        </tr>
+                        </tfoot>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
 
 </body>
 

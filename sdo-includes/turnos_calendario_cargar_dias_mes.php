@@ -72,7 +72,7 @@ for ($dia = 1; $dia <= $diasEnMes; $dia++, $columna++) {
         if (!isset($grupos[$tipoKey])) continue;
 
         $bg = isset($bgColores[$tipoKey]) ? $bgColores[$tipoKey] : '#555';
-        echo '<div class="bloque-tipo" style="background-color:' . $bg . ';">';
+        echo '<div class="bloque-tipo" style="font-weight:bold; background-color:' . $bg . ';">';
         echo '<b>' . $tipoKey . '</b><br>';
 
         foreach ($grupos[$tipoKey] as $t) {

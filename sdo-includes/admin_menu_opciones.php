@@ -1,4 +1,17 @@
 <?php
+// Función para obtener la IP real del usuario
+function obtenerIPUsuario() {
+    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+        return $_SERVER['HTTP_CLIENT_IP'];
+    } else if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        return $_SERVER['HTTP_X_FORWARDED_FOR'];
+    } else {
+        return $_SERVER['REMOTE_ADDR'];
+    }
+}
+
+$ipActualData = obtenerIPUsuario();
+
 $modulosInicio = [
 
     [
@@ -28,6 +41,23 @@ $modulosInicio = [
                 'icono' => '<i class="fas fa-users fa-2x"></i>',
                 'nombre' => 'Turnos Control Centralizado',
                 'ruta' => '../sdo-administrador/turnos_calendario.php',
+            ],
+            [
+                'icono' => '<i class="fas fa-users fa-2x"></i>',
+                'nombre' => 'Administracion RRHH',
+                'ruta' => '../sdo-administrador/credencial_administracion.php',
+            ],
+            [
+                'icono' => '<i class="fas fa-list fa-2x"></i>',
+                'nombre' => 'Informe Funcionarios - CCAA',
+                'ruta' => '../sdo-pdf/SDO-Informe-Funcionarios-CCAA.php',
+                'ips' => ['10.69.250.151'] // Puedes combinar ambas restricciones
+            ],
+            [
+                'icono' => '<i class="fas fa-list fa-2x"></i>',
+                'nombre' => 'Informe Estado y T° - Calderas',
+                'ruta' => '../sdo-administrador/calderas_documento.php',
+                'ips' => ['10.69.250.151'] // Puedes combinar ambas restricciones
             ],
         ]
     ],
@@ -471,15 +501,24 @@ $indexColor = 0;
 
 <?php
 foreach ($modulosInicio as $grupo) {
-    $botonesPermitidos = array_filter($grupo['items'], function ($item) use ($nomUsuario) {
+    // Agregamos $ipActualData al 'use' de la función anónima
+    $botonesPermitidos = array_filter($grupo['items'], function ($item) use ($nomUsuario, $ipActualData) {
 
-        // Si existe restricción por usuarios, se respeta
+        $accesoUsuario = true;
+        $accesoIP = true;
+
+        // Validar restricción por usuario (si existe)
         if (isset($item['usuarios'])) {
-            return in_array($nomUsuario, $item['usuarios']);
+            $accesoUsuario = in_array($nomUsuario, $item['usuarios']);
         }
 
-        // Si no hay restricción, mostrar siempre
-        return true;
+        // Validar restricción por IP (si existe)
+        if (isset($item['ips'])) {
+            $accesoIP = in_array($ipActualData, $item['ips']);
+        }
+
+        // El usuario debe cumplir AMBAS condiciones para ver el botón
+        return $accesoUsuario && $accesoIP;
     });
 
     if (count($botonesPermitidos) > 0) {

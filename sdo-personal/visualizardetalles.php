@@ -4369,19 +4369,96 @@ EOL;
                                                         
                                                         echo "<br>";
                                                         ?>
-                                                        <br>
-                                                        <form action="revisar_datos_funcionario.php" method="POST">
-                                                            <button type="submit" class="form-control btn" style="background-color: blue;color:white;"> Revisar Datos del Funcionario</button>
-                                                            <?php
-                                                                $sqlBuscar = "SELECT * FROM `datos_credencial_funcionarios` WHERE idTG = $idTG";
-                                                                $resBuscar = mysqli_query($conexion,$sqlBuscar);
-                                                                while($rowBuscar = $resBuscar->fetch_assoc()){
-                                                                    ?>
-                                                                    <input type="hidden" name="idRegistroTarjeta" id="idRegistroTarjeta" value="<?php echo $rowBuscar['idRegistroTarjeta']?>">
-                                                                    <?php
-                                                                }
-                                                            ?>
-                                                        </form>
+
+                                                        <?php
+                                                            if($contarDatosDelFuncionario > 0){
+                                                                ?>
+                                                                <br>
+                                                                <button class="form-control btn" style="background-color: blue;color:white;" data-toggle="modal" data-target="#revisarFuncionarios"> Revisar Datos de las credenciales asociadas</button>
+                                                                <div class="modal fade" id="revisarFuncionarios" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                                    <div class="modal-dialog modal-xl" role="document">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title" id="exampleModalLabel">Funcionarios a revisar</h5>
+                                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                    <span aria-hidden="true">&times;</span>
+                                                                                </button>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                <table class="table table-bordered table-striped table-hover" id="tablaFuncionarios">
+                                                                                    <thead class="bg-secondary text-center">
+                                                                                    <tr>
+                                                                                        <th>Funcionario</th>
+                                                                                        <th>RUT</th>
+                                                                                        <th>Visualizar</th>
+                                                                                        <th>¿Listo?</th>
+                                                                                    </tr>
+                                                                                    </thead>
+                                                                                    <tbody>
+                                                                                    <?php
+                                                                                    $sqlBuscar = "SELECT * FROM `datos_credencial_funcionarios` WHERE idTG = $idTG";
+                                                                                    $resBuscar = mysqli_query($conexion, $sqlBuscar);
+
+                                                                                    while($rowBuscar = $resBuscar->fetch_assoc()){
+                                                                                        $idCredencial = $rowBuscar['idCredencial'];
+
+
+
+                                                                                        $sqlFuncionriosBuscar = "SELECT * FROM `credenciales_rrhh` WHERE idCredencial = $idCredencial";
+                                                                                        $reFuncionariosBuscar = mysqli_query($conexion, $sqlFuncionriosBuscar);
+                                                                                        while($rowFuncionariosBuscar = $reFuncionariosBuscar->fetch_assoc()){
+                                                                                             $nomFuncionario = $rowFuncionariosBuscar['nombreCredencial']." ".$rowFuncionariosBuscar['apellidoCredencial'];
+                                                                                             $rutFuncionario = $rowFuncionariosBuscar['rutCredencial'];
+                                                                                             $revisadoOperadores = revisadoOperadores($idCredencial,$idTG);
+                                                                                                ?>
+                                                                                                <tr>
+                                                                                                    <td><?php echo $nomFuncionario ?></td>
+                                                                                                    <td><?php echo $rutFuncionario ?></td>
+                                                                                                    <td>
+                                                                                                        <form action="revisar_datos_funcionario.php" method="POST" target="_blank">
+                                                                                                            <input type="hidden" name="idTG" id="idTG" value="<?php echo $idTG ?>">
+                                                                                                            <input type="hidden" name="idCredencial" id="idCredencial" value="<?php echo $rowBuscar['idCredencial'] ?>">
+                                                                                                            <button type="submit" class="btn btn-block btn-info"><i class="fas fa-file-pdf"></i> Ver Credencial</button>
+                                                                                                        </form>
+                                                                                                    </td>
+                                                                                                    <td class="text-center">
+                                                                                                        <?php
+                                                                                                        if ($revisadoOperadores == 1) {
+                                                                                                            echo '<span class="badge badge-success p-2">Listo</span>';
+                                                                                                        } else {
+                                                                                                            echo '<span class="badge badge-danger p-2">Trabajo aún no terminado</span>';
+                                                                                                        }
+                                                                                                        ?>
+                                                                                                    </td>
+                                                                                                </tr>
+                                                                                                    <?php
+
+                                                                                        }
+
+                                                                                    }
+                                                                                    ?>
+
+                                                                                    </tbody>
+                                                                                    <tfoot class="bg-secondary text-center">
+                                                                                    <tr>
+                                                                                        <th>Funcionario</th>
+                                                                                        <th>RUT</th>
+                                                                                        <th>Visualizar</th>
+                                                                                        <th>¿Listo?</th>
+                                                                                    </tr>
+                                                                                    </tfoot>
+                                                                                </table>
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <?php
+                                                            }
+                                                        ?>
+
                                                         <?php
                                                         
                                                         

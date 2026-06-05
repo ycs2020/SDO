@@ -9042,6 +9042,19 @@ function contarchecklistLLE($idTG)
 }
 
 
+function contardatosfuncionario($idTG)
+{
+    include 'conexion.php';
+    $sqlBuscar = "SELECT COUNT(*) AS TOTAL FROM `datos_credencial_funcionarios` WHERE idTG = $idTG";
+    $resBuscar = mysqli_query($conexion, $sqlBuscar);
+    $total = 0;
+    if($resBuscar){
+        while($rowBuscar = $resBuscar->fetch_assoc()){
+         $total = $rowBuscar['TOTAL'];
+        }
+    }
+    return $total;
+}
 
 
 

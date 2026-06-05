@@ -143,9 +143,14 @@ if (session_status() == PHP_SESSION_NONE) {
                                                             <i class="fas fa-file-pdf"></i> Exportar mes (PDF Carta)
                                                         </button>
                                                     </div>
-                                                    <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
+                                                    <div style="<?php echo $displayBTN; ?>" class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
                                                         <button class="btn bg-danger text-white btn-block" id="btnExportarPDFOficio">
                                                             <i class="fas fa-file-pdf"></i> Exportar mes (PDF Oficio)
+                                                        </button>
+                                                    </div>
+                                                    <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
+                                                        <button class="btn bg-danger text-white btn-block" id="btnExportarPDFA3">
+                                                            <i class="fas fa-file-pdf"></i> Exportar mes (PDF A3)
                                                         </button>
                                                     </div>
                                                     <div style="<?php echo $displayBTN; ?>" class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
@@ -318,7 +323,8 @@ if (session_status() == PHP_SESSION_NONE) {
                         }
 
                         .item-turno {
-                            background: rgba(255, 255, 255, 0.12);
+                            /*background: rgba(255, 255, 255, 0.12);*/
+                            font-size: 11pt;
                             border-radius: 4px;
                             padding: 2px 6px;
                             margin: 4px 0;
@@ -870,6 +876,11 @@ if (session_status() == PHP_SESSION_NONE) {
     // Oficio horizontal: 216 x 330 mm
     $(document).on('click', '#btnExportarPDFOficio', function () {
         exportarCalendarioPDF([216, 330], 'landscape'); // <-- horizontal
+    });
+
+    // A3 horizontal: 420 x 297 mm
+    $(document).on('click', '#btnExportarPDFA3', function () {
+        exportarCalendarioPDF([420, 297], 'landscape'); // <-- horizontal
     });
 
     // Legal horizontal (predefinido por jsPDF)

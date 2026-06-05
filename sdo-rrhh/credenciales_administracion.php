@@ -242,6 +242,34 @@ $ipCliente = $_SERVER['REMOTE_ADDR'];
                                                                             required>
                                                                 </div>
                                                             </div>
+                                                            <div class="form-row justify-content-center text-center">
+
+                                                                <div class="col-md-6">
+                                                                    <label>Nombre de Quien Solicita</label>
+                                                                    <input type="text" name="nomSolicitante" class="form-control" value="<?php echo $jefaturaContrato ?>">
+                                                                </div>
+
+                                                                <div class="col-md-6 d-flex align-items-center justify-content-around">
+
+                                                                    <div class="custom-control custom-checkbox">
+                                                                        <input class="custom-control-input" type="checkbox" id="chkBecado" name="chkBecado" value="Becado">
+                                                                        <label for="chkBecado" class="custom-control-label">
+                                                                            Persona Becada
+                                                                        </label>
+                                                                        <input type="hidden" name="valorBeca" id="valorBeca" value="NO">
+                                                                    </div>
+
+                                                                    <div class="custom-control custom-checkbox">
+                                                                        <input class="custom-control-input" type="checkbox" id="checkBoxDiscapacidad" name="checkBoxDiscapacidad" value="Discapacitado">
+                                                                        <label for="checkBoxDiscapacidad" class="custom-control-label">
+                                                                            Persona con Discapacidad
+                                                                        </label>
+                                                                        <input type="hidden" name="valorDiscapacidad" id="valorDiscapacidad" value="NO">
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </div>
                                                         </div>
 
                                                         <div class="modal-footer">

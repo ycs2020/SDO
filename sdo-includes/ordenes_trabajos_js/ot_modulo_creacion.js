@@ -43,13 +43,11 @@ $(document).ready(function () {
 
                     if (response.status === 'success' && response.data.length > 0) {
                         $.each(response.data, function (index, usuario) {
-                            // Aquí mandamos el NOMBRE como value a petición tuya
                             $selectPersonal.append('<option value="' + usuario.nombre + '">' + usuario.nombre + '</option>');
                         });
                     } else {
                         $selectPersonal.html('<option value="">No se encontró personal</option>');
                     }
-                    // Refrescar Select2 de forma segura una sola vez al terminar
                     $selectPersonal.trigger('change.select2');
                 },
                 error: function (xhr) {
@@ -61,7 +59,7 @@ $(document).ready(function () {
             $selectPersonal.html('<option value="">Seleccione un departamento primero</option>').trigger('change.select2');
         }
 
-        // Conmutación visual de contenedores (Ningún detalle de texto es requerido)
+        // Conmutación visual de contenedores según departamento seleccionado
         if (idDepartamentoInt === 1) {
             $('#seccion-checklist-adjuntos').fadeIn('fast');
             $('#bloque-detalle-general').hide();
@@ -86,21 +84,11 @@ $(document).ready(function () {
         $(this).next('.custom-file-label').addClass("selected").html(fileName);
     });
 
-    // CAPTURAR EL ENVÍO DEL FORMULARIO
+    // CAPTURAR EL ENVÍO DEL FORMULARIO PRINCIPAL
     $('#formRegistrarTG').on('submit', function (e) {
         e.preventDefault();
 
         var formData = new FormData(this);
-
-        console.log("=== DEBUG: DATOS QUE ENVÍA EL FORMULARIO ===");
-        for (var pair of formData.entries()) {
-            if (pair[1] instanceof File) {
-                console.log(pair[0] + ": [Archivo] -> Name: " + pair[1].name + " | Size: " + pair[1].size + " bytes");
-            } else {
-                console.log(pair[0] + ": " + pair[1]);
-            }
-        }
-        console.log("=============================================");
 
         $.ajax({
             url: '../sdo-includes/ordenes_trabajos/ot_funcion_crear.php',
@@ -144,19 +132,81 @@ $(document).ready(function () {
             },
             error: function (xhr, status, error) {
                 $('button[type="submit"]').prop('disabled', false).html('<i class="fas fa-save mr-1"></i> Guardar Registro');
-
-                console.error("--- ERROR EN EL SERVIDOR (XHR) ---");
-                console.error("Status:", status);
-                console.error("Error:", error);
                 console.error("Respuesta cruda del PHP:", xhr.responseText);
-                console.error("----------------------------------");
 
                 Swal.fire({
                     icon: 'error',
                     title: 'Error Crítico',
-                    text: 'No se pudo comunicar con el servidor. Revisa la consola (F12) para ver la respuesta real del PHP.'
+                    text: 'No se pudo comunicar con el servidor.'
                 });
             }
         });
     });
+
+    // CAPTURAR EL ENVÍO DEL FORMULARIO DEL MODAL (MONITOREO)
+    $(document).on('submit', '#formMonitoreo', function(e) {
+        e.preventDefault();
+
+        var formData = new FormData(this);
+        // Definición de URL directa a petición tuya
+        var actionUrl = '../sdo-includes/ordenes_trabajos/ot_monitoreo_funcion_crear.php';
+
+        $.ajax({
+            url: actionUrl,
+            type: 'POST',
+            data: formData,
+            dataType: 'json',
+            cache: false,
+            contentType: false,
+            processData: false,
+            beforeSend: function() {
+                $('#formMonitoreo button[type="submit"]').prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-1"></i> Agregando...');
+            },
+            success: function(response) {
+                $('#formMonitoreo button[type="submit"]').prop('disabled', false).html('Agregar');
+
+                if (response.status === 'success') {
+                    // 1. Cerrar el modal
+                    $('#modalCrearOTMonitoreo').modal('hide');
+
+                    // 2. Notificación visual de éxito con SweetAlert
+                    Swal.fire({
+                        icon: 'success',
+                        title: '¡OT Creada!',
+                        text: response.message,
+                        timer: 2500,
+                        showConfirmButton: false
+                    });
+
+                    // 3. Resetear el formulario
+                    $('#formMonitoreo')[0].reset();
+
+                    // 4. Recargar el DataTable de forma asíncrona
+                    if ($.fn.DataTable.isDataTable('#tableListOT')) {
+                        $('#tableListOT').DataTable().ajax.reload(null, false);
+                    }
+
+                    // 5. Cambiar a la pestaña de listados
+                    $('#tab-listado-ot').tab('show');
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error en Validación',
+                        text: response.message
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                $('#formMonitoreo button[type="submit"]').prop('disabled', false).html('Agregar');
+                console.error("Detalles del fallo AJAX Monitoreo:", xhr.responseText);
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Fallo Operacional',
+                    text: 'Ocurrió un problema de red o de servidor al procesar la OT de monitoreo.'
+                });
+            }
+        });
+    });
+
 });
