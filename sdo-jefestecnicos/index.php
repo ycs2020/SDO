@@ -97,6 +97,26 @@ $ipCliente = $_SERVER['REMOTE_ADDR'];
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <section class="content-header">
+            <?php
+            if($idDepartamento == 1 || $idDepartamento == 13){
+                $contarNotificacionesPersonal = contarNotificacionesPersonal();
+
+                if($contarNotificacionesPersonal > 0){
+
+                    echo "<script>
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Interfaz de Administración de Personal',
+                            text: 'Tienes $contarNotificacionesPersonal notificaciones pendientes',
+                            confirmButtonText: 'Entendido'
+                        });
+                
+                        toastr.info('Tienes $contarNotificacionesPersonal notificaciones pendientes.');
+                    </script>";
+
+                }
+            }
+            ?>
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-12">

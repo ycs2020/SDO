@@ -49,6 +49,7 @@ if (isset($_POST['idTG']) || isset($_SESSION['idTG'])) {
             header('Location: trabajos_general_listado.php?errorDetalle=true');
         }
     }
+
     $sql = "SELECT * FROM trabajos_general WHERE idTG = $idTG";
     $res = mysqli_query($conexion, $sql);
     while ($row = $res->fetch_assoc()) {
@@ -228,6 +229,9 @@ $contarDetalleLLE = contarDetalleLLE($idTG);
 $contarDetalleCA = contarDetalleCA($idTG);
 $contarDetalleOTROS = contarDetalleOTROS($idTG);
 
+$contarDatosFunc = contarDatosFunc($idTG);
+
+
 $contarDetalles = $contarDetalleBMS + $contarDetalleCamara + $contarDetalleLLE + $contarDetalleCA + $contarDetalleOTROS;
 
 
@@ -244,6 +248,13 @@ if ($cantidadCheckList == '' || empty($cantidadCheckList) || $cantidadCheckList 
     $contarDetalles = $contarDetalles + $cantidadCheckList;
     $conteoMostrar .= ' - ' . $cantidadCheckList;
 }
+
+if($contarDatosFunc == '' || empty($contarDatosFunc) || $contarDatosFunc == 0){
+}else{
+    $contarDetalles = $contarDetalles + $contarDatosFunc;
+}
+
+
 
 //echo "<script>console.log('Detalles -> ".$contarDetalles."');</script>";
 //echo "<script>console.log('Detalles1 -> ".$contarDetalles1."');</script>";
@@ -266,6 +277,8 @@ $contarchecklistvf = contarchecklistvf($idTG);
 $contarchecklistuma = contarchecklistuma($idTG);
 $contarASTUCA = contarASTUCA($idTG);
 $contarchecklistLLE = contarchecklistLLE($idTG);
+$contarTodoListo = contarTodoListo($idTG);
+
 
 if ($detalleTurnoRonda == '' || empty($detalleTurnoRonda)) {
     $contarRespuesta = $contarRespuestaBMS + $contarRespuestaCCTV + $contarRespuestaLLE + $contarRespuestaCA + $contarRespuestaOtros;
@@ -312,6 +325,11 @@ if($contarchecklistuma == '' || empty($contarchecklistuma)){
     $contarRespuesta = $contarRespuesta + $contarchecklistuma;
 }
 
+if($contarTodoListo == '' || empty($contarTodoListo)){
+}else{
+    $contarRespuesta = $contarRespuesta + $contarTodoListo;
+}
+
 /* DETALLES DE NO CONTROL*/
 $contarDetallesNoControl = contarDetallesnoControl($idTG);
 /* RESPUESTAS DE NO CONTROL */
@@ -321,8 +339,16 @@ $contarPermisosRevisados = contarPermisosRevisadosJIJI($idTG);
 
 /*BUSCAR EL NOMBRE DEL SERVICIO EN LAS BASE DE DATOS*/
 $buscarNombreServicio = buscarNombreServicio($servicio);
+$contarDatosDelFuncionario = contardatosfuncionario($idTG);
 
 
+
+
+/*
+echo "Contar Revisado Operadores Totales: ".$contarDatosFunc;
+echo"<br>";
+echo "Contar Revisado Operadores Actuales: ".$contarTodoListo;
+*/
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -2945,6 +2971,7 @@ EOL;
                                             <br>
                                             <?php
                                             if ($departamentos == 1 || $departamentos == 13) {
+                                                /*
                                                 if($nomUsuario === 'Pablo Sanchez Molina'){
                                                     ?>
                                                     <div class="col-md-12">
@@ -2955,6 +2982,7 @@ EOL;
                                                     </div>
                                                     <?php
                                                 }
+                                                */
                                                 if ($contarDetalles <= $contarRespuesta) {
                                                     ?>
                                                     <div class="col-md-12">

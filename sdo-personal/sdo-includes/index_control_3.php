@@ -501,6 +501,23 @@ if($nomUsuario == 'Pablo Sanchez Molina'){
             </div>
         </div>
     </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h6 class="fw-bold text-uppercase font-weight-bold text-black mb-3 grupo-titulo">
+                Adm. de Funcionarios RRHH                       </h6>
+            <div class="row">
+                <div class="col-xl-2 col-lg-3 col-md-4 col-12 mb-3 position-relative item-modulo" data-nombre="ast">
+                    <a href="../sdo-personal/credenciales_administracion.php" class="btn btn-sm bg-gradient-primary text-white w-100 h-100 text-center p-3 shadow rounded position-relative" style="text-decoration: none;">
+                        <div><i class="fas fa-users fa-2x"></i></div>
+                        <strong>Adm. de Funcionarios RRHH</strong>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
     <?php
 }
 ?>

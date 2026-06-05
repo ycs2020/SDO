@@ -95,7 +95,26 @@ $idUsuario = $_SESSION['idUsuario'];
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
+                <?php
+                if($nomUsuario == "Pablo Sanchez Molina"){
+                    $contarNotificacionesPersonal = contarNotificacionesPersonal();
 
+                    if($contarNotificacionesPersonal > 0){
+
+                        echo "<script>
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Interfaz de Administración de Personal',
+                            text: 'Tienes $contarNotificacionesPersonal notificaciones pendientes',
+                            confirmButtonText: 'Entendido'
+                        });
+                
+                        toastr.info('Tienes $contarNotificacionesPersonal notificaciones pendientes.');
+                    </script>";
+
+                    }
+                }
+                ?>
             </div>
             <!-- /.container-fluid -->
         </section>

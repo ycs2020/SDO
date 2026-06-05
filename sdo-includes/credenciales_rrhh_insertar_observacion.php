@@ -14,8 +14,8 @@ if ($idCredencial <= 0 || empty($usuario) || empty($texto)) {
 }
 
 $sql = $conexion->prepare("
-    INSERT INTO credenciales_rrhh_observaciones (idCredencial, fechaObservacion, usuarioObservacion, tipoObservacion, observacion)
-    VALUES (?, NOW(), ?, 'MANUAL', ?)
+    INSERT INTO credenciales_rrhh_observaciones (idCredencial, fechaObservacion, usuarioObservacion, tipoObservacion, observacion,privado)
+    VALUES (?, NOW(), ?, 'MANUAL', ?,0)
 ");
 
 if (!$sql) {

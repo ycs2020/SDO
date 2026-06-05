@@ -144,6 +144,7 @@ $ipCliente = $_SERVER['REMOTE_ADDR'];
 
         <!-- Main content -->
         <section class="content">
+            <input type="hidden" id="esRRHH" name="esRRHH" value="SI">
             <div class="container-fluid">
                 <div class="row" id="botonesMenu">
                     <div class="col-md-12">
@@ -310,6 +311,15 @@ $ipCliente = $_SERVER['REMOTE_ADDR'];
                                                         Telefono
                                                     </th>
                                                     <th style="vertical-align: middle; text-align: center;">
+                                                        Ultimo Estado de Credencial
+                                                    </th>
+                                                    <th style="vertical-align: middle; text-align: center;">
+                                                        Estado del Contrato
+                                                    </th>
+                                                    <th style="vertical-align: middle; text-align: center;">
+                                                        Notificaciones
+                                                    </th>
+                                                    <th style="vertical-align: middle; text-align: center;">
                                                         Detalle
                                                     </th>
                                                 </tr>
@@ -333,6 +343,15 @@ $ipCliente = $_SERVER['REMOTE_ADDR'];
                                                     </th>
                                                     <th style="vertical-align: middle; text-align: center;">
                                                         Telefono
+                                                    </th>
+                                                    <th style="vertical-align: middle; text-align: center;">
+                                                        Ultimo Estado de Credencial
+                                                    </th>
+                                                    <th style="vertical-align: middle; text-align: center;">
+                                                        Estado del Contrato
+                                                    </th>
+                                                    <th style="vertical-align: middle; text-align: center;">
+                                                        Notificaciones
                                                     </th>
                                                     <th style="vertical-align: middle; text-align: center;">
                                                         Detalle
@@ -432,6 +451,7 @@ $ipCliente = $_SERVER['REMOTE_ADDR'];
                 "type": "POST",
                 "data": function (d) {
                     // d.idDepartamento = $('#idDeptoHT').val(); // Pasa el valor seleccionado del select como parámetro
+                    d.esRRHH = $('#esRRHH').val(); // 👈 aquí lo mandas
 
                 },
                 "dataSrc": "data",
@@ -451,6 +471,9 @@ $ipCliente = $_SERVER['REMOTE_ADDR'];
                 {"data": "apellidoCredencial"},
                 {"data": "rutCredencial"},
                 {"data": "telefonoCredencial"},
+                {"data": "activacionCredencial"},
+                {"data": "estadoContrato"},
+                 {"data": "notificaciones" }, // <-- nueva column
                 {"data": "buttonVisualizar"},
 
 
@@ -685,6 +708,15 @@ $ipCliente = $_SERVER['REMOTE_ADDR'];
     });
 </script>
 
+<script>
+    document.getElementById('chkBecado').addEventListener('change', function () {
+        document.getElementById('valorBeca').value = this.checked ? 'SI' : 'NO';
+    });
+
+    document.getElementById('checkBoxDiscapacidad').addEventListener('change', function () {
+        document.getElementById('valorDiscapacidad').value = this.checked ? 'SI' : 'NO';
+    });
+</script>
 
 </body>
 

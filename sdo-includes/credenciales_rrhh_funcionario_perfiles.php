@@ -62,6 +62,13 @@ while ($fila = $resultado->fetch_assoc()) {
 
     $fila['nomPerfil2'] = $nomPerfil2;
     $fila['perfilActivado'] = $perfilActivado;
+    $fila['verPuertas'] = "
+            <button
+                class='btn btn-info btn-sm btnVerPuertas'
+                data-idperfil='{$idPerfil}'
+                data-perfil='{$nomPerfil2}'>
+                <i class='fas fa-door-open'></i>
+            </button>";
 
     $datos[] = $fila; // 👈 esta es la forma correcta
 }

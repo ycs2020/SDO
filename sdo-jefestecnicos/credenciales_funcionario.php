@@ -53,6 +53,22 @@ if (isset($credencial['idCredencial'])) {
     $rutCredencial = $credencial['rutCredencial'];
     $telefonoCredencial = $credencial['telefonoCredencial'];
     $activacionCredencial = $credencial['activacionCredencial'];
+    $esBecado = $credencial['esBecado'];
+    $esDiscapacitado = $credencial['esDiscapacitado'];
+
+    if($esBecado == 1){
+        $textBecado = "SI";
+        $checkeboxBecado = "checked";
+    }else{
+        $textBecado = "NO";
+    }
+
+    if($esDiscapacitado == 1){
+        $textDisca = "SI";
+        $checkeboxDisca = "checked";
+    }else{
+        $textDisca = "NO";
+    }
 
 } else {
     header("Location: ../$ruta/credenciales_administracion.php?errorCargaCredencial=true");
@@ -80,6 +96,22 @@ $estado = [
 ];
 
 [$activacionCredencial2, $colorCredencial, $habilitadoCredencial2] = $estado[$activacionCredencial] ?? $estado[0];
+
+
+$contarHabilitados = contarCredencialesHabilitadas($idCredencialVer);
+//echo $contarHabilitados;
+$contarDeshabilitados = contarCredencialesDeshabilitadas($idCredencialVer);
+
+
+$stmt = $conexion->prepare("
+    UPDATE credenciales_rrhh_observaciones
+    SET notificado = 1
+    WHERE idCredencial = ?
+    AND tipoObservacion <> 'Trabajo Realizado'
+");
+
+$stmt->bind_param("i", $idCredencialVer);
+$stmt->execute();
 
 ?>
 <!DOCTYPE html>
@@ -173,15 +205,15 @@ $estado = [
             <?php
 
             if (isset($_GET['exitoCreacionOT'])) {
-            ?>
-            <script>
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'Eror al guardar la información del vehículo, code: 1',
-                })
-            </script>
-            <?php
+                ?>
+                <script>
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Eror al guardar la información del vehículo, code: 1',
+                    })
+                </script>
+                <?php
             }
             ?>
         </section>
@@ -237,6 +269,12 @@ $estado = [
                                             </td>
                                             <td><?php echo $telefonoCredencial2; ?></td>
                                         </tr>
+                                        <tr>
+                                            <td><b>FUNCIONARIO BECADO</b></td>
+                                            <td><?php echo $textBecado;?></td>
+                                            <td><b>FUNCIONARIO DISCAPACITADO</b></td>
+                                            <td><?php echo $textDisca;?></td>
+                                        </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -262,93 +300,227 @@ $estado = [
 
                         <div class="card card-primary card-outline w-100">
                             <div class="card-body box-profile d-flex align-items-center justify-content-center">
-                                <div class="row justify-content-center w-100">
-                                    <?php if ($habilitadoCredencial2 === "Habilitado"): ?>
-                                        <!--
-                                        <button
-                                            class="btn btn-warning btn-block"
-                                            id="btnModificarFuncionario"
-                                            data-toggle="modal"
-                                            data-target="#modalModificarFuncionario"
-                                            title="Modificar los datos del funcionario"
-                                        >
-                                            <i class="fa fa-pen"></i> Modificar Datos
-                                        </button>
-                                        -->
-                                        <!-- Modal Modificar Funcionario -->
-                                        <div class="modal fade" id="modalModificarFuncionario" tabindex="-1" role="dialog" aria-labelledby="tituloModalModificarFuncionario" aria-hidden="true">
-                                            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-                                                <div class="modal-content">
+                                <div class="row w-100">
+                                    <div class="col-md-6 mb-2">
+                                        <?php if ($habilitadoCredencial2 === "Habilitado"): ?>
+                                            <!--
+                                            <button
+                                                class="btn btn-warning btn-block"
+                                                id="btnModificarFuncionario"
+                                                data-toggle="modal"
+                                                data-target="#modalModificarFuncionario"
+                                                title="Modificar los datos del funcionario"
+                                            >
+                                                <i class="fa fa-pen"></i> Modificar Datos
+                                            </button>
+                                            -->
+                                            <!-- Modal Modificar Funcionario -->
+                                            <div class="modal fade" id="modalModificarFuncionario" tabindex="-1" role="dialog" aria-labelledby="tituloModalModificarFuncionario" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                                                    <div class="modal-content">
 
-                                                    <div class="modal-header bg-warning text-white">
-                                                        <h5 class="modal-title" id="tituloModalModificarFuncionario">
-                                                            <i class="fa fa-user-edit"></i> Modificar Datos del Funcionario
-                                                        </h5>
-                                                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
+                                                        <div class="modal-header bg-warning text-white">
+                                                            <h5 class="modal-title" id="tituloModalModificarFuncionario">
+                                                                <i class="fa fa-user-edit"></i> Modificar Datos del Funcionario
+                                                            </h5>
+                                                            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+
+                                                        <div class="modal-body">
+                                                            <!-- Aquí irá el formulario -->
+                                                            <!-- FORMULARIO INICIO -->
+                                                            <form id="formModificarCredenciales" method="POST" autocomplete="off">
+                                                                <div class="form-row justify-content-center text-center">
+                                                                    <!-- Nombre -->
+                                                                    <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
+                                                                        <label for="nombreCredencial" class="font-weight-bold">Nombre del(la) Funcionario(a)&nbsp;<code>*</code></label>
+                                                                        <input type="text" class="form-control" id="nombreCredencial" name="nombreCredencial" placeholder="Ej: Jean Pierre o Jean-Pierre" pattern="^[A-Za-zÁÉÍÓÚÑáéíóúñ\s\-]+$" title="Solo letras, espacios y guiones" required value="<?php echo $nombreCredencial2; ?>">
+                                                                    </div>
+
+                                                                    <!-- Apellido -->
+                                                                    <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
+                                                                        <label for="apellidoCredencial" class="font-weight-bold">Apellido del(la) Funcionario(a)&nbsp;<code>*</code></label>
+                                                                        <input type="text" class="form-control" id="apellidoCredencial" name="apellidoCredencial" placeholder="Ej: Pérez García o Pérez-García" pattern="^[A-Za-zÁÉÍÓÚÑáéíóúñ\s\-]+$" title="Solo letras, espacios y guiones" required value="<?php echo $apellidoCredencial2; ?>">
+                                                                    </div>
+                                                                </div>
+
+                                                                <hr>
+
+                                                                <div class="form-row justify-content-center text-center">
+                                                                    <!-- RUT -->
+                                                                    <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
+                                                                        <label for="rutCredencial" class="font-weight-bold">RUT del(la) Funcionario(a)&nbsp;<code>*</code></label>
+                                                                        <input type="text" class="form-control" id="rutCredencial" name="rutCredencial" placeholder="Ej: 12.345.678-9" pattern="^\d{1,2}\.\d{3}\.\d{3}-[\dkK]$" title="Formato válido: 12.345.678-9" required value="<?php echo $rutCredencial2; ?>">
+                                                                    </div>
+
+                                                                    <!-- Teléfono -->
+                                                                    <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
+                                                                        <label for="telefonoCredencial" class="font-weight-bold">Teléfono del(la) Funcionario(a)&nbsp;<code>*</code></label>
+                                                                        <input type="text" class="form-control" id="telefonoCredencial" name="telefonoCredencial" placeholder="Ej: +56987654321" title="Ej: +56987654321" required value="<?php echo $telefonoCredencial2; ?>">
+                                                                    </div>
+                                                                </div>
+
+                                                                <hr>
+                                                                <input type="hidden" name="idCredencial" id="idCredencial" value="<?php echo $idCredencial; ?>">
+
+                                                                <div class="form-group text-center mt-3">
+                                                                    <button id="btnGuardarCambios" type="submit" class="btn btn-primary font-weight-bold">
+                                                                        <i class="fas fa-save"></i>&nbsp;Guardar Cambios
+                                                                    </button>
+                                                                </div>
+                                                            </form>
+                                                            <!-- FORMULARIO FIN -->
+                                                        </div>
+
                                                     </div>
-
-                                                    <div class="modal-body">
-                                                        <!-- Aquí irá el formulario -->
-                                                        <!-- FORMULARIO INICIO -->
-                                                        <form id="formModificarCredenciales" method="POST" autocomplete="off">
-                                                            <div class="form-row justify-content-center text-center">
-                                                                <!-- Nombre -->
-                                                                <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
-                                                                    <label for="nombreCredencial" class="font-weight-bold">Nombre del(la) Funcionario(a)&nbsp;<code>*</code></label>
-                                                                    <input type="text" class="form-control" id="nombreCredencial" name="nombreCredencial" placeholder="Ej: Jean Pierre o Jean-Pierre" pattern="^[A-Za-zÁÉÍÓÚÑáéíóúñ\s\-]+$" title="Solo letras, espacios y guiones" required value="<?php echo $nombreCredencial2; ?>">
-                                                                </div>
-
-                                                                <!-- Apellido -->
-                                                                <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
-                                                                    <label for="apellidoCredencial" class="font-weight-bold">Apellido del(la) Funcionario(a)&nbsp;<code>*</code></label>
-                                                                    <input type="text" class="form-control" id="apellidoCredencial" name="apellidoCredencial" placeholder="Ej: Pérez García o Pérez-García" pattern="^[A-Za-zÁÉÍÓÚÑáéíóúñ\s\-]+$" title="Solo letras, espacios y guiones" required value="<?php echo $apellidoCredencial2; ?>">
-                                                                </div>
-                                                            </div>
-
-                                                            <hr>
-
-                                                            <div class="form-row justify-content-center text-center">
-                                                                <!-- RUT -->
-                                                                <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
-                                                                    <label for="rutCredencial" class="font-weight-bold">RUT del(la) Funcionario(a)&nbsp;<code>*</code></label>
-                                                                    <input type="text" class="form-control" id="rutCredencial" name="rutCredencial" placeholder="Ej: 12.345.678-9" pattern="^\d{1,2}\.\d{3}\.\d{3}-[\dkK]$" title="Formato válido: 12.345.678-9" required value="<?php echo $rutCredencial2; ?>">
-                                                                </div>
-
-                                                                <!-- Teléfono -->
-                                                                <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
-                                                                    <label for="telefonoCredencial" class="font-weight-bold">Teléfono del(la) Funcionario(a)&nbsp;<code>*</code></label>
-                                                                    <input type="text" class="form-control" id="telefonoCredencial" name="telefonoCredencial" placeholder="Ej: +56987654321" title="Ej: +56987654321" required value="<?php echo $telefonoCredencial2; ?>">
-                                                                </div>
-                                                            </div>
-
-                                                            <hr>
-                                                            <input type="hidden" name="idCredencial" id="idCredencial" value="<?php echo $idCredencial; ?>">
-
-                                                            <div class="form-group text-center mt-3">
-                                                                <button id="btnGuardarCambios" type="submit" class="btn btn-primary font-weight-bold">
-                                                                    <i class="fas fa-save"></i>&nbsp;Guardar Cambios
-                                                                </button>
-                                                            </div>
-                                                        </form>
-                                                        <!-- FORMULARIO FIN -->
-                                                    </div>
-
                                                 </div>
                                             </div>
-                                        </div>
 
-                                    <?php else: ?>
+                                        <?php else: ?>
+                                            <button
+                                                    class="btn btn-secondary btn-block"
+                                                    disabled
+                                                    aria-disabled="true"
+                                                    title="Este botón está deshabilitado"
+                                            >
+                                                <i class="fa fa-ban"></i> Deshabilitado
+                                            </button>
+                                        <?php endif; ?>
                                         <button
-                                            class="btn btn-secondary btn-block"
-                                            disabled
-                                            aria-disabled="true"
-                                            title="Este botón está deshabilitado"
-                                        >
-                                            <i class="fa fa-ban"></i> Deshabilitado
+                                                class="btn btn-primary btn-block"
+                                                data-toggle="modal"
+                                                data-target="#crearOT"
+                                        >Crear OT
                                         </button>
-                                    <?php endif; ?>
+                                        <form method="post" style="vertical-align: middle" action="../sdo-funciones/crear_ot_credencial.php">
+                                            <input type="hidden" name="idCredencial" id="idCredencial" value="<?php echo $idCredencial?>">
+                                            <div class="modal fade" id="crearOT" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header bg-purple">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Agregar OT</h5>
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+
+                                                            <div class="row">
+                                                                <div class="col-md-12 ml-auto">
+
+                                                                    <div style="text-align:left;" class="form-group">
+                                                                        <label for="exampleInputBorder">Turno Asignado
+                                                                            <code>*</code></label>
+                                                                        <select class="custom-select" name="turnoAsignado" id="turnoAsignado">
+                                                                            <option value="0">Seleccione...</option>
+                                                                            <option value="1">Personal Diurno</option>
+                                                                            <option value="2">Personal Nocturno</option>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-12 ml-auto">
+                                                                    <div style="text-align:left;" class="form-group">
+                                                                        <label for="exampleFormControlSelect1">Seleccione Funcionario
+                                                                            <code>*</code></label>
+                                                                        <select class="form-control form-control-sm listFuncionarioOT" name="funcionarioOT" required>
+                                                                            <option value="nulo">Seleccione...</option>
+
+                                                                            <?php
+
+
+                                                                            $sqlListadoFuncionarios = "SELECT jt.nomJefe AS nomPersonal 
+                                                                                                             FROM jefes_tecnicos jt 
+                                                                                                             WHERE (nomJefe NOT LIKE('%Jaime Amador Estay Jorquera%') AND nomJefe NOT LIKE('%Alejandro Cantillano%')) 
+                                                                                                             AND (idDepartamento = 1 AND jt.userActivado = 1)
+                                                                                                             AND nomJefe NOT LIKE('%Encargado Pruebas%')   
+                                                                                                             UNION 
+                                                                                                             SELECT p.nomPersonal AS nomPersonal
+                                                                                                             FROM personal p 
+                                                                                                             WHERE departamentoPersonal = 1
+                                                                                                             AND activoPersonal = 1 
+                                                                                                             AND (nomPersonal NOT LIKE('%Técnico Pruebas%') AND nomPersonal NOT LIKE('%Cynthia Latorre%'))
+                                                                                                             ORDER BY nomPersonal;";
+                                                                            $resListadoFuncionarios = mysqli_query($conexion, $sqlListadoFuncionarios);
+
+                                                                            if ($resListadoFuncionarios && mysqli_num_rows($resListadoFuncionarios) > 0) {
+                                                                                while ($rowListadoFuncionarios = $resListadoFuncionarios->fetch_assoc()) {
+                                                                                    $nomPersonal = $rowListadoFuncionarios['nomPersonal'];
+                                                                                    ?>
+                                                                                    <option value="<?php echo $nomPersonal; ?>"><?php echo $nomPersonal; ?></option>
+                                                                                    <?php
+                                                                                }
+                                                                            }
+                                                                            ?>
+                                                                        </select>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row">
+                                                                <div class="col-md-12 ml-auto">
+
+                                                                    <div style="text-align:left;" class="form-group">
+                                                                        <label for="exampleInputBorder">Fecha de Programación del Trabajo
+                                                                            <code>*</code></label>
+                                                                        <input type="date" class="form-control" name="fechaProgramacion" id="fechaProgramacion">
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <input type="hidden" name="nombreCredencial" value="<?php echo $nombreCredencial?>">
+                                                            <input type="hidden" name="apellidoCredencial" value="<?php echo $apellidoCredencial?>">
+                                                            <input type="hidden" name="rutCredencial" value="<?php echo $rutCredencial?>">
+                                                            <input type="hidden" name="idCredencial" value="<?php echo $idCredencial; ?>">
+                                                            <!--<input type="hidden" name="activacionCredencial3" value="${row.activacionCredencial3}">-->
+                                                            <input type="hidden" name="usuarioCreador" value="<?php echo $nomUsuario; ?>">
+                                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                                            <button type="submit" class="btn btn-primary">Guardar</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <?php
+                                    if($contarHabilitados > 0 || $contarDeshabilitados > 0){
+                                        ?>
+                                        <div class="col-md-6 mb-2">
+
+                                            <form
+                                                    action="../sdo-funciones/habilitar_sacar_credenciales.php"
+                                                    method="POST"
+                                                    id="formHabilitarCredencial">
+
+                                                <input
+                                                        type="hidden"
+                                                        name="idCredencial"
+                                                        value="<?php echo $idCredencial; ?>">
+                                                <input
+                                                        type="hidden"
+                                                        name="usuarioObs"
+                                                        value="<?php echo $nomUsuario; ?>">
+
+                                                <button
+                                                        type="submit"
+                                                        class="btn btn-success btn-block">
+
+                                                    Habilitar / Deshabilitar Credenciales
+
+                                                </button>
+
+                                            </form>
+
+                                        </div>
+                                        <?php
+                                    }
+                                    ?>
                                 </div>
                             </div>
                         </div>
@@ -359,7 +531,7 @@ $estado = [
                         <div class="card">
                             <div style="font-size: 10pt;" class="card-header bg-secondary d-flex p-0">
                                 <ul class="nav nav-pills mr-auto ml-auto p-2">
-                                    <!--                                    <li class="nav-item">-->
+                                    <!--                      f              <li class="nav-item">-->
                                     <!--                                        <a class="nav-link text-white" href="#tabModificar" data-toggle="tab">Modificar Datos</a>-->
                                     <!--                                    </li>-->
                                     <li class="nav-item">
@@ -387,6 +559,65 @@ $estado = [
 
                                             <div class="row text-center" style="display: flex; justify-content:center;">
                                                 <div class="col-lg-3 col-md-4 col-12">
+
+                                                    <button class="btn btn-success" data-toggle="modal" data-target="#modalAgregarObservacion">
+                                                        <i class="fa fa-plus"></i> Agregar Observación
+                                                    </button>
+
+                                                    <!-- Modal Observación -->
+                                                    <div class="modal fade" id="modalAgregarObservacion" tabindex="-1" role="dialog" aria-labelledby="modalObsLabel" aria-hidden="true">
+                                                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                                            <div class="modal-content">
+
+                                                                <div class="modal-header bg-success text-white">
+                                                                    <h5 class="modal-title" id="modalObsLabel">
+                                                                        <i class="fas fa-comment-dots"></i> Agregar Observación
+                                                                    </h5>
+                                                                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+
+                                                                <div class="modal-body">
+                                                                    <input type="hidden" id="idCredencialObs" value="<?php echo $idCredencial; ?>">
+                                                                    <input type="hidden" id="nomUsuarioObs" value="<?php echo $nomUsuario; ?>">
+
+                                                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                                                        <label for="textoObservacion" class="font-weight-bold mb-0">
+                                                                            Escriba su observación <code>*</code>
+                                                                        </label>
+
+                                                                        <div class="custom-control custom-switch">
+                                                                            <input type="checkbox"
+                                                                                    class="custom-control-input"
+                                                                                    id="observacionPrivada">
+
+                                                                            <label class="custom-control-label font-weight-bold"
+                                                                                    for="observacionPrivada">
+                                                                                Informacion interna
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <input type="hidden" id="esPrivada" value="0">
+
+                                                                    <textarea id="textoObservacion"
+                                                                            rows="5"
+                                                                            class="form-control"
+                                                                            placeholder="Ej: Solicita extensión de acceso..."></textarea>
+                                                                </div>
+
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-success" id="btnAgregarObservacion">
+                                                                        <i class="fas fa-save"></i> Guardar Observación
+                                                                    </button>
+                                                                    <button type="button" class="btn btn-danger" data-dismiss="modal">
+                                                                        <i class="fas fa-times"></i> Cerrar
+                                                                    </button>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
                                                 </div>
 
@@ -493,7 +724,7 @@ $estado = [
                                                         <th>Fecha Inicio</th>
                                                         <th>Fecha Termino</th>
                                                         <th>Tarjeta Activada</th>
-                                                        <th>¿Crear OT?</th>
+
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -508,7 +739,6 @@ $estado = [
                                                         <th>Fecha Inicio</th>
                                                         <th>Fecha Termino</th>
                                                         <th>Tarjeta Activada</th>
-                                                        <th>¿Crear OT?</th>
                                                     </tr>
                                                     </tfoot>
                                                 </table>
@@ -782,7 +1012,7 @@ $estado = [
                 }
             },
             ajax: {
-                url: "/sdo-includes/credenciales_rrhh_funcionario_observaciones.php",
+                url: "/sdo-includes/credenciales_rrhh_funcionario_observaciones_control.php",
                 type: "POST",
                 data: {idCredencialDatos: idCredencial},
                 dataSrc: json => Array.isArray(json) ? json : [],
@@ -1010,120 +1240,6 @@ $estado = [
                 { data: "inicioTarjeta2" },
                 { data: "terminoTarjeta2" },
                 { data: "activacionCredencial2" },
-
-                // 👇 AQUÍ CREAS EL BOTÓN
-                {
-                    data: null,
-                    render: function (data, type, row) {
-                        if (row.activacionCredencial3 == 2 || row.activacionCredencial3 == 3) {
-                            return `
-                                <button
-                                  class="btn btn-primary"
-                                  data-toggle="modal"
-                                  data-target="#crearOT${row.idRegistroTarjeta}"
-                                  >Crear OT
-                                </button>
-                                <form method="post" style="vertical-align: middle" action="../sdo-funciones/crear_ot_credencial.php">
-                                    <input type="hidden" name="idCredencial" id="idCredencial" value="${row.idCredencial}">
-                                    <div class="modal fade" id="crearOT${row.idRegistroTarjeta}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-
-                                    <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-                                    <div class="modal-content">
-                                     <div class="modal-header bg-purple">
-                                        <h5 class="modal-title" id="exampleModalLabel">Agregar OT</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                      <div class="modal-body">
-
-                                        <div class="row">
-                                            <div class="col-md-12 ml-auto">
-
-                                                <div style="text-align:left;" class="form-group">
-                                                    <label for="exampleInputBorder">Turno Asignado
-                                                        <code>*</code></label>
-                                                    <select class="custom-select" name="turnoAsignado" id="turnoAsignado">
-                                                        <option value="0">Seleccione...</option>
-                                                        <option value="1">Personal Diurno</option>
-                                                        <option value="2">Personal Nocturno</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                                <div class="col-md-12 ml-auto">
-                                                    <div style="text-align:left;" class="form-group">
-                                                    <label for="exampleFormControlSelect1">Seleccione Funcionario
-                                                                                        <code>*</code></label>
-                                                    <select class="form-control form-control-sm listFuncionarioOT" name="funcionarioOT" required>
-                                                        <option value="nulo">Seleccione...</option>
-
-                                                                                        <?php
-
-
-                            $sqlListadoFuncionarios = "SELECT jt.nomJefe AS nomPersonal 
-                                                                                                             FROM jefes_tecnicos jt 
-                                                                                                             WHERE (nomJefe NOT LIKE('%Jaime Amador Estay Jorquera%') AND nomJefe NOT LIKE('%Alejandro Cantillano%')) 
-                                                                                                             AND (idDepartamento = 1 AND jt.userActivado = 1)
-                                                                                                             AND nomJefe NOT LIKE('%Encargado Pruebas%')   
-                                                                                                             UNION 
-                                                                                                             SELECT p.nomPersonal AS nomPersonal
-                                                                                                             FROM personal p 
-                                                                                                             WHERE departamentoPersonal = 1
-                                                                                                             AND activoPersonal = 1 
-                                                                                                             AND (nomPersonal NOT LIKE('%Técnico Pruebas%') AND nomPersonal NOT LIKE('%Cynthia Latorre%'))
-                                                                                                             ORDER BY nomPersonal;";
-                            $resListadoFuncionarios = mysqli_query($conexion, $sqlListadoFuncionarios);
-
-                            if ($resListadoFuncionarios && mysqli_num_rows($resListadoFuncionarios) > 0) {
-                            while ($rowListadoFuncionarios = $resListadoFuncionarios->fetch_assoc()) {
-                            $nomPersonal = $rowListadoFuncionarios['nomPersonal'];
-                            ?>
-                                                                                                <option value="<?php echo $nomPersonal; ?>"><?php echo $nomPersonal; ?></option>
-                                                                                                <?php
-                            }
-                            }
-                            ?>
-                                                    </select>
-
-                                                    </div>
-                                                </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-12 ml-auto">
-
-                                                <div style="text-align:left;" class="form-group">
-                                                    <label for="exampleInputBorder">Fecha de Programación del Trabajo
-                                                        <code>*</code></label>
-                                                    <input type="date" class="form-control" name="fechaProgramacion" id="fechaProgramacion">
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                      </div>
-                                      <div class="modal-footer">
-                                        <input type="hidden" name="nombreCredencial" value="<?php echo $nombreCredencial?>">
-                                        <input type="hidden" name="apellidoCredencial" value="<?php echo $apellidoCredencial?>">
-                                        <input type="hidden" name="rutCredencial" value="<?php echo $rutCredencial?>">
-                                        <input type="hidden" name="idRegistroTarjeta" value="${row.idRegistroTarjeta}">
-                                        <input type="hidden" name="activacionCredencial3" value="${row.activacionCredencial3}">
-                                        <input type="hidden" name="usuarioCreador" value="<?php echo $nomUsuario; ?>">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                        <button type="submit" class="btn btn-primary">Guardar</button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                </form>
-
-
-                            `;
-                        }
-                        return '';
-                    }
-                }
             ],
             createdRow: function (row) {
                 $('td', row).css({
@@ -1146,6 +1262,7 @@ $estado = [
         const texto = $("#textoObservacion").val().trim();
         const usuario = nomUsuario;
         const id = $("#idCredencialObs").val();
+        const esPrivada = $("#esPrivada").val();
 
         if (texto === "") {
             Swal.fire("Observación vacía", "Debes ingresar una observación antes de guardar.", "warning");
@@ -1156,13 +1273,14 @@ $estado = [
         btn.prop("disabled", true);
 
         $.ajax({
-            url: "/sdo-includes/credenciales_rrhh_insertar_observacion.php",
+            url: "/sdo-includes/credenciales_rrhh_insertar_observacion_control.php",
             type: "POST",
             dataType: "json",
             data: {
                 observacion: texto,
                 idCredencial: id,
-                usuario
+                usuario,
+                esPrivada: esPrivada
             },
             success: function (resp) {
                 if (resp.status === "ok") {
@@ -1692,8 +1810,47 @@ $estado = [
         });
     });
 </script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const checkbox = document.getElementById("observacionPrivada");
+        const hidden = document.getElementById("esPrivada");
 
+        checkbox.addEventListener("change", function () {
+            hidden.value = this.checked ? "1" : "0";
+        });
+    });
+</script>
+<script>
 
+    document
+        .getElementById('formHabilitarCredencial')
+        .addEventListener('submit', function(e) {
+
+            e.preventDefault();
+
+            Swal.fire({
+                title: '¿Está seguro?',
+                text: 'Esta acción cambiará el estado de las credenciales.',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, continuar',
+                cancelButtonText: 'Cancelar',
+                reverseButtons: true
+            }).then((result) => {
+
+                if (result.isConfirmed) {
+
+                    this.submit();
+
+                }
+
+            });
+
+        });
+
+</script>
 <!-- Spinner Fullscreen -->
 <div id="spinnerOverlay" style="
     display: none;

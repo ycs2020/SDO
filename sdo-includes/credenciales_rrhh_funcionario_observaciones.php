@@ -19,7 +19,7 @@ $sql = $conexion->prepare("
         tipoObservacion AS tipo,
         observacion
     FROM credenciales_rrhh_observaciones
-    WHERE idCredencial = ?
+    WHERE idCredencial = ? AND privado = 0 
     ORDER BY fechaObservacion DESC
 ");
 

@@ -17,6 +17,9 @@ $ipPermitida = '10.69.250.151';
 $ipCliente = $_SERVER['REMOTE_ADDR'];
 
 
+
+$contarNotificacionesPersonal = contarNotificacionesPersonalRRHH();
+
 ?>
 
 <!DOCTYPE html>
@@ -108,7 +111,23 @@ $ipCliente = $_SERVER['REMOTE_ADDR'];
                     </div>
 
                 </div>
+                <?php
+                //echo $contarNotificacionesPersonal;
+                if ($contarNotificacionesPersonal > 0) {
 
+                    echo "<script>
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Interfaz de Administración de Personal',
+                        text: 'Tienes $contarNotificacionesPersonal notificaciones pendientes',
+                        confirmButtonText: 'Entendido'
+                    });
+            
+                    toastr.info('Tienes $contarNotificacionesPersonal notificaciones pendientes.');
+                </script>";
+
+                }
+                ?>
             </div><!-- /.container-fluid -->
         </section>
 

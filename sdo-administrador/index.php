@@ -88,7 +88,26 @@ $anio = date('Y');
         <!-- Content Header (Page header) -->
         <section class="content-header">
             <div class="container-fluid">
+                <?php
+                if($idDepartamento == 1 || $idDepartamento == 13){
+                    $contarNotificacionesPersonal = contarNotificacionesPersonal();
 
+                    if($contarNotificacionesPersonal > 0){
+
+                        echo "<script>
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Interfaz de Administración de Personal',
+                            text: 'Tienes $contarNotificacionesPersonal notificaciones pendientes',
+                            confirmButtonText: 'Entendido'
+                        });
+                
+                        toastr.info('Tienes $contarNotificacionesPersonal notificaciones pendientes.');
+                    </script>";
+
+                    }
+                }
+                ?>
             </div><!-- /.container-fluid -->
         </section>
 
@@ -103,10 +122,29 @@ $anio = date('Y');
                         "closeButton": true,
                         "progressBar": true
                     };
+
                 </script>
 
                 <?php
                 $contarfaltavisado = contarfaltavisado($nomUsuario);
+                $contarNotificacionesPersonal = contarNotificacionesPersonal();
+
+                if($contarNotificacionesPersonal > 0){
+
+                    echo "<script>
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Interfaz de Administración de Personal',
+                            text: 'Tienes $contarNotificacionesPersonal notificaciones pendientes',
+                            confirmButtonText: 'Entendido'
+                        });
+                
+                        toastr.info('Tienes $contarNotificacionesPersonal notificaciones pendientes.');
+                    </script>";
+
+                }
+
+                //echo $contarNotificacionesPersonal;
 
                 if ($contarfaltavisado > 0) {
                     echo "<script>toastr.info('Existen Ordenes de Trabajo sin visar, en total: $contarfaltavisado');</script>";

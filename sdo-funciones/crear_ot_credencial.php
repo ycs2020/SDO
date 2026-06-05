@@ -45,7 +45,7 @@ if ($rolUsuario2 == "personal") {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $idRegistroTarjeta = $_POST['idRegistroTarjeta'];
+    $idCredencial = $_POST['idCredencial'];
     $activacionCredencial3 = $_POST['activacionCredencial3'];
     $usuarioCreador = $_POST['usuarioCreador'];
     $funcionarioOT = $_POST['funcionarioOT'];
@@ -55,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $apellidoCredencial = $_POST['apellidoCredencial'];
     $rutCredencial = $_POST['rutCredencial'];
     $nombreCompleto = $nombreCredencial.' '.$apellidoCredencial;
-    $idCredencial = $_POST['idCredencial'];
+    //$idCredencial = $_POST['idCredencial'];
 
 
     if($turnoAsignado == 1){
@@ -66,15 +66,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $turnoReal = "Error";
     }
 
-    if ($activacionCredencial3 == 2) {
-        $texto = "Habilitar";
-    } else if ($activacionCredencial3 == 3) {
-        $texto = "Deshabilitar";
-    } else {
-        $texto = "Error";
-    }
 
-    $textoGrande = "Se solicita $texto la credencial de $nombreCompleto rut: $rutCredencial esto a solicitud de la Unidad de Personal";
+    $textoGrande = "Se solicita revisar la(s) credencial(es) asociadas a $nombreCompleto rut: $rutCredencial esto a solicitud de la Unidad de Personal";
 
     $now = date('Y-m-d H:i:s');
 
@@ -92,15 +85,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $resModificar = mysqli_query($conexion, $modificar);
 
 
-        $sqlInsert = "INSERT INTO `datos_credencial_funcionarios`(`id`, `idRegistroTarjeta`, `idTG`) 
-        VALUES (null,$idRegistroTarjeta,$id)";
+        $sqlInsert = "INSERT INTO `datos_credencial_funcionarios`(`id`, `idCredencial`, `idTG`) 
+        VALUES (null,$idCredencial,$id)";
         $resInsert = mysqli_query($conexion, $sqlInsert);
 
 
-        $sqlObs = "INSERT INTO `credenciales_rrhh_observaciones`(`idObservacion`, `idCredencial`, `fechaObservacion`, `usuarioObservacion`, `tipoObservacion`, `observacion`) 
-        VALUES (null,$idCredencial,'$now','$usuarioCreador','Creacion de Orden de Trabajo','Se ha creado una orden de trabajo para $texto el día $now con folio OT-I-$id')";
+        $sqlObs = "INSERT INTO `credenciales_rrhh_observaciones`(`idObservacion`, `idCredencial`, `fechaObservacion`, `usuarioObservacion`, `tipoObservacion`, `observacion`,privado) 
+        VALUES (null,$idCredencial,'$now','$usuarioCreador','Creacion de Orden de Trabajo','Se ha creado una orden de trabajo el día $now con folio OT-I-$id',1)";
         $resObs = mysqli_query($conexion, $sqlObs);
-
 
         header('Location: ../'.$rutaDireccion.'/credenciales_administracion.php?exitoCreacionOT=true');
         exit();

@@ -30,8 +30,8 @@ if (!$idCredencial || !$idCalidad || !$idCargo || !$idUnidad || !$idJefatura || 
 }
 
 // Validar duplicado
-$verifica = $conexion->prepare("SELECT COUNT(*) AS total FROM credenciales_rrhh_contratos WHERE idCredencial = ? AND idCalidad = ? AND idCargo = ? AND idUnidad = ? AND idJefatura = ?");
-$verifica->bind_param("iiiii", $idCredencial, $idCalidad, $idCargo, $idUnidad, $idJefatura);
+$verifica = $conexion->prepare("SELECT COUNT(*) AS total FROM credenciales_rrhh_contratos WHERE idCredencial = ? AND idCalidad = ? AND idCargo = ? AND idUnidad = ? AND idJefatura = ? AND inicioContrato = ? AND terminoContrato = ?");
+$verifica->bind_param("iiiiiss", $idCredencial, $idCalidad, $idCargo, $idUnidad, $idJefatura, $inicio, $termino);
 $verifica->execute();
 $existe = $verifica->get_result()->fetch_assoc()['total'] ?? 0;
 $verifica->close();

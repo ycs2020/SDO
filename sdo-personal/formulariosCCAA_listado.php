@@ -75,6 +75,45 @@ $nomUsuario = $_SESSION['nomUsuario'];
                         <!-- Custom Tabs -->
                         <div class="card">
                             <div class="card-body" style="text-align:center;">
+                                <button class="btn btn-block bg-success" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-eye"></i> Buscar Funcionario</button>
+                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-xl" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-success">
+                                                <h5 class="modal-title" id="exampleModalLabel">Buscar Funcionarios en los Formatos de Accesos</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <table id="tablaFuncionarios" class="table table-striped table-bordered" style="width:100%">                                                    <thead class="bg-secondary">
+                                                        <tr>
+                                                            <th>Folio</th>
+                                                            <th>Funcionario</th>
+                                                            <th>Documento Recibido</th>
+                                                            <th>Visualizar</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                    </tbody>
+                                                    <tfoot class="bg-secondary">
+                                                    <tr>
+                                                        <th>Folio</th>
+                                                        <th>Funcionario</th>
+                                                        <th>Documento Recibido</th>
+                                                        <th>Visualizar</th>
+                                                    </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
                                 <table id="tablaSolicitudesRecibidas" class="table table-bordered table-striped table-sm text-center" style="font-size: 11pt;">
                                     <thead class="bg-secondary">
                                     <tr>
@@ -217,6 +256,41 @@ $nomUsuario = $_SESSION['nomUsuario'];
 <script src="../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../dist/js/adminlte.min.js"></script>
+
+
+<script>
+    $(document).ready(function () {
+        $('#tablaFuncionarios').DataTable({
+            "ajax": {
+                "url": "/sdo-includes/formularios_ccaa_recibidos_cargar_funcionarios.php",
+                "type": "POST"
+            },
+            "columns": [
+                {"data": "folioFormRegAcceso"},
+                {"data": "funcionarios"},
+                {"data": "estadoDocumento"},
+                {"data": "botonVisualizar"},
+            ],
+            "responsive": true,
+            "lengthChange": false,
+            "ordering": false,
+            "searching": true,
+            "language": {
+                "lengthMenu": "Visualizando _MENU_ Registros por Página",
+                "zeroRecords": "No se han encontrado registros.",
+                "info": "Mostrando página _PAGE_ de _PAGES_",
+                "infoEmpty": "No existen registros.",
+                "infoFiltered": "(filtrado desde _MAX_ registros totales)",
+                "search": "Buscar:",
+                "processing": "Procesando...",
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            }
+        });
+    });
+</script>
 <!-- Page specific script -->
 
 </body>

@@ -52,6 +52,23 @@ if (isset($credencial['idCredencial'])) {
     $rutCredencial = $credencial['rutCredencial'];
     $telefonoCredencial = $credencial['telefonoCredencial'];
     $activacionCredencial = $credencial['activacionCredencial'];
+    $esBecado = $credencial['esBecado'];
+    $esDiscapacitado = $credencial['esDiscapacitado'];
+
+    if($esBecado == 1){
+        $textBecado = "SI";
+        $checkeboxBecado = "checked";
+    }else{
+        $textBecado = "NO";
+    }
+
+    if($esDiscapacitado == 1){
+        $textDisca = "SI";
+        $checkeboxDisca = "checked";
+    }else{
+        $textDisca = "NO";
+    }
+
 
 } else {
     header("Location: ../$ruta/credenciales_administracion.php?errorCargaCredencial=true");
@@ -79,6 +96,50 @@ $estado = [
 ];
 
 [$activacionCredencial2, $colorCredencial, $habilitadoCredencial2] = $estado[$activacionCredencial] ?? $estado[0];
+
+$stmt = $conexion->prepare("
+    UPDATE credenciales_rrhh_observaciones
+    SET notificado = 1
+    WHERE idCredencial = ?
+    AND tipoObservacion = 'Trabajo Realizado'
+");
+
+$stmt->bind_param("i", $idCredencialVer);
+$stmt->execute();
+
+
+$rutCredencial3 = str_replace(['.', '-'], '', $rutCredencial2);
+
+
+$stmt = $conexion->prepare("
+    SELECT idActa 
+    FROM actas 
+    WHERE rutTarjeta = ?
+    LIMIT 1
+");
+
+$stmt->bind_param("s", $rutCredencial3);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($row = $result->fetch_assoc()) {
+    $poseeActa = "Sí";
+    $idActa = $row['idActa'];
+} else {
+    $poseeActa = "No";
+    $idActa = null;
+}
+
+
+$sqlTarjetas = "SELECT activacionCredencial FROM `credenciales_rrhh_registro_tarjetas` WHERE idCredencial = $idCredencialVer ORDER BY fechaRegistro DESC LIMIT 1";
+$resTarjetas = $conexion->query($sqlTarjetas);
+while ($rowTarjetas = $resTarjetas->fetch_assoc()) {
+    $activacionTarjeta = $rowTarjetas['activacionCredencial'];
+   // echo $activacionTarjeta;
+}
+
+
+
 
 ?>
 <!DOCTYPE html>
@@ -223,6 +284,12 @@ $estado = [
                                             </td>
                                             <td><?php echo $telefonoCredencial2; ?></td>
                                         </tr>
+                                        <tr>
+                                            <td><b>FUNCIONARIO BECADO</b></td>
+                                            <td><?php echo $textBecado;?></td>
+                                            <td><b>FUNCIONARIO DISCAPACITADO</b></td>
+                                            <td><?php echo $textDisca;?></td>
+                                        </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -235,6 +302,19 @@ $estado = [
                                                 <b>ESTADO ACTIVACIÓN:</b>
                                             </td>
                                             <td style="<?php echo $colorCredencial; ?>"><?php echo $activacionCredencial2; ?></td>
+                                            <?php
+                                            if($activacionTarjeta == 1){
+                                                ?>
+                                                <td class="text-center">
+                                                    <form target="_blank" action="../sdo-pdf/SDO-Acta.php" method="POST">
+                                                        <input type="hidden" name="idActa" value="<?php echo $idActa; ?>">
+                                                        <button type="submit" class="btn btn-sm bg-success"><i class="fas fa-file-pdf"></i> Descargar Acta</button>
+                                                    </form>
+                                                </td>
+                                                <?php
+                                            }
+                                            ?>
+
                                         </tr>
                                         </tbody>
                                     </table>
@@ -308,6 +388,30 @@ $estado = [
                                                                 </div>
                                                             </div>
 
+                                                            <hr>
+                                                            <div class="form-row justify-content-center text-center">
+
+                                                                <!-- Becario -->
+                                                                <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
+                                                                    <div class="custom-control custom-checkbox">
+                                                                        <input type="checkbox" <?php echo $checkeboxBecado?> class="custom-control-input" id="chkBecario" name="valorBeca" value="SI">
+                                                                        <label class="custom-control-label font-weight-bold" for="chkBecario">
+                                                                            Funcionario(a) Becario(a) <code>*</code>
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+
+                                                                <!-- Discapacitado -->
+                                                                <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
+                                                                    <div class="custom-control custom-checkbox">
+                                                                        <input type="checkbox" <?php echo $checkeboxDisca?> class="custom-control-input" id="chkDiscapacitado" name="valorDiscapacidad" value="SI">
+                                                                        <label class="custom-control-label font-weight-bold" for="chkDiscapacitado">
+                                                                            Funcionario(a) Discapacitado(a) <code>*</code>
+                                                                        </label>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
                                                             <hr>
                                                             <input type="hidden" name="idCredencial" id="idCredencial" value="<?php echo $idCredencial; ?>">
 
@@ -773,7 +877,7 @@ $estado = [
                                                     <th>#</th>
                                                     <th>Perfil</th>
                                                     <th>Descripci&oacute;n</th>
-                                                    <th>Grupos</th>
+                                                    <th>Grupos de Puertas</th>
                                                     <th>Activar / Desactivar</th>
                                                 </tr>
                                                 </thead>
@@ -785,7 +889,7 @@ $estado = [
                                                     <th>#</th>
                                                     <th>Perfil</th>
                                                     <th>Descripci&oacute;n</th>
-                                                    <th>Estado</th>
+                                                    <th>Grupos de Puertas</th>
                                                     <th>Activar / Desactivar</th>
                                                 </tr>
                                                 </tfoot>
@@ -1095,7 +1199,7 @@ $estado = [
                 },
                 {data: "nomPerfil"},
                 {data: "descripPerfil"},
-                {data: "idPerfil"},
+                {data: "verPuertas"},
                 {data: "perfilActivado"}
             ],
             columnDefs: [
@@ -1817,6 +1921,88 @@ $estado = [
                 });
 
         });
+    });
+</script>
+
+<div class="modal fade" id="modalPuertasPerfil">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title">
+                    Puertas del Perfil
+                </h5>
+            </div>
+
+            <div class="modal-body">
+
+                <table id="tablaPuertasPerfil" class="table text-center table-bordered table-sm" style="width:100%">
+                    <thead>
+                    <tr>
+                        <th>N°</th>
+                        <th>Grupo</th>
+                        <th>Puerta</th>
+                       
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                    <tfoot>
+                    <tr>
+                        <th>N°</th>
+                        <th>Grupo</th>
+                        <th>Puerta</th>
+                    </tr>
+                    </tfoot>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).on('click', '.btnVerPuertas', function () {
+
+        let idPerfil = $(this).data('idperfil');
+        let perfil = $(this).data('perfil');
+
+
+        $('#modalPuertasPerfil .modal-title')
+            .text('Puertas del Perfil: ' + perfil);
+
+        if ($.fn.DataTable.isDataTable('#tablaPuertasPerfil')) {
+            $('#tablaPuertasPerfil').DataTable().destroy();
+        }
+
+        $('#tablaPuertasPerfil').DataTable({
+
+            ajax: {
+                url: '/sdo-includes/credenciales_rrhh_funcionario_perfiles_puertas.php',
+                type: 'POST',
+                data: {
+                    idPerfil: idPerfil
+                },
+                dataSrc: ''
+            },
+
+            columns: [
+                {
+                    data: null,
+                    render: (data, type, row, meta) => meta.row + 1
+                },
+                { data: 'grupoPuerta' },
+                { data: 'puerta' }
+            ],
+
+            ordering: false,
+            searching: true,
+            destroy: true
+        });
+
+        $('#modalPuertasPerfil').modal('show');
     });
 </script>
 

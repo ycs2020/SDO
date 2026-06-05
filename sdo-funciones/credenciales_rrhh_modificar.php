@@ -23,6 +23,22 @@ $nombre          = limpiar($_POST['nombreCredencial'] ?? '');
 $apellido        = limpiar($_POST['apellidoCredencial'] ?? '');
 $rut             = limpiar($_POST['rutCredencial'] ?? '');
 $telefono        = limpiar($_POST['telefonoCredencial'] ?? '');
+$esBecado = isset($_POST['valorBeca']) ? 1 : 0;
+$esDiscapacitado = isset($_POST['valorDiscapacidad']) ? 1 : 0;
+
+
+if($esBecado == 1){
+    $textoBecadoAhora = "SI";
+}else{
+    $textoBecadoAhora = "NO";
+}
+
+if($esDiscapacitado == 1){
+    $textoDiscapAhora = "SI";
+}else{
+    $textoDiscapAhora = "NO";
+}
+
 $usuarioModifica = $_SESSION['nomUsuario'] ?? 'Desconocido';
 
 // ─────────────────────────────────────────────
@@ -35,10 +51,12 @@ if ($idCredencial <= 0 || $nombre === '' || $apellido === '' || $rut === '') {
 // ─────────────────────────────────────────────
 // Obtener datos ANTERIORES
 $sqlAnterior = "
-    SELECT nombreCredencial, apellidoCredencial, rutCredencial, telefonoCredencial
+    SELECT nombreCredencial, apellidoCredencial, rutCredencial, telefonoCredencial,
+           esBecado, esDiscapacitado
     FROM credenciales_rrhh
     WHERE idCredencial = ?
 ";
+
 $stmtAnterior = $conexion->prepare($sqlAnterior);
 $stmtAnterior->bind_param("i", $idCredencial);
 $stmtAnterior->execute();
@@ -56,6 +74,20 @@ $nombreAnt   = $anterior['nombreCredencial'];
 $apellidoAnt = $anterior['apellidoCredencial'];
 $rutAnt      = $anterior['rutCredencial'];
 $fonoAnt     = $anterior['telefonoCredencial'];
+$becadoAnt   = $anterior['esBecado'];
+$discapAnt   = $anterior['esDiscapacitado'];
+
+if($becadoAnt == 1){
+    $textoBecadoAnt = "SI";
+}else{
+    $textoBecadoAnt = "NO";
+}
+
+if($discapAnt == 1){
+    $textoDiscapAnt = "SI";
+}else{
+    $textoDiscapAnt = "NO";
+}
 
 // ─────────────────────────────────────────────
 // Verificar RUT duplicado
@@ -85,11 +117,23 @@ $sqlUpdate = "
     SET nombreCredencial = ?, 
         apellidoCredencial = ?, 
         rutCredencial = ?, 
-        telefonoCredencial = ?
+        telefonoCredencial = ?,
+        esBecado = ?,
+        esDiscapacitado = ?
     WHERE idCredencial = ?
 ";
 $stmt = $conexion->prepare($sqlUpdate);
-$stmt->bind_param("ssssi", $nombre, $apellido, $rut, $telefono, $idCredencial);
+
+$stmt->bind_param(
+    "ssssiii",
+    $nombre,
+    $apellido,
+    $rut,
+    $telefono,
+    $esBecado,
+    $esDiscapacitado,
+    $idCredencial
+);
 
 if (!$stmt->execute()) {
     echo json_encode([
@@ -109,11 +153,15 @@ $observacion = "MODIFICACIÓN DE CREDENCIAL\n\n" .
     "Apellido : $apellidoAnt\n" .
     "RUT      : $rutAnt\n" .
     "Teléfono : $fonoAnt\n\n" .
+    "Becado      : $textoBecadoAnt\n" .
+    "Discapacidad: $textoDiscapAnt\n\n" .
     "AHORA:\n" .
     "Nombre   : $nombre\n" .
     "Apellido : $apellido\n" .
     "RUT      : $rut\n" .
-    "Teléfono : $telefono\n";
+    "Teléfono : $telefono\n".
+    "Becado      : $textoBecadoAhora\n" .
+    "Discapacidad: $textoDiscapAhora\n\n";
 
 $sqlObs = "
     INSERT INTO credenciales_rrhh_observaciones

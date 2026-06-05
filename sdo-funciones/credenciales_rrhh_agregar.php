@@ -21,6 +21,9 @@ $nombre          = limpiar($_POST['nombreCredencial'] ?? '');
 $apellido        = limpiar($_POST['apellidoCredencial'] ?? '');
 $rut             = limpiar($_POST['rutCredencial'] ?? '');
 $telefono        = limpiar($_POST['telefonoCredencial'] ?? '');
+$esBecado = ($_POST['valorBeca'] ?? 'NO') === 'SI' ? 1 : 0;
+$esDiscapacitado = ($_POST['valorDiscapacidad'] ?? 'NO') === 'SI' ? 1 : 0;
+
 $usuarioRegistro = $_SESSION['nomUsuario'] ?? 'Desconocido';
 
 // Validaciones básicas
@@ -54,8 +57,10 @@ $sql = "INSERT INTO credenciales_rrhh (
     nombreCredencial,
     apellidoCredencial,
     rutCredencial,
-    telefonoCredencial
-) VALUES (?, ?, ?, ?)";
+    telefonoCredencial,
+    esDiscapacitado,
+    esBecado
+) VALUES (?, ?, ?, ?, ?, ?)";
 
 $stmt = $conexion->prepare($sql);
 
@@ -64,7 +69,16 @@ if (!$stmt) {
     exit;
 }
 
-$stmt->bind_param("ssss", $nombre, $apellido, $rut, $telefono);
+$stmt->bind_param(
+    "ssssii",
+    $nombre,
+    $apellido,
+    $rut,
+    $telefono,
+    $esDiscapacitado,
+    $esBecado
+);
+
 
 if ($stmt->execute()) {
 
