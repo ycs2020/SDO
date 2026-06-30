@@ -174,7 +174,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['descripcion'])) {
             // =========================================================
             // 3. INSERCIÓN EN LÍNEA DE VIDA
             // =========================================================
-            $detalleObs = 'Se ha ingresado la orden de trabajo ' . $folioTG . ' y se ha asignado al técnico ID ' . $tecnico1 . ' para realizar el trabajo.';
+            $detalleObs = 'Se ha ingresado la orden de trabajo ' . $folioTG . ' y se ha asignado a ' . $tecnico1 . ' para realizar el trabajo.';
             $stmtLine = mysqli_prepare($conexion, "INSERT INTO linea_vida_ot (idLineaVida, nomCreador, detalle, fechaSubida, idTG) VALUES (NULL, ?, ?, ?, ?)");
             mysqli_stmt_bind_param($stmtLine, "sssi", $personaSolicitante, $detalleObs, $fechaOrden, $idTG);
             mysqli_stmt_execute($stmtLine);

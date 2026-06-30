@@ -91,6 +91,15 @@ if (($departamentos == 1 || $departamentos == 13) && (!empty($detalleTurnoRonda)
         <div class="p-2 bg-light border rounded">
             <div class="row align-items-center justify-content-center" style="row-gap: 10px;">
 
+                <div class="col-xl-3 col-lg-4 col-md-6 col-12 text-center">
+                    <form style="margin:0; display:inline;" action="../sdo-pdf/SDO-Orden-Trabajo-Visor.php" method="post" target="_blank">
+                        <input type="hidden" name="idTG" value="<?php echo $idTG; ?>">
+                        <button type="submit" class="btn btn-xs btn-primary font-weight-bold px-3 w-100">
+                            <i class="fa fa-eye mr-1"></i> Visualizar OT
+                        </button>
+                    </form>
+                </div>
+
                 <?php if ($contarArchivos > 0) { ?>
                     <div class="col-xl-3 col-lg-4 col-md-6 col-12 text-center">
                         <button type="button" class="btn btn-xs font-weight-bold px-3 w-100" style="background-color: deepskyblue; color: white;" data-toggle="modal" data-target="#mostrarDescargar">

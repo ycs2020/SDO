@@ -15,6 +15,7 @@
     </tr>
     </thead>
     <tbody></tbody>
+
     <tfoot class="bg-secondary">
     <tr>
         <th>N°</th>

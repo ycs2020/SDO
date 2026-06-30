@@ -96,6 +96,45 @@ $nomUsuario = $_SESSION['nomUsuario'];
                         <!-- Custom Tabs -->
                         <div class="card">
                             <div class="card-body" style="text-align:center;">
+                                <button class="btn btn-block bg-success" data-toggle="modal" data-target="#exampleModal"><i class="fas fa-eye"></i> Buscar Funcionario</button>
+                                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-xl" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header bg-success">
+                                                <h5 class="modal-title" id="exampleModalLabel">Buscar Funcionarios en los Formatos de Accesos</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <table id="tablaFuncionarios" class="table table-striped table-bordered" style="width:100%">                                                    <thead class="bg-secondary">
+                                                    <tr>
+                                                        <th>Folio</th>
+                                                        <th>Funcionario</th>
+                                                        <th>Documento Recibido</th>
+                                                        <th>Visualizar</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+
+                                                    </tbody>
+                                                    <tfoot class="bg-secondary">
+                                                    <tr>
+                                                        <th>Folio</th>
+                                                        <th>Funcionario</th>
+                                                        <th>Documento Recibido</th>
+                                                        <th>Visualizar</th>
+                                                    </tr>
+                                                    </tfoot>
+                                                </table>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
                                 <table id="tablaSolicitudesRecibidas" class="table table-bordered table-striped table-sm text-center" style="font-size: 11pt;">
                                     <thead class="bg-secondary">
                                     <tr>

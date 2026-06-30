@@ -199,6 +199,107 @@ $(document).ready(function () {
             }
         });
     });
+
+
+
+    // === NUEVA FUNCIÓN PARA EXCEL (DENTRO DEL DOCUMENT READY) ===
+
+    $('#btnDescargarTodoKM').on('click', function() {
+        const idMovil = $(this).data('idmovil');
+        console.log("ID del movil:", idMovil);
+
+        // Obtenemos el rango total que cargamos desde PHP en el modal
+        const fInicio = $('#fechaInicioExcelKM').attr('min');
+        const fFin = $('#fechaFinExcelKM').attr('max');
+
+        toastr.info('Generando historial completo...', 'Procesando');
+
+        // Enviamos el formulario POST igual que el anterior
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '../sdo-includes/vehiculos_doc/vehiculos_kilometraje_excel.php';
+        form.target = '_blank';
+
+        const params = {
+            idMovil: idMovil,
+            inicio: fInicio,
+            fin: fFin,
+            todo: 'si' // Enviamos una bandera extra por si quieres usarla
+        };
+
+        for (const key in params) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = params[key];
+            form.appendChild(input);
+        }
+
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+
+        $('#modalExcelKilometraje').modal('hide');
+    });
+
+    $('#btnProcesarExcelKM').on('click', function() {
+        // 1. Capturar datos del modal
+        const $btn = $(this);
+        const idMovil = $btn.data('idmovil');
+        const fInicio = $('#fechaInicioExcelKM').val();
+        const fFin = $('#fechaFinExcelKM').val();
+
+        // Obtener los límites definidos por PHP en los atributos min/max
+        const minSistema = $('#fechaInicioExcelKM').attr('min');
+        const maxSistema = $('#fechaFinExcelKM').attr('max');
+
+        // 2. Validaciones con Toastr
+        if (!fInicio || !fFin) {
+            toastr.warning('Debes seleccionar ambas fechas para continuar.', 'Campos incompletos');
+            return;
+        }
+
+        if (fInicio < minSistema || fFin > maxSistema) {
+            toastr.error(`El rango debe estar entre ${minSistema} y ${maxSistema}.`, 'Rango fuera de límites');
+            return;
+        }
+
+        if (fInicio > fFin) {
+            toastr.error('La fecha de inicio no puede ser posterior a la de término.', 'Error de coherencia');
+            return;
+        }
+
+        // 3. Si función está OK, proceder
+        toastr.success('Generando archivo Excel...', 'Procesando');
+
+// Crear un formulario temporal
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '../sdo-includes/vehiculos_doc/vehiculos_kilometraje_excel.php';
+        form.target = '_blank'; // Para que la descarga sea en pestaña nueva
+
+// Agregar los campos como inputs ocultos
+        const params = {
+            idMovil: idMovil,
+            inicio: fInicio,
+            fin: fFin
+        };
+
+        for (const key in params) {
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = key;
+            input.value = params[key];
+            form.appendChild(input);
+        }
+
+// Añadir al cuerpo, enviar y eliminar
+        document.body.appendChild(form);
+        form.submit();
+        document.body.removeChild(form);
+
+        $('#modalExcelKilometraje').modal('hide');
+    });
 });
 
 // --- Funciones Globales (Window) ---

@@ -57,7 +57,19 @@ $modulosInicio = [
                 'icono' => '<i class="fas fa-list fa-2x"></i>',
                 'nombre' => 'Informe Estado y T° - Calderas',
                 'ruta' => '../sdo-administrador/calderas_documento.php',
-                'ips' => ['10.69.250.151'] // Puedes combinar ambas restricciones
+//                'ips' => ['10.69.250.151'] // Puedes combinar ambas restricciones
+            ],
+            [
+                'icono' => '<i class="fas fa-list fa-2x"></i>',
+                'nombre' => 'Analizadores de Red - Listado',
+                'ruta' => '../sdo-administrador/analizadores_red_listado.php',
+//                'ips' => ['10.69.250.151'] // Puedes combinar ambas restricciones
+            ],
+            [
+                'icono' => '<i class="fas fa-gas-pump fa-2x"></i>',
+                'nombre' => 'Medicion PSI - Combustible',
+                'ruta' => '../sdo-administrador/combustible_psi_medicion.php',
+//                'ips' => ['10.69.250.151'] // Puedes combinar ambas restricciones
             ],
         ]
     ],
@@ -403,6 +415,16 @@ $modulosInicio = [
                 'icono' => '<i class="fas fa-shopping-cart fa-2x"></i>',
                 'nombre' => 'SC - Cotiza Productos',
                 'ruta' => '../sdo-administrador/soliCompra_sdo_cotiza_productos.php',
+            ],
+        ]
+    ],
+    [
+        'grupo' => 'Tanque Indura',
+        'items' => [
+            [
+                'icono' => '<i class="fas fa-shopping-cart fa-2x"></i>',
+                'nombre' => 'Mediciones - Tanque Indura',
+                'ruta' => '../sdo-administrador/indura_mediciones.php',
             ],
         ]
     ],

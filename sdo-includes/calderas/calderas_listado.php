@@ -1,9 +1,12 @@
-<div class="row mb-4">
-    <div class="col-12">
-        <button type="button" class="btn btn-primary shadow-sm" data-toggle="modal" data-target="#modalCargaCalderas">
+<div class="row mb-3 justify-content-center">
+    <div class="col-xl-3 col-lg-4 col-md-6 col-12">
+        <button type="button" class="btn btn-primary shadow-sm btn-block" data-toggle="modal" data-target="#modalCargaCalderas">
             <i class="fas fa-file-upload"></i> Importar Nuevos Archivos CSV
         </button>
     </div>
+</div>
+<hr>
+<div class="row mb-3 justify-content-center" id="contenedorResumenCalderas">
 </div>
 
 <div class="row">

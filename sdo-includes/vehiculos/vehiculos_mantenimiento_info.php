@@ -23,35 +23,48 @@ if (!isset($conexion)) {
 if ($idMovil > 0) {
 
     $ultimoMant = obtenerUltimoRegistroMantenimiento($idMovil);
-    $proxMant = (int)$ultimoMant + 10000;
-    $ultimoKm = obtenerUltimoRegistroKilometraje($idMovil);
+    $proxMant   = (int)$ultimoMant + 10000;
+    $ultimoKm   = obtenerUltimoRegistroKilometraje($idMovil);
     $diferencia = $proxMant - $ultimoKm;
 
+// Formateo de números de forma limpia
     $ultimoKmFmt = number_format($ultimoKm, 0, ",", ".");
-    $difFmt = number_format($diferencia, 0, ",", ".");
+    $difFmt      = number_format(abs($diferencia), 0, ",", ".");
 
-    // Lógica de colores para AdminLTE
-    $clase = "bg-danger"; // Rojo (Vencido o crítico)
-    if ($diferencia > 4999) {
-        $clase = "bg-success"; // Verde (Ok)
-    } elseif ($diferencia >= 3000) {
-        $clase = "bg-warning"; // Amarillo (Aviso)
-    }
-
-    // 3. Generar el HTML
-    if ($diferencia > 0) {
-        echo '
-        <div class="alert ' . $clase . ' text-center shadow-sm mb-3" role="alert" style="color: white !important;">
-            <i class="fas fa-tools mr-2"></i>
-            <b>Último Kilometraje: ' . $ultimoKmFmt . ' Kms. | Faltan ' . $difFmt . ' Kms. para el próximo mantenimiento.</b>
-        </div>';
+// 1. Determinar el estado y la clase de AdminLTE según el kilometraje restante
+    if ($diferencia < 0) {
+        // Ya se pasó del kilometraje establecido
+        $clase = "bg-purple";
+        $icono = "fas fa-exclamation-triangle";
+        $mensaje = "<b>¡MANTENIMIENTO VENCIDO!</b> Superado por {$difFmt} Kms. (Último KM: {$ultimoKmFmt})";
+    } elseif ($diferencia === 0) {
+        // Justo en el límite
+        $clase = "bg-danger";
+        $icono = "fas fa-stopwatch";
+        $mensaje = "<b>¡MANTENIMIENTO CRÍTICO!</b> Debe realizarse hoy mismo. (Último KM: {$ultimoKmFmt})";
+    } elseif ($diferencia <= 1500) {
+        // Muy cerca de vencer (Menos de 1.500 km)
+        $clase = "bg-danger";
+        $icono = "fas fa-tools";
+        $mensaje = "Último KM: {$ultimoKmFmt} | <b>¡Falta muy poco! Solo restan {$difFmt} Kms.</b> para el próximo mantenimiento.";
+    } elseif ($diferencia <= 4000) {
+        // Rango de advertencia (Entre 1.501 y 4.000 km)
+        $clase = "bg-warning";
+        $icono = "fas fa-info-circle";
+        $mensaje = "Último KM: {$ultimoKmFmt} | Faltan {$difFmt} Kms. para el próximo mantenimiento.";
     } else {
-        echo '
-        <div class="alert bg-purple text-center shadow-sm mb-3" role="alert">
-            <i class="fas fa-exclamation-triangle mr-2"></i>
-            <b>¡MANTENIMIENTO VENCIDO! Superado por ' . number_format(abs($diferencia), 0, ",", ".") . ' Kms.</b>
-        </div>';
+        // (Más de 4.000 km disponibles)
+        $clase = "bg-success";
+        $icono = "fas fa-check-circle";
+        $mensaje = "Último KM: {$ultimoKmFmt} | Estado óptimo. Faltan {$difFmt} Kms. para el próximo mantenimiento.";
     }
+
+// 2. Renderizar un único bloque HTML limpio
+    echo "
+<div class='alert {$clase} text-center shadow-sm mb-3' role='alert'>
+    <i class='{$icono} mr-2'></i>
+    {$mensaje}
+</div>";
 } else {
     // Esto es lo que estaba pasando: el script llegaba aquí y no imprimía nada.
     // Solo para depuración en consola:

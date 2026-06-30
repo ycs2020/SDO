@@ -1,42 +1,57 @@
 <?php
+// Desactivar cualquier salida previa que pueda corromper el archivo XML
+ini_set('display_errors', 0);
+error_reporting(E_ALL);
 
-include_once '../sdo-funciones/conexion.php';
-include_once '../sdo-funciones/funciones.php';
+// 1. Cabeceras del sistema para forzar la descarga del archivo XML
+header('Content-Type: text/xml; charset=utf-8');
+header('Content-Disposition: attachment; filename="configuracion_puertas_ccaa.xml"');
 
-$idTG = 5066;
-$nombreColumna = 'piso3';
+// 2. Ruta a tu conexión blindada de SDO
+require_once dirname(__DIR__) . '/sdo-funciones/conexion.php';
 
+if (!isset($conexion) && isset($db)) { $conexion = $db; }
+if (!isset($conexion) && isset($con)) { $conexion = $con; }
 
-// Control 1: Ver qué columna y qué ID estás intentando buscar
-echo "DEBUG - Columna: " . $nombreColumna . " | ID: " . $idTG . "<br>";
+if (!isset($conexion) || !($conexion instanceof mysqli)) {
+    echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+    exit;
+}
 
-$sql = "SELECT `$nombreColumna` FROM parametros_uma_bms WHERE idTG = ?";
+try {
+    // 3. Consulta limpia para tomar todos los registros ordenados por el ID único
+    $sql = "SELECT idUnique, idDevice, idRegion, name, no, type 
+            FROM puertas_ccaa_subir 
+            ORDER BY idUnique ASC";
 
-if ($stmt = mysqli_prepare($conexion, $sql)) {
-    mysqli_stmt_bind_param($stmt, "i", $idTG);
+    $resultado = $conexion->query($sql);
 
-    // Control 2: Ver si la ejecución falla
-    if (!mysqli_stmt_execute($stmt)) {
-        echo "Error al ejecutar la consulta: " . mysqli_stmt_error($stmt) . "<br>";
-    }
+    // 4. Estructura de cabecera XML
+    echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+    echo "<Channels>\n";
 
-    $res = mysqli_stmt_get_result($stmt);
+    if ($resultado) {
+        while ($fila = $resultado->fetch_assoc()) {
+            // Escapar caracteres problemáticos en el XML (como &, <, >, ", ') que traiga la columna name
+            $name_escaped = htmlspecialchars($fila['name'], ENT_XML1, 'UTF-8');
 
-    // Control 3: Ver cuántas filas devolvió la base de datos
-    echo "DEBUG - Filas encontradas: " . mysqli_num_rows($res) . "<br>";
-
-    while ($row = mysqli_fetch_assoc($res)) {
-        // Control 4: Ver qué datos están llegando realmente en cada fila
-        echo "DEBUG - Fila encontrada: ";
-        var_dump($row);
-        echo "<br>";
-
-        if (trim((string)$row[$nombreColumna]) !== '') {
-            $datosConcatenados .= $row[$nombreColumna] . "\n";
+            // Construcción exacta de la etiqueta usando sprintf
+            echo sprintf(
+                "  <Channel idUnique=\"%s\" idDevice=\"%s\" idRegion=\"%s\" name=\"%s\" no=\"%s\" type=\"%s\"/>\n",
+                $fila['idUnique'],
+                $fila['idDevice'],
+                $fila['idRegion'],
+                $name_escaped,
+                $fila['no'],
+                $fila['type']
+            );
         }
+        $resultado->free();
     }
-    mysqli_stmt_close($stmt);
-} else {
-    // Control 5: Si mysqli_prepare devuelve false, aquí verás por qué
-    echo "Error en la preparación de la consulta: " . mysqli_error($conexion) . "<br>";
+
+    echo "</Channels>\n";
+    exit;
+
+} catch (Exception $e) {
+    echo "";
 }

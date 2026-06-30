@@ -115,6 +115,7 @@ $datosBrutos = [
     'Fuera de Servicio' => (int)$fuera,
     'Extraviados' => (int)$extraviados
 ];
+
 $datosFiltrados = array_filter($datosBrutos, function($v) { return $v > 0; });
 $labelsJS = json_encode(array_keys($datosFiltrados));
 $valoresJS = json_encode(array_values($datosFiltrados));

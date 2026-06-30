@@ -13,7 +13,7 @@ if (session_status() == PHP_SESSION_NONE) {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Administrar Equipos | Vamoos SpA</title>
+    <title>Administrar Equipos</title>
 
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
@@ -132,10 +132,15 @@ if (session_status() == PHP_SESSION_NONE) {
                         <div class="tab-content" id="tabSistemasContent">
 
                             <div class="tab-pane fade show active" id="tab-listado-vehiculos" role="tabpanel" aria-labelledby="tab-listado-vehiculos-tab">
-                                <div class="row justify-content-center">
-                                    <div class="col-md-4 mb-4">
+                                <div class="row justify-content-center align-items-center mb-4">
+                                    <div class="col-md-4 col-sm-6 col-12 mb-2 mb-sm-0">
                                         <button class="btn btn-block bg-purple shadow-sm py-2" data-toggle="modal" data-target="#modalVehiculo">
                                             <i class="fas fa-plus-circle mr-2"></i><b>AGREGAR NUEVO VEHÍCULO</b>
+                                        </button>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6 col-12 text-center">
+                                        <button type="button" id="btnToggleBaja" class="btn btn-block btn-danger shadow-sm py-2" data-ver-baja="0">
+                                            <i class="fas fa-skull-crossbones mr-2"></i><span id="txtToggleBaja">VER VEHÍCULOS DE BAJA</span>
                                         </button>
                                     </div>
                                 </div>
@@ -153,6 +158,7 @@ if (session_status() == PHP_SESSION_NONE) {
                                             <th>VALOR C/IVA</th>
                                             <th>ESTADO</th>
                                             <th>FECHA ULT. ESTADO</th>
+                                            <th>EST. MANTENIMIENTO</th>
                                             <th>VISUALIZAR</th>
                                             <th>ELIMINAR</th>
                                         </tr>
@@ -296,7 +302,7 @@ if (session_status() == PHP_SESSION_NONE) {
     </div>
 
     <footer class="main-footer">
-        <strong>Copyright &copy; 2026. Vamoos SpA.</strong>
+        <strong>Copyright &copy;.</strong>
     </footer>
 </div>
 
@@ -321,9 +327,14 @@ if (session_status() == PHP_SESSION_NONE) {
         });
 
         // 1. Inicializar DataTable
+        // Reemplaza la inicialización de tu DataTable y añade el listener del botón
         var tablaVehiculos = $('#tablaVehiculos').DataTable({
             "ajax": {
                 "url": "../sdo-includes/vehiculos/vehiculos_listado_obtener.php",
+                "type": "POST", // Cambiamos a POST para enviar parámetros de filtrado
+                "data": function(d) {
+                    d.verBaja = $('#btnToggleBaja').attr('data-ver-baja'); // 0 = Activos, 1 = Solo De Baja
+                },
                 "dataSrc": ""
             },
             "columns": [
@@ -336,6 +347,7 @@ if (session_status() == PHP_SESSION_NONE) {
                 {"data": "valorConIva"},
                 {"data": "estadoVehiculo"},
                 {"data": "fechaReporte"},
+                {"data": "badgeMantenimiento"},
                 {"data": "acciones"},
                 {"data": "eliminar"}
             ],
@@ -365,6 +377,28 @@ if (session_status() == PHP_SESSION_NONE) {
                     "targets": "_all"
                 }
             ],
+        });
+
+// Listener para el botón alternador (Toggle) con cambio de color personalizado
+        $('#btnToggleBaja').on('click', function () {
+            let estadoActual = $(this).attr('data-ver-baja');
+
+            if (estadoActual === "0") {
+                // MODO: Ver sólo de Baja (El botón cambia para dar la opción de volver a los Activos)
+                $(this).attr('data-ver-baja', "1")
+                    .removeClass('btn-danger')
+                    .addClass('btn-success') // <-- Cambiado a Verde (btn-success). Puedes usar 'btn-info' para Azul.
+                    .html('<i class="fas fa-car mr-2"></i><b>VER VEHÍCULOS ACTIVOS</b>');
+            } else {
+                // MODO: Por defecto (Muestra la opción de ir a los Dados de Baja)
+                $(this).attr('data-ver-baja', "0")
+                    .removeClass('btn-success') // <-- Quitamos la clase verde
+                    .addClass('btn-danger') // <-- Volvemos al estado original (Borde Rojo)
+                    .html('<i class="fas fa-skull-crossbones mr-2"></i>VER VEHÍCULOS DE BAJA');
+            }
+
+            // Recargar la tabla aplicando el filtro SQL correspondiente
+            tablaVehiculos.ajax.reload();
         });
 
         // 2. PROCESAMIENTO AJAX AGREGAR
@@ -449,3 +483,4 @@ if (session_status() == PHP_SESSION_NONE) {
 <script src="../sdo-includes/vehiculos_js/vehiculos_dashboard_combustible.js"></script>
 </body>
 </html>
+

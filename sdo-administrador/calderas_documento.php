@@ -184,6 +184,58 @@ if (!$ruta) {
                 dataType: 'json',
                 success: function (respuesta) {
                     if (respuesta.status === 'success') {
+
+                        // ==========================================
+                        // 🛠️ SECCIÓN: PROCESAR RESUMEN SUPERIOR
+                        // ==========================================
+                        let resumenHtml = '';
+                        if (respuesta.resumen && respuesta.resumen.length > 0) {
+                            respuesta.resumen.forEach(function (info) {
+                                let estado_clean = info.estado ? info.estado.trim().toLowerCase() : '';
+                                let bg_card = 'bg-secondary';
+                                let icon_estado = 'fa-dot-circle';
+
+                                // Definir colores basados en el estado
+                                if (estado_clean === 'habilitado') {
+                                    bg_card = 'bg-success';
+                                    icon_estado = 'fa-check-circle';
+                                } else if (estado_clean === 'deshabilitado') {
+                                    bg_card = 'bg-danger';
+                                    icon_estado = 'fa-industry';
+                                }
+
+                                let temp_display = info.temperatura ? `${info.temperatura} °C` : 'N/A';
+                                let columnasGrid = 'col-xl-2 col-lg-3 col-md-4 col-sm-6 col-12'; // Grid más estrecho
+
+                                resumenHtml += `
+                                    <div class="${columnasGrid} mb-2">
+                                        <div class="info-box ${bg_card} p-2" style="min-height: 50px; shadow: sm;">
+                                            <span class="info-box-icon text-sm" style="width: 40px; background: rgba(0,0,0,0.1); border-radius: 4px;">
+                                                <i class="fas ${icon_estado} fa-sm"></i>
+                                            </span>
+                                            <div class="info-box-content p-0 pl-2 d-flex flex-column justify-content-center">
+                                                <span class="info-box-text text-xs text-bold mb-0" style="line-height: 1.1;">Caldera ${info.caldera}</span>
+                                                <span class="info-box-number text-sm mb-0" style="font-size: 0.85rem !important; font-weight: 600; line-height: 1.2;">
+                                                    ${info.estado || 'S/R'}
+                                                </span>
+                                                <span class="text-xs" style="opacity: 0.9;">
+                                                    <i class="fas fa-thermometer-half"></i> ${temp_display}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>`;
+                            });
+                        } else {
+                            resumenHtml = `<div class="col-12"><div class="alert alert-light text-muted text-center"><i class="fas fa-info-circle"></i> No hay lecturas registradas para calcular el último estado.</div></div>`;
+                        }
+
+                        // Inyectar las tarjetas en la parte superior
+                        $('#contenedorResumenCalderas').html(resumenHtml);
+
+
+                        // ==========================================
+                        // 🛠️ SECCIÓN: PROCESAR TABLA HISTÓRICA
+                        // ==========================================
                         let filasHtml = '';
 
                         if (respuesta.data.length > 0) {
@@ -191,7 +243,6 @@ if (!$ruta) {
                                 let badge_estado = '';
                                 let estado_clean = fila.estado ? fila.estado.trim().toLowerCase() : '';
 
-                                // 🛠️ LÓGICA DE COLORES DINÁMICOS
                                 if (estado_clean === 'habilitado') {
                                     badge_estado = `<span class="badge badge-success">Habilitado</span>`;
                                 } else if (estado_clean === 'deshabilitado') {
@@ -204,23 +255,19 @@ if (!$ruta) {
 
                                 let texto_temp = fila.temperatura ? `<strong>${fila.temperatura} °C</strong>` : `<span class="text-muted">Sin registro</span>`;
 
-                                // 🛠️ FORMATEAR FECHA DE "Y-m-d H:i:s" A "d-m-Y H:i"
                                 let fechaFormateada = fila.fecha;
                                 if (fila.fecha) {
-                                    // Separar fecha de la hora
                                     let partes = fila.fecha.split(' ');
                                     if (partes.length === 2) {
-                                        let fechaComponentes = partes[0].split('-'); // [Año, Mes, Día]
-                                        let horaComponentes = partes[1].split(':');  // [Hora, Minuto, Segundo]
+                                        let fechaComponentes = partes[0].split('-');
+                                        let horaComponentes = partes[1].split(':');
 
                                         if (fechaComponentes.length === 3 && horaComponentes.length >= 2) {
-                                            // Reordenar a: Día-Mes-Año Hora:Minuto
                                             fechaFormateada = `${fechaComponentes[2]}-${fechaComponentes[1]}-${fechaComponentes[0]} ${horaComponentes[0]}:${horaComponentes[1]}`;
                                         }
                                     }
                                 }
 
-                                // 🛠️ AGREGAR 'text-center' A TODAS LAS CELDAS PARA CENTRALIZAR
                                 filasHtml += `<tr>
                                     <td class="text-center">${fechaFormateada}</td>
                                     <td class="text-center"><span class="badge badge-dark">Caldera ${fila.caldera}</span></td>
@@ -232,15 +279,12 @@ if (!$ruta) {
                             filasHtml = `<tr><td colspan="4" class="text-center text-muted">No existen registros en la base de datos.</td></tr>`;
                         }
 
-                        // Destruir DataTable si ya existía una instancia previa activa
                         if ($.fn.DataTable.isDataTable('#tablaCalderas')) {
                             $('#tablaCalderas').DataTable().destroy();
                         }
 
-                        // Inyectar las nuevas filas en el DOM
                         $('#tablaCalderas tbody').html(filasHtml);
 
-                        // EXTENDER DATATABLE CONFIG
                         $('#tablaCalderas').DataTable({
                             ...dataTableConfig,
                             order: [[0, "desc"]]
@@ -289,6 +333,7 @@ if (!$ruta) {
 
                         // REFRESCAR LA TABLA AL INSTANTE CON LOS NUEVOS DATOS
                         cargarListadoCalderas();
+                        inicializarDashboard()
 
                     } else {
                         Swal.fire({
@@ -307,6 +352,148 @@ if (!$ruta) {
                     $('#btnCerrarModal').prop('disabled', false);
                 }
             });
+        });
+
+        // ==========================================
+// 📊 SECCIÓN: DASHBOARD & CHART MANAGEMENT
+// ==========================================
+        let chartTempInstance = null;
+
+        function inicializarDashboard() {
+            let selectorFiltro = $('#filtroCalderaDashboard');
+            let calderaSeleccionada = (selectorFiltro.length && selectorFiltro.val()) ? selectorFiltro.val() : 1;
+
+            if (!document.getElementById('graficoTemperatura')) return;
+
+            let mostrarNumeros = $('#chkMostrarNumeros').length ? $('#chkMostrarNumeros').prop('checked') : true;
+
+            $.ajax({
+                url: '../sdo-includes/calderas/calderas_dashboard_datos.php',
+                type: 'GET',
+                data: { id_caldera: calderaSeleccionada },
+                dataType: 'json',
+                success: function(respuesta) {
+                    if (respuesta.status === 'success') {
+
+                        if (chartTempInstance) chartTempInstance.destroy();
+
+                        // 🛠️ GENERAR MAPA DE COLORES DINÁMICOS POR PUNTO (Mapeo estricto)
+                        let coloresPuntos = [];
+                        let coloresBordes = [];
+
+                        if (respuesta.lineas.estados && respuesta.lineas.estados.length > 0) {
+                            respuesta.lineas.estados.forEach(function(estado) {
+                                let est = estado.toLowerCase();
+                                if (est === 'habilitado') {
+                                    coloresPuntos.push('#28a745'); // Punto Verde
+                                    coloresBordes.push('#1e7e34'); // Borde Verde oscuro
+                                } else if (est === 'deshabilitado') {
+                                    coloresPuntos.push('#dc3545'); // Punto Rojo
+                                    coloresBordes.push('#bd2130'); // Borde Rojo oscuro
+                                } else {
+                                    coloresPuntos.push('#6c757d'); // Gris de respaldo
+                                    coloresBordes.push('#fff');
+                                }
+                            });
+                        }
+
+                        const ctxTemp = document.getElementById('graficoTemperatura').getContext('2d');
+                        chartTempInstance = new Chart(ctxTemp, {
+                            type: 'line',
+                            plugins: [ChartDataLabels],
+                            data: {
+                                labels: respuesta.lineas.labels,
+                                datasets: [{
+                                    label: 'Temperatura',
+                                    data: respuesta.lineas.datos,
+                                    backgroundColor: 'rgba(60,141,188,0.05)', // Relleno translúcido bajo la línea
+                                    borderColor: 'rgba(210, 214, 222, 0.7)',  // Línea gris neutra / azulada suave para destacar los puntos
+                                    borderWidth: 2,
+                                    tension: 0.2,
+                                    fill: true,
+
+                                    // 🛠️ ASIGNACIÓN DE COLORES DINÁMICOS POR REGISTRO
+                                    pointBackgroundColor: coloresPuntos,
+                                    pointBorderColor: coloresBordes,
+                                    pointRadius: 5,               // Un poco más grandes para apreciar el color del estado
+                                    pointHoverRadius: 7,
+                                    pointBorderWidth: 1.5
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: { display: false },
+                                    datalabels: {
+                                        display: mostrarNumeros,
+                                        align: 'top',
+                                        anchor: 'end',
+                                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                                        borderRadius: 4,
+                                        borderWidth: 1,
+                                        borderColor: 'rgba(60,141,188,0.2)',
+                                        padding: 4,
+                                        font: {
+                                            weight: 'bold',
+                                            size: 10
+                                        },
+                                        formatter: function(value) {
+                                            return value !== null ? value + '°C' : '';
+                                        }
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        ticks: { callback: value => value + ' °C' },
+                                        grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                                        grace: '10%' // Margen extra para que las etiquetas no toquen el borde superior
+                                    },
+                                    x: {
+                                        grid: { display: false },
+                                        ticks: {
+                                            maxRotation: 45, // Inclinación elegante si el texto de la fecha es muy largo
+                                            minRotation: 0,
+                                            font: { size: 10 }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+
+                    } else {
+                        console.error("Error al procesar los datos del gráfico:", respuesta.message);
+                    }
+                },
+                error: function(xhr) {
+                    console.error("Error de comunicación con el servidor: ", xhr.responseText);
+                }
+            });
+        }
+
+        // 🛠️ ESCUCHAR CAMBIOS EN EL SELECTOR DE CALDERAS
+        $(document).on('change', '#filtroCalderaDashboard', function() {
+            inicializarDashboard();
+        });
+
+        // 🛠️ NUEVO: ESCUCHAR CAMBIOS EN EL SWITCH DE NÚMEROS
+        // En vez de hacer un viaje al servidor por AJAX, modificamos la propiedad directamente y actualizamos el gráfico al instante
+        $(document).on('change', '#chkMostrarNumeros', function() {
+            if (chartTempInstance) {
+                // Cambiamos el estado de visibilidad directamente en las opciones de la instancia actual
+                chartTempInstance.options.plugins.datalabels.display = $(this).prop('checked');
+                chartTempInstance.update(); // Renderiza los cambios en milisegundos sin parpadeos
+            } else {
+                inicializarDashboard();
+            }
+        });
+
+        // RENDERIZAR CUANDO SE INGRESA A LA PESTAÑA DEL DASHBOARD
+        $('a[data-toggle="pill"]').on('shown.bs.tab', function (e) {
+            let targetTab = $(e.target).attr("href");
+            if (targetTab === "#tabs-dashboard") {
+                inicializarDashboard();
+            }
         });
     });
 </script>

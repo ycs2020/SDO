@@ -29,36 +29,6 @@
 
                     curl_close($ch);
 
-                    // Mostrar UV si existe
-                    if (isset($data['data']['values']['uvIndex'])) {
-
-                        $uvIndex = $data['data']['values']['uvIndex'];
-
-                        // RANGOS UV
-                        if ($uvIndex >= 0 && $uvIndex <= 2) {
-                            $uvColor = "#2ecc71";  // Verde
-                            $uvText = "Bajo";
-                        } elseif ($uvIndex >= 3 && $uvIndex <= 5) {
-                            $uvColor = "#f1c40f";  // Amarillo
-                            $uvText = "Moderado";
-                        } elseif ($uvIndex >= 6 && $uvIndex <= 7) {
-                            $uvColor = "#e67e22";  // Naranjo
-                            $uvText = "Alto";
-                        } elseif ($uvIndex >= 8 && $uvIndex <= 10) {
-                            $uvColor = "#e74c3c";  // Rojo
-                            $uvText = "Muy Alto";
-                        } else { // 11+
-                            $uvColor = "#8e44ad";  // Morado
-                            $uvText = "Extremo";
-                        }
-
-                        echo "
-                    <div class='text-center p-2 mb-2'
-                        style='background:$uvColor; color:white; border-radius:6px;'>
-                        <strong>Índice UV Actual:</strong> $uvIndex<br>
-                        <small>Nivel: $uvText</small>
-                    </div>";
-                    }
                     ?>
 
                     <!-- WIDGET DE TOMORROW.IO -->
@@ -212,6 +182,12 @@ $modulosInicio = [
                 'nombre' => 'Ordenes de Trabajo Finalizadas',
                 'ruta' => '../sdo-personal/trabajos_general_listado_finalizados.php',
                 'departamentos' => [1, 2, 3, 4, 5, 6, 7, 8, 10, 12, 13],
+            ],
+            [
+                'icono' => '<i class="fas fa-clipboard-list fa-2x"></i>',
+                'nombre' => 'Analizadores de Red',
+                'ruta' => '../sdo-personal/analizadores_red_listado.php',
+                'departamentos' => [1, 13],
             ],
         ]
     ],

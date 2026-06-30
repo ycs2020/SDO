@@ -17,7 +17,7 @@ register_shutdown_function(function() {
     }
 });
 
-// 🛠️ RUTA ABSOLUTA BLINDADA: Sube dinámicamente desde sdo-includes/calderas/ a la raíz
+// 🛠️ RUTA ABSOLUTA BLINDADA
 require_once dirname(dirname(__DIR__)) . '/sdo-funciones/conexion.php';
 
 if (!isset($conexion) && isset($db)) { $conexion = $db; }
@@ -29,15 +29,15 @@ if (!isset($conexion) || !($conexion instanceof mysqli)) {
 }
 
 try {
-    // Consultamos los últimos 2000 registros
+    // 1. CONSULTA HISTÓRICA (Últimos 2000 registros)
     $sql = "SELECT fecha_lectura, id_caldera, estado, temperatura 
             FROM calderas_lecturas 
             ORDER BY fecha_lectura DESC 
             LIMIT 2000";
 
     $resultado = $conexion->query($sql);
-
     $data = [];
+
     if ($resultado) {
         while ($fila = $resultado->fetch_assoc()) {
             $data[] = [
@@ -50,9 +50,36 @@ try {
         $resultado->free();
     }
 
+    // 2. NUEVA CONSULTA: Último estado de CADA caldera registrada
+    $sqlResumen = "SELECT t1.id_caldera, t1.estado, t1.temperatura, t1.fecha_lectura 
+                   FROM calderas_lecturas t1
+                   INNER JOIN (
+                       SELECT id_caldera, MAX(fecha_lectura) as max_fecha
+                       FROM calderas_lecturas
+                       GROUP BY id_caldera
+                   ) t2 ON t1.id_caldera = t2.id_caldera AND t1.fecha_lectura = t2.max_fecha
+                   ORDER BY t1.id_caldera ASC";
+
+    $resultadoResumen = $conexion->query($sqlResumen);
+    $resumen = [];
+
+    if ($resultadoResumen) {
+        while ($fila = $resultadoResumen->fetch_assoc()) {
+            $resumen[] = [
+                'caldera'     => $fila['id_caldera'],
+                'estado'      => $fila['estado'],
+                'temperatura' => $fila['temperatura'],
+                'fecha'       => $fila['fecha_lectura']
+            ];
+        }
+        $resultadoResumen->free();
+    }
+
+    // Retornamos ambos conjuntos de datos
     echo json_encode([
-        'status' => 'success',
-        'data'   => $data
+        'status'  => 'success',
+        'data'    => $data,
+        'resumen' => $resumen
     ]);
 
 } catch (Exception $e) {

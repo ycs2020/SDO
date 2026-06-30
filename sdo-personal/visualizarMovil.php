@@ -112,13 +112,9 @@ if ($idMovil) {
     <link rel="stylesheet" href="../dist/css/modelo.css">
     <link rel="stylesheet" href="../dist/sweetalert2/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="css/dark-mode.css">
-    <script src="../sdo-funciones/jquery-3.2.1.min.js"></script>
 
-    <!-- Theme style -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet"/>
-    <!-- Estilos -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <!-- Script -->
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
     <style>
@@ -184,7 +180,6 @@ if ($idMovil) {
 
                 <div id="contenedorAlertasMantenimiento">
                     <?php
-                    // Esto lo carga de forma permanente al entrar a la página
                     include '../sdo-includes/vehiculos/vehiculos_mantenimiento_info.php';
                     ?>
                 </div>
@@ -217,15 +212,13 @@ if ($idMovil) {
                     </div>
 
                     <div class="card-body">
-                        <div class="card-body">
-                            <div class="tab-content">
-                                <?php
-                                include '../sdo-includes/vehiculos_tabs/tab-informacion.php';
-                                include '../sdo-includes/vehiculos_tabs/tab-estados.php';
-                                include '../sdo-includes/vehiculos_tabs/tab-petroleo.php';
-                                include '../sdo-includes/vehiculos_tabs/tab-kilometraje.php';
-                                ?>
-                            </div>
+                        <div class="tab-content">
+                            <?php
+                            include '../sdo-includes/vehiculos_tabs/tab-informacion.php';
+                            include '../sdo-includes/vehiculos_tabs/tab-estados.php';
+                            include '../sdo-includes/vehiculos_tabs/tab-petroleo.php';
+                            include '../sdo-includes/vehiculos_tabs/tab-kilometraje.php';
+                            ?>
                         </div>
                     </div>
                 </div>
@@ -258,7 +251,6 @@ if ($idMovil) {
     };
 </script>
 
-
 <script src="../dist/js/datatables-config.js"></script>
 
 <script src="../sdo-includes/vehiculos_js/vehiculos-info.js"></script>
@@ -271,10 +263,9 @@ if ($idMovil) {
             enableTime: true,
             dateFormat: "Y-m-d H:i",
             time_24hr: true,
-            locale: "es" // Ahora funcionará porque cargamos el recurso arriba
+            locale: "es"
         });
     });
 </script>
 </body>
 </html>
-

@@ -6,9 +6,22 @@
     <div class="text-center mb-4">
         <h4 class="text-secondary font-weight-bold">Registro de Kilometraje</h4>
         <p class="text-muted">Seguimiento de recorrido y alertas de mantenimiento</p>
-        <button class="btn btn-success mt-2 shadow-sm" data-toggle="modal" data-target="#kilometrajeModal">
-            <i class="fas fa-plus mr-1"></i> Añadir Nuevo Kilometraje
-        </button>
+        <hr>
+
+        <div class="row justify-content-center">
+            <!-- Columna para el botón de Registro -->
+            <div class="col-xl-3 col-lg-3 col-md-4 col-12 mb-2">
+                <button class="btn btn-warning btn-block shadow-sm font-weight-bold" data-toggle="modal" data-target="#kilometrajeModal">
+                    <i class="fas fa-plus mr-1"></i> Añadir Nuevo Kilometraje
+                </button>
+            </div>
+
+            <div class="col-xl-3 col-lg-3 col-md-4 col-12 mb-2">
+                <button class="btn btn-success btn-block shadow-sm font-weight-bold" data-toggle="modal" data-target="#modalExcelKilometraje" data-idmovil="<?php echo $idMovil; ?>">
+                    <i class="fas fa-file-excel mr-1"></i> Descargar Excel
+                </button>
+            </div>
+        </div>
     </div>
 
     <div class="alert alert-info mb-4 shadow-sm border-0">
@@ -148,6 +161,71 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalExcelKilometraje" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title"><i class="fas fa-calendar-alt mr-2"></i>Rango de Exportación</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <?php
+                // 1. Preparamos la sentencia
+                $stmt = $conexion->prepare("SELECT MIN(DATE(fechaRegistro)) as f_min, MAX(DATE(fechaRegistro)) as f_max 
+                            FROM historial_kilometraje_moviles 
+                            WHERE idMovil = ?");
+
+                // 2. "Bindeamos" el parámetro (i = integer, s = string)
+                $stmt->bind_param("i", $idMovil);
+
+                // 3. Ejecutamos
+                $stmt->execute();
+
+                // 4. Obtenemos el resultado
+                $resultado = $stmt->get_result();
+                $dataLimites = $resultado->fetch_assoc();
+
+                $minima = $dataLimites['f_min'] ?? date('Y-m-d');
+                $maxima = $dataLimites['f_max'] ?? date('Y-m-d');
+
+                $stmt->close();
+                ?>
+
+                <p class="text-muted small">Seleccione el rango de fechas para el informe de kilometraje.</p>
+                <div class="row">
+                    <div class="col-6">
+                        <label class="font-weight-bold">Fecha Inicio:</label>
+                        <input type="date" id="fechaInicioExcelKM"
+                                class="form-control"
+                                min="<?php echo $minima; ?>"
+                                max="<?php echo $maxima; ?>">
+                    </div>
+                    <div class="col-6">
+                        <label class="font-weight-bold">Fecha Fin:</label>
+                        <input type="date" id="fechaFinExcelKM"
+                                class="form-control"
+                                min="<?php echo $minima; ?>"
+                                max="<?php echo $maxima; ?>">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer bg-light">
+                <button id="btnDescargarTodoKM" class="btn btn-info shadow-sm font-weight-bold" data-idmovil="<?php echo $idMovil; ?>">
+                    <i class="fas fa-list mr-1"></i> Descargar Todo
+                </button>
+
+                <button id="btnProcesarExcelKM" class="btn btn-success font-weight-bold" data-idmovil="<?php echo $idMovil; ?>">
+                    <i class="fas fa-download mr-1"></i> Generar Reporte
+                </button>
+
+                <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times mr-1"></i>Cancelar</button>
+            </div>
         </div>
     </div>
 </div>

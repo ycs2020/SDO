@@ -739,12 +739,6 @@ EOL;
                         }
                     }
                     ?>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="index.php" id="hrefInicio" class="text-dark">Inicio</a>
-                            </li>
-                        </ol>
-                    </div>
                 </div>
             </div><!-- /.container-fluid -->
         </section>
@@ -2694,13 +2688,7 @@ EOL;
                                             <h5>
                                                 <b>Fecha Trabajo:</b>
                                                 <?php
-                                                echo $fechaTG3
-                                                ?>
-                                            </h5>
-                                            <h5>
-                                                <b>Fecha de programacion del trabajo:</b>
-                                                <?php
-                                                echo $fechaProgram2;
+                                                echo $fechaProgram2
                                                 ?>
                                             </h5>
                                             <h5>

@@ -424,7 +424,7 @@ if(isset($_POST['idTG'])){
         'Las temperaturas de UPC Adulto: '.$uci.'°C\n' .
         'Las temperatura de UPC Pediátrica: '.$uti.'°C';*/
 
-    $nomSolicitante = 'YORGO CASIMIS SUBIABRE';
+    $nomSolicitante = 'Jorge Cantillano';
     $nomTecnicoRecepcionador = $nomUsuario;
     $servicioOrden = 22;
     $recintoOrden = 'Central Energetica';
@@ -488,8 +488,8 @@ if(isset($_POST['idTG'])){
     VALUES (NULL,'".$horario."','".$now."','".$vdrl."','".$ifi."','".$uci."','".$uti."','".$vdrlBMS."','".$ifiBMS."','".$uciBMS."','".$utiBMS."',$idTG)";
     $resTemperatura = mysqli_query($conexion,$sqlTemperatura);
 
-    $queryOrden = "INSERT INTO ordenes_trabajos_general(idOrden,numOrden,fechaOrden,nomSolicitante,nomTecnicoRecepcionador,idDepartamento,servicioOrden,recintoOrden,pmaOrden,coordenadasOrden,tipoMantencion,trabajoRealizado,problemaPresenta,accionesRealiza, comentariosTrabajos, ticketAsociado, idCreador, tipoUsuario, noOrdenTrabajo, idEquipo, idCategoria)
-    VALUES (NULL,".$numOrden.",'".$now."','" . $nomSolicitante . "','" . $nomTecnicoRecepcionador . "','" . $departamentoSolicitante . "','" . $servicioOrden . "','" . $recintoOrden . "','" . $pmaOrden . "','" . $coordenadasOrden . "','" . $tipoMantencion . "','" . $trabajoRealizado . "','" . $problemaPresenta . "','" . $accionesRealiza . "','" . $comentariosTrabajos . "','" . $ticketAsociado . "', $idUsuario, '$tipoUsuario','" . $folioTG. "', $idHoja, $idCategoria)";
+    $queryOrden = "INSERT INTO ordenes_trabajos_general(idOrden,numOrden,fechaOrden,nomSolicitante,nomTecnicoRecepcionador,idDepartamento,servicioOrden,recintoOrden,pmaOrden,coordenadasOrden,tipoMantencion,trabajoRealizado,problemaPresenta,accionesRealiza, comentariosTrabajos, ticketAsociado, idCreador, tipoUsuario, noOrdenTrabajo, idEquipo, idCategoria,tipoOT)
+    VALUES (NULL,".$numOrden.",'".$now."','" . $nomSolicitante . "','" . $nomTecnicoRecepcionador . "','" . $departamentoSolicitante . "','" . $servicioOrden . "','" . $recintoOrden . "','" . $pmaOrden . "','" . $coordenadasOrden . "','" . $tipoMantencion . "','" . $trabajoRealizado . "','" . $problemaPresenta . "','" . $accionesRealiza . "','" . $comentariosTrabajos . "','" . $ticketAsociado . "', $idUsuario, '$tipoUsuario','" . $folioTG. "', $idHoja, $idCategoria, 'Rondas')";
     $resOrden = mysqli_query($conexion, $queryOrden);
 
     if($resOrden){

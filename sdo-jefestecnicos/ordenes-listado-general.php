@@ -133,30 +133,15 @@ if (isset($_POST['idOrden'])) {
                                     <button type="submit" id="inputMozi" class="btn btn-primary"><i class="fa fa-plus"></i>&nbsp;&nbsp; <b>Agregar Hoja Técnica</b></button>
                                 </form>
 
-                                <button class="btn bg-info show-verdash" id="verDashAC" name="verDashAC"><i class="fas fa-eye"></i>&nbsp;&nbsp;Ver Dashboard</button>
-                                <button class="btn bg-red show-ocultardash" id="ocultarDashAC" style="display:none;" name="ocultarDashAC"><i class="fa fa-eye-slash"></i>&nbsp;&nbsp;Ocultar Dashboard</button>
+<!--                                <button class="btn bg-info show-verdash" id="verDashAC" name="verDashAC"><i class="fas fa-eye"></i>&nbsp;&nbsp;Ver Dashboard</button>-->
+<!--                                <button class="btn bg-red show-ocultardash" id="ocultarDashAC" style="display:none;" name="ocultarDashAC"><i class="fa fa-eye-slash"></i>&nbsp;&nbsp;Ocultar Dashboard</button>-->
 
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="row" id="rowMenu3" name="rowMenu3" style="display: none;">
 
-                    <div class="col-12 col-md-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <?php
-
-
-                                $tipoUsuarioVer = 'unico';
-                                include_once '../sdo-includes/hojastecnicas_dashboard.php';
-
-                                ?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
@@ -223,7 +208,7 @@ if (isset($_POST['idOrden'])) {
                                 }else if($idDepartamento == 6){
                                     include_once '../sdo-includes/encargados/listado_ht_sinvisado_inge_clinica.php';
                                 }else {
-                                    include_once '../sdo-includes/encargados/listado_ht_sinvisado.php';
+                                    include_once '../sdo-includes/encargados/listado_ht_convisado.php';
                                 }
                                 ?>
                             </div>

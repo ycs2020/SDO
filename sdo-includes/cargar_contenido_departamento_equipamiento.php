@@ -38,10 +38,10 @@ if (isset($_POST['idDepartamento'])) {
                 <?php
                 $totalValorDepartamento = moneda_chilena(obtenerValorCompletoSistemaDepto($id));
                 ?>
-                <div class="col-xl-3 col-lg-4 col-md-6 col-12 mb-3">
-                    <button type="button" class="btn bg-purple btn-block" id="visualizarValorSistema<?php echo $id; ?>">
-                        <?php echo "Valor Total de Sistemas: <b>$totalValorDepartamento</b>"; ?>
-                    </button>
+                <div class="text-center mb-4">
+    <span class="badge bg-purple p-3 shadow-sm text-md font-weight-bold" style="border-radius: 30px; letter-spacing: 0.5px;">
+        <i class="fas fa-wallet mr-2"></i> Valor Total de Sistemas: $ 1.997.435.149
+    </span>
                 </div>
 
                 <?php

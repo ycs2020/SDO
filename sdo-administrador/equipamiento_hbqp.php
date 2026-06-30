@@ -67,14 +67,13 @@ date_default_timezone_set('America/Santiago');
 
         .contador {
             display: inline-block;
-            background-color: rgb(40, 82, 167);
+            background-color: #2852a7;
             color: #fff;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-size: 10px;
-            font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-
+            padding: 6px 14px;
+            border-radius: 4px;
+            font-size: 13px; /* Aumentado para mejor legibilidad */
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
         }
 
     </style>

@@ -287,30 +287,49 @@ function obtieneOTTipo($depa, $tipo, $numMes)
 
 function obtieneHTTipo($depa, $tipo, $numMes)
 {
-
-    require('conexion.php');
-
+    include('conexion.php');
     $FechaInicio = $numMes . '-01 00:00:00';
     $FechaFin = $numMes . '-31 23:59:59';
+    $total = 0;
 
-    $sql = "SELECT COUNT(*) as total FROM ordenes_trabajos_general WHERE idDepartamento = $depa AND tipoMantencion = '$tipo' AND fechaOrden BETWEEN '$FechaInicio' AND '$FechaFin' ";
-    $res = mysqli_query($conexion, $sql);
-    $dato = mysqli_fetch_assoc($res);
-    return $dato['total'];
+    $sql = "SELECT COUNT(*) as total FROM ordenes_trabajos_general WHERE idDepartamento = ? AND tipoMantencion = ? AND fechaOrden BETWEEN ? AND ?";
+
+    if ($stmt = $conexion->prepare($sql)) {
+        $stmt->bind_param("isss", $depa, $tipo, $FechaInicio, $FechaFin);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+        if ($dato = $resultado->fetch_assoc()) {
+            $total = $dato['total'];
+        }
+        $stmt->close();
+    }
+
+    return $total;
 }
 
 function obtieneHTSinTipo($depa, $numMes)
 {
-
-    require('conexion.php');
-
+    include('conexion.php');
     $FechaInicio = $numMes . '-01 00:00:00';
     $FechaFin = $numMes . '-31 23:59:59';
+    $total = 0;
 
-    $sql = "SELECT COUNT(*) as total FROM ordenes_trabajos_general WHERE idDepartamento = $depa AND (tipoMantencion NOT LIKE 'MPI' AND tipoMantencion NOT LIKE 'MRI' AND tipoMantencion NOT LIKE 'MPE' AND tipoMantencion NOT LIKE 'MRE' AND tipoMantencion NOT LIKE 'OM' AND tipoMantencion NOT LIKE 'IS') AND fechaOrden BETWEEN '$FechaInicio' AND '$FechaFin' ";
-    $res = mysqli_query($conexion, $sql);
-    $dato = mysqli_fetch_assoc($res);
-    return $dato['total'];
+    $sql = "SELECT COUNT(*) as total FROM ordenes_trabajos_general 
+            WHERE idDepartamento = ? 
+            AND tipoMantencion NOT IN ('MPI', 'MRI', 'MPE', 'MRE', 'OM', 'IS') 
+            AND fechaOrden BETWEEN ? AND ?";
+
+    if ($stmt = $conexion->prepare($sql)) {
+        $stmt->bind_param("iss", $depa, $FechaInicio, $FechaFin);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+        if ($dato = $resultado->fetch_assoc()) {
+            $total = $dato['total'];
+        }
+        $stmt->close();
+    }
+
+    return $total;
 }
 
 function obtieneHTTipo2($depa, $tipo, $numMes)
@@ -1751,8 +1770,9 @@ function mesEspañol2($num)
         12 => "Diciembre"
     ];
 
-    // Retorna el mes o una cadena vacía si el número no es válido
-    return $mesesN[intval($num)] ?? '';
+    $num2 = (int)$num;
+
+    return $mesesN[$num2] ?? '';
 }
 
 function mesEspañol3($num)
@@ -5153,17 +5173,26 @@ function obtenerIDMesCursoActas()
 //CONTAR HOJAS TECNICAS POR DEPARTAMENTO EN UN AÑO
 function contarHojasTecnicasAnio($id, $anio)
 {
-
+    include ('conexion.php');
     $fechaInicio = $anio . '-01-01 00:00:00';
     $fechaTermino = $anio . '-12-31 23:59:59';
+    $total = 0;
 
-    include('conexion.php');
+    $query = "SELECT COUNT(*) as total FROM ordenes_trabajos_general WHERE idDepartamento = ? AND fechaOrden BETWEEN ? AND ?";
 
-    $query = "SELECT COUNT(*) as total FROM  ordenes_trabajos_general WHERE idDepartamento = " . $id . " AND fechaOrden BETWEEN '" . $fechaInicio . "' AND '" . $fechaTermino . "' ";
-    $res = mysqli_query($conexion, $query);
+    if ($stmt = $conexion->prepare($query)) {
+        // "iss" significa: i = integer (id), s = string (fechaInicio), s = string (fechaTermino)
+        $stmt->bind_param("iss", $id, $fechaInicio, $fechaTermino);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
 
-    $dato = mysqli_fetch_assoc($res);
-    return $dato['total'];
+        if ($dato = $resultado->fetch_assoc()) {
+            $total = $dato['total'];
+        }
+        $stmt->close();
+    }
+
+    return $total;
 }
 
 function contarTicketSIGHanio($nomJefe, $anio)
@@ -5209,17 +5238,25 @@ function contarTicketsAnio($nom, $anio)
 //CONTAR HOJAS TECNICAS POR DEPARTAMENTO EN UN AÑO
 function contarHojasTecnicasMesAnio($id, $fecha)
 {
-
+    include ('conexion.php');
     $fechaInicio = $fecha . '-01 00:00:00';
     $fechaTermino = $fecha . '-31 23:59:59';
+    $total = 0;
 
-    include('conexion.php');
+    $query = "SELECT COUNT(*) as total FROM ordenes_trabajos_general WHERE idDepartamento = ? AND fechaOrden BETWEEN ? AND ?";
 
-    $query = "SELECT COUNT(*) as total FROM  ordenes_trabajos_general WHERE idDepartamento = " . $id . " AND fechaOrden BETWEEN '" . $fechaInicio . "' AND '" . $fechaTermino . "' ";
-    $res = mysqli_query($conexion, $query);
+    if ($stmt = $conexion->prepare($query)) {
+        $stmt->bind_param("iss", $id, $fechaInicio, $fechaTermino);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
 
-    $dato = mysqli_fetch_assoc($res);
-    return $dato['total'];
+        if ($dato = $resultado->fetch_assoc()) {
+            $total = $dato['total'];
+        }
+        $stmt->close();
+    }
+
+    return $total;
 }
 
 function contarTicketSIGHMesAnio($nomEmpleado, $fechaT)
@@ -5867,34 +5904,59 @@ function obtenerRutaHTFirmada($idOrden)
 }
 
 
+
 function obtenerUltimoRegistroMantenimiento($idVehiculo)
 {
-    include 'conexion.php';
-    // Ordenamos primero por fecha y luego por ID descendente (el más nuevo arriba)
+    include_once('conexion.php');
+    global $conexion;
+
+    if (!$conexion) {
+        return '';
+    }
+
     $sql = "SELECT cantKilometraje FROM historial_kilometraje_moviles 
-            WHERE idMovil = " . intval($idVehiculo) . " AND registroMantenimiento = 1 
+            WHERE idMovil = ? AND registroMantenimiento = 1 
             ORDER BY fechaRegistro DESC, idKilometraje DESC LIMIT 1";
 
-    $res = mysqli_query($conexion, $sql);
-    $dato = mysqli_fetch_assoc($res);
+    if ($stmt = $conexion->prepare($sql)) {
+        // "i" indica que el parámetro es un entero (integer)
+        $stmt->bind_param("i", $idVehiculo);
+        $stmt->execute();
 
-    // Si no hay datos, retornamos 0 para evitar errores en el cálculo
-    return ($dato) ? $dato['cantKilometraje'] : 0;
+        $res = $stmt->get_result();
+        $dato = $res->fetch_assoc();
+        $stmt->close();
+
+        return ($dato) ? $dato['cantKilometraje'] : 0;
+    }
+
+    return 0;
 }
 
 function obtenerUltimoRegistroKilometraje($idVehiculo)
 {
-    include 'conexion.php';
-    // Mismo criterio: Fecha más reciente e ID más alto
+    include_once('conexion.php');
+    global $conexion;
+
+    if (!$conexion) {
+        return '';
+    }
     $sql = "SELECT cantKilometraje FROM historial_kilometraje_moviles 
-            WHERE idMovil = " . intval($idVehiculo) . " 
+            WHERE idMovil = ? 
             ORDER BY fechaRegistro DESC, idKilometraje DESC LIMIT 1";
 
-    $res = mysqli_query($conexion, $sql);
-    $dato = mysqli_fetch_assoc($res);
+    if ($stmt = $conexion->prepare($sql)) {
+        $stmt->bind_param("i", $idVehiculo);
+        $stmt->execute();
 
-    // Retornamos 0 si la tabla está vacía para ese móvil
-    return ($dato) ? $dato['cantKilometraje'] : 0;
+        $res = $stmt->get_result();
+        $dato = $res->fetch_assoc();
+        $stmt->close();
+
+        return ($dato) ? $dato['cantKilometraje'] : 0;
+    }
+
+    return 0;
 }
 
 function getIDCategoriaSistemaCCTV()

@@ -9,48 +9,33 @@ if (session_status() == PHP_SESSION_NONE) {
 $userUsuario = $_SESSION['userUsuario'];
 $idUsuario = $_SESSION['idUsuario'];
 $nomUsuario = $_SESSION['nomUsuario'];
-
 $rolUsuario = $_SESSION['rolUsuario'];
-
 $rolUsuario2 = strtolower($rolUsuario);
 
-
 date_default_timezone_set('America/Santiago');
-
 $fecha = date('d-m-Y H:i');
 
-$rutaDireccion = "";
+$rutasRoles = [
+    "personal" => "sdo-personal",
+    "administrativo" => "sdo-admtec",
+    "bodega pañol" => "sdo-bodega-panol",
+    "jefe tecnico" => "sdo-jefestecnicos",
+    "administrador" => "sdo-administrador",
+    "directiva" => "sdo-directiva",
+    "oficina tecnica" => "sdo-oficinaTecnica"
+];
 
-if ($rolUsuario2 == "personal") {
-    $tipoUsuario = 'personal';
-    $rutaDireccion = "sdo-personal";
-} else if ($rolUsuario2 == "administrativo") {
-    $tipoUsuario = 'administrativo';
-    $rutaDireccion = "sdo-admtec";
-} else if ($rolUsuario2 == "bodega pañol") {
-    $tipoUsuario = 'bodega pañol';
-    $rutaDireccion = "sdo-bodega-panol";
-} else if ($rolUsuario2 == "jefe tecnico") {
-    $tipoUsuario = 'jefe tecnico';
-    $rutaDireccion = "sdo-jefestecnicos";
-} else if ($rolUsuario2 == "administrador") {
-    $tipoUsuario = 'administrador';
-    $rutaDireccion = "sdo-administrador";
-} else if ($rolUsuario2 == "directiva") {
-    $tipoUsuario = 'directiva';
-    $rutaDireccion = "sdo-directiva";
-} else if ($rolUsuario2 == "oficina tecnica") {
-    $tipoUsuario = 'oficina tecnica';
-    $rutaDireccion = "sdo-oficinaTecnica";
+if (array_key_exists($rolUsuario2, $rutasRoles)) {
+    $tipoUsuario = $rolUsuario2;
+    $rutaDireccion = $rutasRoles[$rolUsuario2];
 } else {
     header('Location: ../sdo-flujo/login_index.php?errorSesion=true');
+    exit;
 }
 
-$datosTanque = array();
 $datosTanque = obtenerDatosTanque();
 
-if ($datosTanque !== 'null') {
-
+if ($datosTanque !== 'null' && is_array($datosTanque)) {
     $idTanque = $datosTanque['idTanque'];
     $codigoClienteTanque = $datosTanque['codigoClienteTanque'];
     $nomClienteTanque = $datosTanque['nomClienteTanque'];
@@ -63,8 +48,8 @@ if ($datosTanque !== 'null') {
     $fechaActivacion = $datosTanque['fechaActivacion'];
 } else {
     header('Location: sistemas-listado.php?errorTanqueIndura=true');
+    exit;
 }
-
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -72,520 +57,377 @@ if ($datosTanque !== 'null') {
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Tanque Indura</title>
-    <!-- Google Font: Source Sans Pro -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
-    <!-- Ionicons -->
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-    <!-- Tempusdominus Bootstrap 4 -->
-    <link rel="stylesheet" href="../plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
-    <!-- iCheck -->
-    <link rel="stylesheet" href="../plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-    <!-- JQVMap -->
-    <link rel="stylesheet" href="../plugins/jqvmap/jqvmap.min.css">
-    <!-- Theme style -->
-    <link rel="stylesheet" href="../dist/css/adminlte.min.css">
-    <!-- overlayScrollbars -->
-    <link rel="stylesheet" href="../plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
-    <!-- Daterange picker -->
-    <link rel="stylesheet" href="../plugins/daterangepicker/daterangepicker.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.2/css/dataTables.bootstrap4.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
-    <!-- Select2 -->
-    <link rel="stylesheet" href="../plugins/select2/css/select2.min.css">
-    <link rel="stylesheet" href="../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+    <title>Tanque Indura | Control Centralizado</title>
 
-    <!-- summernote -->
-    <!-- DataTables -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <link rel="stylesheet" href="../plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="../plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+    <link rel="stylesheet" href="../dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="../plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <link rel="stylesheet" href="../plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="../plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
     <link rel="stylesheet" href="css/dark-mode.css">
+
     <script src="https://kit.fontawesome.com/e2e5c3fa16.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="../sdo-funciones/jquery-3.2.1.min.js"></script>
+
     <style>
-        .input-output-heading {
-            font-size: 18px;
-            color: #333; /* Cambiar color según tu preferencia */
-            margin-bottom: 10px;
+        .description-block > .description-header {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #007bff;
+        }
+
+        .dark-mode .description-block > .description-header {
+            color: #3f9af7;
+        }
+
+        .custom-select-sm-table {
+            max-width: 180px;
+            display: inline-block;
         }
     </style>
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed layout-footer-fixed">
 <div class="wrapper">
-    <!-- Navbar -->
-    <?php
-    include '../sdo-templates/admin-sidebar.php';
 
-    $messages = [
-        'exitoEditarEquipo' => ['Exito!', 'Se guardo los cambios correctamente', 'success'],
-        'errorEditarEquipo' => ['Error!', 'Se produjo un error al guardar los cambios', 'error'],
-    ];
+    <?php include '../sdo-templates/admin-sidebar.php'; ?>
 
-    foreach ($messages as $param => list($title, $text, $icon)) {
-        if (isset($_GET[$param])) {
-            ?>
-            <script>
-                Swal.fire(
-                    '<?php echo $title; ?>',
-                    '<?php echo $text; ?>',
-                    '<?php echo $icon; ?>'
-                )
-            </script>
-            <?php
-        }
-    }
-    ?>
-    <!-- /.navbar -->
-    <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
         <div class="content-header">
             <div class="container-fluid">
-                <!-- /.row -->
+                <div class="row mb-3">
+                    <div class="col-xl-9 col-lg-8 col-md-7 col-12 mb-2 mb-md-0">
+                        <div class="card h-100 mb-0 shadow-sm border-0">
+                            <div class="card-header bg-primary text-white d-flex align-items-center">
+                                <h5 class="mb-0 w-100 font-weight-bold" id="tanqueIndura">
+                                    <i class="fas fa-info-circle"></i> Datos técnicos Indura
+                                </h5>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xl-3 col-lg-4 col-md-5 col-12">
+                        <a href="index.php" class="btn btn-danger btn-block h-100 d-flex align-items-center justify-content-center shadow-sm">
+                            <i class="fa fa-chevron-left mr-2"></i> Volver Atrás
+                        </a>
+                    </div>
+                </div>
             </div>
-            <!-- /.container-fluid -->
         </div>
-        <!-- /.content-header -->
-        <!-- Main content -->
+
+
+        <?php
+
+        if (isset($_GET['mensajeVar']) && isset($_SESSION['varRespuesta'])) {
+            $varRespuesta = $_SESSION['varRespuesta'];
+
+            if (!empty($varRespuesta)) {
+
+                ?>
+                <script>
+                    Swal.fire(
+                        '<?php echo addslashes($varRespuesta); ?>', // Asegúrate de escapar las comillas y caracteres especiales
+                        '',
+                        'info'
+                    );
+                </script>
+                <?php
+            }
+
+            $_SESSION['varRespuesta'] = '';
+        }
+        ?>
+
         <section class="content">
             <div class="container-fluid">
 
                 <div class="row">
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <form method="post" action="sistemas-listado.php" class="text-right">
-                                    <button type="submit" class="btn btn-danger"><i class="fa fa-chevron-left"></i>&nbsp;&nbsp;Volver Atrás</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
                     <div class="col-xl-3 col-lg-4 col-md-6 col-12">
-
-                        <div class="card card-primary card-outline">
-                            <div class="card-body box-profile w">
-                                <div class="text-center">
-                                    <img class=" img-fluid" style="width: 200px; " src="../sdo-administrador/img/controlCent-HBQP.png" alt="Control Centralizado">
-
-
+                        <div class="card card-primary card-outline shadow-sm">
+                            <div class="card-body box-profile">
+                                <div class="text-center mb-3">
+                                    <img class="img-fluid" style="max-width: 160px;" src="../sdo-administrador/img/controlCent-HBQP.png" alt="Control Centralizado">
                                 </div>
+                                <h3 class="profile-username text-center font-weight-bold text-sm mb-3"><?= htmlspecialchars($numSerieTanque); ?></h3>
+                                <?php
 
-                                <br>
+                                $obtenerUltimoRegistroTanqueIndura = obtenerUltimoRegistroTanqueIndura();
 
-                                <ul class="list-group list-group-unbordered mb-3">
+                                if ($obtenerUltimoRegistroTanqueIndura !== 'null' && is_array($obtenerUltimoRegistroTanqueIndura)) {
+                                    $dataUltRegTanque = $obtenerUltimoRegistroTanqueIndura;
+                                    $fechaMedicionReg2 = date('d/m/Y H:i', strtotime($dataUltRegTanque['fechaMedicion'])) . " hrs.";
+                                    ?>
+
+                                    <h3 class="profile-username text-center text-sm mb-3">
+                                        <b>&Uacute;ltima Actualización: </b><?= htmlspecialchars($fechaMedicionReg2); ?>
+                                    </h3>
+                                    <?php
+
+                                    $fechaMedicion24 = 'Sin Información';
+                                    $sqlFecha = "SELECT fechaMedicion FROM medicion_tanque_indura WHERE fuenteMedicion LIKE '%Driver after delivery%' OR fuenteMedicion LIKE '%Conductor Después de la Entrega%' ORDER BY fechaMedicion DESC LIMIT 1;";
+                                    $resFecha = mysqli_query($conexion, $sqlFecha);
+                                    if ($resFecha && $rowFecha = $resFecha->fetch_assoc()) {
+                                        $fechaMedicion24 = date('d/m/Y H:i \h\r\s\.', strtotime(str_replace('/', '-', $rowFecha['fechaMedicion'])));
+                                    }
+
+                                    ?>
+
+                                    <h3 class="profile-username text-center text-sm mb-3">
+                                        <b>&Uacute;ltima Recarga: </b><?= htmlspecialchars($fechaMedicion24); ?>
+                                    </h3>
+                                    <?php
+
+                                }
+
+                                ?>
+
+                                <ul class="list-group list-group-unbordered text-sm">
                                     <li class="list-group-item">
-                                        <b>Nombre: </b><?php echo $numSerieTanque; ?>
+                                        <b>Tipo:</b>
+                                        <span class="float-right text-muted"><?= htmlspecialchars($tipoProductoTanque); ?></span>
                                     </li>
                                     <li class="list-group-item">
-                                        <b>Tipo: </b><?php echo $tipoProductoTanque; ?>
+                                        <b>Capacidad (IN):</b>
+                                        <span class="float-right text-muted"><?= htmlspecialchars($capacidadTanqueIN); ?> IN</span>
                                     </li>
                                     <li class="list-group-item">
-                                        <b>Capacidad en IN: </b><?php echo $capacidadTanqueIN . ' IN'; ?>
+                                        <b>Capacidad (M³):</b>
+                                        <span class="float-right text-muted"><?= htmlspecialchars($capacidadTanqueM3); ?> M³</span>
                                     </li>
                                     <li class="list-group-item">
-                                        <b>Capacidad en M³: </b><?php echo $capacidadTanqueM3 . ' M³'; ?>
+                                        <b>Capacidad (Gal):</b>
+                                        <span class="float-right text-muted"><?= htmlspecialchars($capacidadTanqueGAL); ?> Gal</span>
                                     </li>
                                     <li class="list-group-item">
-                                        <b>Capacidad en Gal: </b><?php echo $capacidadTanqueGAL . ' Gal'; ?>
+                                        <b>Cliente:</b>
+                                        <span class="float-right text-truncate text-muted" style="max-width: 140px;"><?= htmlspecialchars($nomClienteTanque); ?></span>
                                     </li>
                                     <li class="list-group-item">
-                                        <b>Cliente: </b><?php echo $nomClienteTanque; ?>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <b>Codigo Cliente: </b><?php echo $codigoClienteTanque; ?>
-                                    </li>
-                                    <li class="list-group-item">
-                                        <b>Direcci&oacute;n: </b><?php echo $direccionTanque; ?>
+                                        <b>Código:</b>
+                                        <span class="float-right text-muted"><?= htmlspecialchars($codigoClienteTanque); ?></span>
                                     </li>
                                 </ul>
-
                             </div>
-                            <!-- /.card-body -->
                         </div>
                     </div>
 
-                    <div class="col-xl-9 col-lg-8 col-md-6 col-12 text-center">
-
-                        <div class="card card-primary card-outline text-center">
+                    <div class="col-xl-9 col-lg-8 col-md-6 col-12">
+                        <div class="card card-outline card-primary shadow-sm">
                             <div class="card-body">
-                                <div class="row">
-                                    <div class="col-12 text-center">
-                                        <?php
 
-                                        if (isset($_GET['mensajeVar']) && isset($_SESSION['varRespuesta'])) {
-                                            $varRespuesta = $_SESSION['varRespuesta'];
+                                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center mb-4">
+                                    <h5 class="card-title m-0 text-muted mb-2 mb-sm-0">
+                                        <i class="far fa-chart-bar"></i> Lecturas Actuales
+                                    </h5>
+                                    <div class="d-flex align-items-center">
+                                        <select id="filtroAnio" class="form-control form-control-sm mr-2" style="max-width: 120px;">
+                                            <?php
+                                            // Generamos dinámicamente los años disponibles
+                                            $sqlAnios = "SELECT DISTINCT YEAR(fechaMedicion) AS anio FROM medicion_tanque_indura WHERE tanqueMedicion = ? ORDER BY anio DESC";
+                                            if ($stmtAnios = $conexion->prepare($sqlAnios)) {
+                                                $stmtAnios->bind_param("s", $idTanque);
+                                                $stmtAnios->execute();
+                                                $resAnios = $stmtAnios->get_result();
 
-                                            if (!empty($varRespuesta)) {
+                                                $esPrimerAnio = true; // Variable bandera para identificar el año más reciente
 
-                                                ?>
-                                                <script>
-                                                    Swal.fire(
-                                                        '<?php echo addslashes($varRespuesta); ?>', // Asegúrate de escapar las comillas y caracteres especiales
-                                                        '',
-                                                        'info'
-                                                    );
-                                                </script>
-                                                <?php
+                                                while ($rowAnio = $resAnios->fetch_assoc()) {
+                                                    if ($rowAnio['anio']) {
+                                                        // Si es el año más reciente, le añadimos 'selected' por defecto
+                                                        $selected = $esPrimerAnio ? 'selected' : '';
+                                                        echo '<option value="' . $rowAnio['anio'] . '" ' . $selected . '>' . $rowAnio['anio'] . '</option>';
+
+                                                        $esPrimerAnio = false; // Desactivamos la bandera para los siguientes años
+                                                    }
+                                                }
+                                                $stmtAnios->close();
                                             }
-
-                                            $_SESSION['varRespuesta'] = '';
-                                        }
-                                        ?>
-
-                                        <form style="margin: 0; text-align: center;" class="" action="../sdo-funciones/indura_subirMediciones.php" method="post" enctype="multipart/form-data">
-
-                                            <button type="button" data-toggle="modal" data-target="#modalSubirExcel" id="subirExcel" class="btn bg-gradient-success"><i class="fa fa-upload"></i>&nbsp;&nbsp;Subir Datos</button>
-
-                                            <!-- Modal -->
-                                            <div class="modal fade" id="modalSubirExcel" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                                                    <div class="modal-content">
-                                                        <div class="modal-header bg-success">
-                                                            <h5 class="modal-title" id="exampleModalLabel">Subir Mediciones Tanque Indura</h5>
-                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                <span aria-hidden="true">&times;</span>
-                                                            </button>
-                                                        </div>
-
-                                                        <div class="modal-body">
-                                                            <div class="row">
-                                                                <div class="col-md-12 ml-auto">
-                                                                    <div style="text-align:left;" class="form-group">
-                                                                        <div class="custom-file">
-                                                                            <input type="file" class="custom-file-input" id="archivo_excel" name="archivo_excel" accept=".xlsx">
-                                                                            <label class="custom-file-label" for="customFile">Seleccionar Archivo...</label>
-                                                                        </div>
-                                                                        <script>
-                                                                            document.getElementById('archivo_excel').addEventListener('change', function () {
-                                                                                var fileName = this.value.split('\\').pop(); // Obtener solo el nombre del archivo
-                                                                                var label = document.querySelector('.custom-file-label');
-                                                                                label.textContent = fileName;
-                                                                            });
-                                                                        </script>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="submit" class="btn btn-primary"><i class="fas fa-upload"></i>&nbsp;&nbsp;Agregar</button>
-                                                            <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fas fa-times"></i>&nbsp;&nbsp;Cancelar</button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </form>
-                                        <hr>
-                                    </div>
-                                    <?php
-                                    $obtenerUltimoRegistroTanqueIndura = obtenerUltimoRegistroTanqueIndura();
-
-                                    if ($obtenerUltimoRegistroTanqueIndura !== 'null') {
-                                        $dataUltRegTanque = array();
-                                        $dataUltRegTanque = $obtenerUltimoRegistroTanqueIndura;
-
-                                        $fechaMedicionReg = $dataUltRegTanque['fechaMedicion'];
-
-                                        $fechaMedicionReg2 = strtotime($fechaMedicionReg);
-                                        $fechaMedicionReg2 = "Ultimo Registro: ".date('d/m/Y',$fechaMedicionReg2)." a las ".date('H:i',$fechaMedicionReg2)." hrs.";
-
-                                        $unidadMedicionReg = $dataUltRegTanque['unidadMedicion'];
-                                        $unidadMedicionReg2 = mb_convert_case($unidadMedicionReg,MB_CASE_UPPER,'UTF-8');
-
-
-                                        $lecturaMedicionReg = $dataUltRegTanque['lecturaMedicion'];
-
-                                        if($lecturaMedicionReg > 0) {
-                                            if($unidadMedicionReg2 == 'IN'){
-                                                $lecturaIN = $lecturaMedicionReg;
-                                                $lecturaM3 = ($lecturaMedicionReg * $capacidadTanqueM3) / $capacidadTanqueIN;
-                                                $lecturaGAL = ($lecturaMedicionReg * $capacidadTanqueGAL) / $capacidadTanqueIN;
-
-                                                $porcentajeEstanque = (intOdecimal($lecturaIN)*100)/$capacidadTanqueIN;
-
-                                                $porcentajeEstanque = number_format($porcentajeEstanque, 0, ',', '.');
-
-                                                $porcentajeEstanque = $porcentajeEstanque.'%';
-
-                                                $nivelEstanqueLitros = $lecturaGAL * 3.78;
-
-                                                $nivelEstanqueOxGas = $nivelEstanqueLitros * 0.86;
-
-                                                $nivelEstanqueOxGas2 = intOdecimal($nivelEstanqueOxGas).' M³';
-
-                                                $lecturaIN = intOdecimal($lecturaIN).' IN';
-                                                $lecturaM3 = intOdecimal($lecturaM3).' M³';
-                                                $lecturaGAL = intOdecimal($lecturaGAL).' GAL';
-
-
-                                            }else if($unidadMedicionReg2 == 'M³'){
-
-                                                $lecturaIN = ($lecturaMedicionReg * $capacidadTanqueIN) / $capacidadTanqueM3;
-                                                $lecturaM3 = $lecturaMedicionReg;
-                                                $lecturaGAL = ($lecturaMedicionReg * $capacidadTanqueGAL) / $capacidadTanqueM3;
-
-                                                $porcentajeEstanque = (intOdecimal($lecturaIN)*100)/$capacidadTanqueIN;
-
-                                                $porcentajeEstanque = intOdecimal($porcentajeEstanque).'%';
-
-                                                $nivelEstanqueLitros = $lecturaGAL * 3.78;
-
-                                                $nivelEstanqueOxGas = $nivelEstanqueLitros * 0.86;
-
-                                                $nivelEstanqueOxGas2 = intOdecimal($nivelEstanqueOxGas).' M³';
-
-                                                $lecturaIN = intOdecimal($lecturaIN).' IN';
-                                                $lecturaM3 = intOdecimal($lecturaM3).' M³';
-                                                $lecturaGAL = intOdecimal($lecturaGAL).' GAL';
-
-                                            }else if($unidadMedicionReg2 == 'GAL'){
-
-                                                $lecturaIN = ($lecturaMedicionReg * $capacidadTanqueIN) / $capacidadTanqueGAL;
-                                                $lecturaM3 = ($lecturaMedicionReg * $capacidadTanqueM3) / $capacidadTanqueGAL;
-                                                $lecturaGAL = $lecturaMedicionReg;
-
-                                                $porcentajeEstanque = (intOdecimal($lecturaIN)*100)/$capacidadTanqueIN;
-
-                                                $porcentajeEstanque = intOdecimal($porcentajeEstanque).'%';
-
-                                                $nivelEstanqueLitros = $lecturaGAL * 3.78;
-
-                                                $nivelEstanqueOxGas = $nivelEstanqueLitros * 0.86;
-
-                                                $nivelEstanqueOxGas2 = intOdecimal($nivelEstanqueOxGas).' M³';
-
-                                                $lecturaIN = intOdecimal($lecturaIN).' IN';
-                                                $lecturaM3 = intOdecimal($lecturaM3).' M³';
-                                                $lecturaGAL = intOdecimal($lecturaGAL).' GAL';
-
-                                            }else{
-                                                $lecturaIN = 'Sin Información';
-                                                $lecturaM3 = 'Sin Información';
-                                                $lecturaGAL = 'Sin Información';
-                                                $porcentajeEstanque = 'Sin Información';
-                                                $nivelEstanqueOxGas2 = 'Sin Información';
-
-                                            }
-                                        }else{
-                                            $lecturaIN = 'Sin Información';
-                                            $lecturaM3 = 'Sin Información';
-                                            $lecturaGAL = 'Sin Información';
-                                            $porcentajeEstanque = 'Sin Información';
-                                            $nivelEstanqueOxGas2 = 'Sin Información';
-                                        }
-
-                                            $sqlFecha = "SELECT fechaMedicion FROM medicion_tanque_indura WHERE fuenteMedicion LIKE '%Driver after delivery%' OR fuenteMedicion LIKE '%Conductor Después de la Entrega%' ORDER BY medicion_tanque_indura.fechaMedicion DESC limit 1;";
-                                            $resFecha = mysqli_query($conexion,$sqlFecha);
-                                            while($rowFecha = $resFecha->fetch_assoc()){
-                                                $fechaMedicion = $rowFecha['fechaMedicion'];
-                                            }
-                                            $inicioFecha = date('d/m/Y', strtotime(str_replace('/', '-', $fechaMedicion)));
-                                            $inicioHora = date('H:i', strtotime(str_replace('/', '-', $fechaMedicion)));
-                                            $fechaMedicion24 = $inicioFecha . ' a las ' . $inicioHora . ' hrs.';
                                             ?>
-                                        <div class="col-12">
-                                            <b><?php echo $fechaMedicionReg2; ?></b>
-                                            <br>
-                                            <br>
-                                        </div>
-                                        <div class="col-12">
-                                            <div class="row d-flex justify-content-center">
-                                                <div class="col-sm-3 col-6">
-                                                    <div class="description-block border-left border-right">
-                                                        <h5 class="description-header"><?php echo htmlspecialchars($lecturaIN); ?></h5>
-                                                        <span class="description-text">NIVEL EN PULGADA</span>
-                                                    </div>
-                                                    <!-- /.description-block -->
-                                                </div>
-                                                <div class="col-sm-3 col-6">
-                                                    <div class="description-block border-left border-right">
-                                                        <h5 class="description-header"><?php echo htmlspecialchars($lecturaM3); ?></h5>
-                                                        <span class="description-text">NIVEL DE OXIGENO LIQUIDO M³</span>
-                                                    </div>
-                                                    <!-- /.description-block -->
-                                                </div>
-                                                <div class="col-sm-3 col-6">
-                                                    <div class="description-block border-left border-right">
-                                                        <h5 class="description-header"><?php echo htmlspecialchars($nivelEstanqueOxGas2); ?></h5>
-                                                        <span class="description-text">NIVEL DE OXIGENO GASEOSO M³</span>
-                                                    </div>
-                                                    <!-- /.description-block -->
-                                                </div>
-                                                <div class="col-sm-3 col-6">
-                                                    <div class="description-block border-left border-right">
-                                                        <h5 class="description-header"><?php echo htmlspecialchars($lecturaGAL); ?></h5>
-                                                        <span class="description-text">NIVEL EN GALONES</span>
-                                                    </div>
-                                                    <!-- /.description-block -->
-                                                </div>
-                                                <div class="col-sm-3 col-6">
-                                                    <div class="description-block border-left border-right">
-                                                        <h5 class="description-header"><?php echo htmlspecialchars($fechaMedicion24); ?></h5>
-                                                        <span class="description-text">FECHA ULTIMA RECARGA</span>
-                                                    </div>
-                                                    <!-- /.description-block -->
-                                                </div>
-                                                <div class="col-sm-3 col-6">
-                                                    <div class="description-block border-left border-right">
-                                                        <h5 class="description-header"><?php echo htmlspecialchars($porcentajeEstanque); ?></h5>
-                                                        <span class="description-text">PORCENTAJE DEL ESTANQUE</span>
-                                                    </div>
-                                                    <!-- /.description-block -->
-                                                </div>
-                                            </div>
-                                        </div>
+                                            <option value="">Todos los años</option>
+                                        </select>
 
-                                        <div class="col-12">
-                                            <hr>
-                                        </div>
-                                        <?php
-                                    }
-                                    ?>
-                                    <div class="col-12">
-                                        <input type="hidden" name="idTanqueDatos" id="idTanqueDatos" value="<?php echo $idTanque; ?>">
-
-                                        <table id="tableIndura" class="table table-bordered table-striped text-center">
-                                            <thead class="text-center bg-secondary">
-                                            <tr>
-                                                <th>Fecha</th>
-                                                <th>Lectura</th>
-                                                <th>Medida</th>
-                                                <th>Fuente</th>
-                                            </tr>
-                                            </thead>
-                                            <tfoot class="text-center bg-secondary">
-                                            <tr>
-                                                <th>Fecha</th>
-                                                <th>Lectura</th>
-                                                <th>Medida</th>
-                                                <th>Fuente</th>
-                                            </tr>
-                                            </tfoot>
-                                        </table>
+                                        <button type="button" data-toggle="modal" data-target="#modalSubirExcel" class="btn btn-sm btn-success">
+                                            <i class="fa fa-upload"></i> Importar Excel (.xlsx)
+                                        </button>
                                     </div>
                                 </div>
 
+                                <?php
+                                $obtenerUltimoRegistroTanqueIndura = obtenerUltimoRegistroTanqueIndura();
+
+                                if ($obtenerUltimoRegistroTanqueIndura !== 'null' && is_array($obtenerUltimoRegistroTanqueIndura)) {
+                                    $dataUltRegTanque = $obtenerUltimoRegistroTanqueIndura;
+                                    $fechaMedicionReg2 = date('d/m/Y H:i', strtotime($dataUltRegTanque['fechaMedicion'])) . " hrs.";
+
+                                    $unidadMedicionReg2 = mb_convert_case($dataUltRegTanque['unidadMedicion'], MB_CASE_UPPER, 'UTF-8');
+                                    $lecturaMedicionReg = $dataUltRegTanque['lecturaMedicion'];
+
+                                    $lecturaIN = $lecturaM3 = $lecturaGAL = $porcentajeEstanque = $nivelEstanqueOxGas2 = 'Sin Información';
+
+                                    if ($lecturaMedicionReg > 0) {
+                                        if ($unidadMedicionReg2 == 'IN') {
+                                            $lecturaIN_val = $lecturaMedicionReg;
+                                            $lecturaM3_val = ($lecturaMedicionReg * $capacidadTanqueM3) / $capacidadTanqueIN;
+                                            $lecturaGAL_val = ($lecturaMedicionReg * $capacidadTanqueGAL) / $capacidadTanqueIN;
+                                        } else if ($unidadMedicionReg2 == 'M³') {
+                                            $lecturaIN_val = ($lecturaMedicionReg * $capacidadTanqueIN) / $capacidadTanqueM3;
+                                            $lecturaM3_val = $lecturaMedicionReg;
+                                            $lecturaGAL_val = ($lecturaMedicionReg * $capacidadTanqueGAL) / $capacidadTanqueM3;
+                                        } else if ($unidadMedicionReg2 == 'GAL') {
+                                            $lecturaIN_val = ($lecturaMedicionReg * $capacidadTanqueIN) / $capacidadTanqueGAL;
+                                            $lecturaM3_val = ($lecturaMedicionReg * $capacidadTanqueM3) / $capacidadTanqueGAL;
+                                            $lecturaGAL_val = $lecturaMedicionReg;
+                                        }
+
+                                        if (isset($lecturaIN_val)) {
+                                            $porcentajeCalc = (intOdecimal($lecturaIN_val) * 100) / $capacidadTanqueIN;
+                                            $porcentajeEstanque = ($unidadMedicionReg2 == 'IN') ? number_format($porcentajeCalc, 0, ',', '.') . '%' : intOdecimal($porcentajeCalc) . '%';
+
+                                            $nivelEstanqueOxGas2 = intOdecimal($lecturaGAL_val * 3.78 * 0.86) . ' M³';
+                                            $lecturaIN = intOdecimal($lecturaIN_val) . ' IN';
+                                            $lecturaM3 = intOdecimal($lecturaM3_val) . ' M³';
+                                            $lecturaGAL = intOdecimal($lecturaGAL_val) . ' GAL';
+                                        }
+                                    }
+
+                                    ?>
+
+                                    <div class="row border-bottom pb-2 mb-4 text-center justify-content-center">
+                                        <div class="col-xl-2 col-md-4 col-6 border-right mb-3">
+                                            <div class="description-block">
+                                                <h5 class="description-header"><?= $lecturaIN; ?></h5>
+                                                <span class="description-text text-xs text-muted">NIVEL PULGADAS</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-2 col-md-4 col-6 border-right mb-3">
+                                            <div class="description-block">
+                                                <h5 class="description-header"><?= $lecturaM3; ?></h5>
+                                                <span class="description-text text-xs text-muted">OXÍGENO LÍQUIDO</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-2 col-md-4 col-6 border-right mb-3">
+                                            <div class="description-block">
+                                                <h5 class="description-header"><?= $nivelEstanqueOxGas2; ?></h5>
+                                                <span class="description-text text-xs text-muted">OXÍGENO GASEOSO</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-2 col-md-4 col-6 border-right mb-3">
+                                            <div class="description-block">
+                                                <h5 class="description-header"><?= $lecturaGAL; ?></h5>
+                                                <span class="description-text text-xs text-muted">NIVEL EN GALONES</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-2 col-md-4 col-6 border-right mb-3">
+                                            <div class="description-block">
+                                                <h5 class="description-header text-success"><?= $porcentajeEstanque; ?></h5>
+                                                <span class="description-text text-xs text-muted">CAPACIDAD ESTANQUE</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-2 col-md-4 col-6 mb-3">
+                                            <div class="description-block">
+                                                <h5 class="description-header text-danger" id="contadorRecargas">0</h5>
+                                                <span class="description-text text-xs text-muted" id="textoContadorRecargas">RECARGAS (TODO)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <?php } ?>
+
+                                <div class="table-responsive">
+                                    <input type="hidden" id="idTanqueDatos" value="<?= htmlspecialchars($idTanque); ?>">
+                                    <table id="tableIndura" class="table table-sm table-hover table-bordered text-center w-100">
+                                        <thead class="thead-light">
+                                        <tr>
+                                            <th>Fecha Captura</th>
+                                            <th>Lectura</th>
+                                            <th>Unidad</th>
+                                            <th style="min-width: 220px;">Filtrar por Fuente</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody></tbody>
+                                    </table>
+                                </div>
+
                             </div>
-
                         </div>
-
                     </div>
                 </div>
 
-
             </div>
         </section>
-        <!-- /.content -->
     </div>
-    <!-- /.content-wrapper -->
-    <footer class="main-footer">
-        <strong>Copyright &copy; 2022 - ∞. Derechos Reservados</strong>
+
+    <div class="modal fade" id="modalSubirExcel" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <form class="modal-content" action="../sdo-includes/indura/indura_mediciones_subir.php" method="post" enctype="multipart/form-data">
+                <div class="modal-header bg-success py-2">
+                    <h5 class="modal-title text-sm">
+                        <i class="fas fa-file-excel"></i> Subir Datos Indura
+                    </h5>
+                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body text-left">
+                    <div class="form-group mb-0">
+                        <label for="archivo_excel" class="text-xs text-muted">Seleccione la plantilla .xlsx consolidada</label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="archivo_excel" name="archivo_excel" accept=".csv">
+                            <label class="custom-file-label" for="archivo_excel">Buscar archivo...</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer py-1">
+                    <button type="submit" class="btn btn-sm btn-primary">Procesar</button>
+                    <button type="button" class="btn btn-sm btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="main-footer text-xs">
+        <strong>Copyright &copy; 2022 - <?= date('Y'); ?>. Control Centralizado</strong>
     </footer>
-    <!-- Control Sidebar -->
-    <aside class="control-sidebar control-sidebar-dark">
-        <!-- Control sidebar content goes here -->
-    </aside>
-    <!-- /.control-sidebar -->
 </div>
-<!-- ./wrapper -->
-<!-- jQuery -->
-<script src="../plugins/jquery/jquery.min.js"></script>
-<!-- jQuery UI 1.11.4 -->
-<script src="../plugins/jquery-ui/jquery-ui.min.js"></script>
-<!-- Bootstrap 4 -->
+
 <script src="../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- Select2 -->
-<script src="../plugins/select2/js/select2.full.min.js"></script>
-<!-- ChartJS -->
-<script src="../plugins/sparklines/sparkline.js"></script>
-<!-- JQVMap -->
-<script src="../plugins/jqvmap/jquery.vmap.min.js"></script>
-<script src="../plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
-<!-- jQuery Knob Chart -->
-<script src="../plugins/jquery-knob/jquery.knob.min.js"></script>
-<!-- daterangepicker -->
-<script src="../plugins/moment/moment.min.js"></script>
-<script src="../plugins/daterangepicker/daterangepicker.js"></script>
-<!-- Tempusdominus Bootstrap 4 -->
-<script src="../plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-<!-- Summernote -->
-<!-- overlayScrollbars -->
 <script src="../plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
-<!-- AdminLTE App -->
 <script src="../dist/js/adminlte.min.js"></script>
-<!-- Page specific script -->
-<script src="js/dark-mode.js"></script>
 <script src="../plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="../plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
 <script src="../plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-<script src="../plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-<script src="../plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-<script src="../plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-<script src="../plugins/jszip/jszip.min.js"></script>
-<script src="../plugins/pdfmake/pdfmake.min.js"></script>
-<script src="../plugins/pdfmake/vfs_fonts.js"></script>
-<script src="../plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-<script src="../plugins/datatables-buttons/js/buttons.print.min.js"></script>
-<script src="../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+<script src="../dist/js/datatables-config.js"></script>
+
 <script>
+    // Busca tu script de DataTables y reemplaza la sección correspondiente:
     $(document).ready(function () {
-        var tableIndura = $('#tableIndura').DataTable({
-            "lengthChange": false,
-            "searching": true,
-            "autoWidth": false,
-            "responsive": true,
-            "ordering": false,
-            "processing": true,
-            "language": {
-                "lengthMenu": "Visualizando _MENU_ Registros por P&aacute;gina",
-                "zeroRecords": "No se han encontrado Registros.",
-                "info": "Mostrando p&aacute;gina _PAGE_ de _PAGES_",
-                "infoEmpty": "No existen Registros.",
-                "infoFiltered": "(Filtrado desde _MAX_ Registros Totales)",
-                "search": "Buscar:",
-                "processing": "Procesando...",
-                "paginate": {
-                    "previous": "Anterior",
-                    "next": "Siguiente"
-                }
-            },
-            initComplete: function() {
-                this.api().columns([3]).every(function() {
-                    var column = this;
-                    var select = $('<select style="width: 100%;"><option value="">Fuente</option></select>')
-                        .appendTo($(column.header()).empty())
-                        .on('change', function() {
-                            var val = $.fn.dataTable.util.escapeRegex(
-                                $(this).val()
-                            );
-
-                            column
-                                .search(val ? '^' + val + '$' : '', true, false)
-                                .draw();
-                        });
-
-                    column.data().unique().sort().each(function(d, j) {
-                        select.append('<option value="' + d + '">' + d + '</option>')
-                    });
-                });
-
-            },
+        const customConfig = Object.assign({}, dataTableConfig, {
             "ajax": {
-                "url": "sdo-includes/indura_cargarDatos.php", // Archivo PHP que contiene la consulta SQL
+                "url": "../sdo-includes/indura/indura_mediciones_cargar.php",
                 "type": "POST",
                 "data": function (d) {
-                    d.idTanque = $('#idTanqueDatos').val(); // Pasa el valor seleccionado del select como parámetro
-                    console.log(d);
-
+                    d.idTanque = $('#idTanqueDatos').val();
+                    d.anio = $('#filtroAnio').val(); // <-- Captura automáticamente el año 'selected' por defecto
                 },
                 "dataSrc": function (json) {
-                    console.log("Response from server:", json);
-                    return json;
-                },
-                "error": function (xhr, error, thrown) {
-                    console.error("Error occurred during AJAX request:", error, thrown);
-                    console.log("XHR object:", xhr);
+                    if (!json || json.error) {
+                        console.error("Fallo de respuesta:", json ? json.error : "Nulo");
+                        $('#contadorRecargas').text(0);
+                        return [];
+                    }
+
+                    // Actualizamos dinámicamente los elementos visuales del contador
+                    let anioSeleccionado = $('#filtroAnio').val();
+                    $('#contadorRecargas').text(json.totalRecargas);
+
+                    if (anioSeleccionado !== "") {
+                        $('#textoContadorRecargas').text("RECARGAS (" + anioSeleccionado + ")");
+                    } else {
+                        $('#textoContadorRecargas').text("RECARGAS (TODO)");
+                    }
+
+                    return json.datos;
                 }
             },
             "columns": [
@@ -593,18 +435,43 @@ if ($datosTanque !== 'null') {
                 {"data": "lecturaMedicion"},
                 {"data": "unidadMedicion"},
                 {"data": "fuenteMedicion2"}
-
-
-                // Agrega más columnas según sea necesario
             ],
-            "createdRow": function (row, data, dataIndex) {
-                $('td', row).css('vertical-align', 'middle'); // Aplica el estilo de centrado vertical a todas las celdas
-                $('td', row).css('text-align', 'center'); // Aplica el estilo de centrado vertical a todas las celdas
+            initComplete: function () {
+                this.api().columns([3]).every(function () {
+                    let column = this;
+                    let select = $('<select class="form-control form-control-sm custom-select-sm-table"><option value="">Todas las Fuentes</option></select>')
+                        .appendTo($(column.header()).empty())
+                        .on('change', function () {
+                            let val = $.fn.dataTable.util.escapeRegex($(this).val());
+                            column.search(val ? '^' + val + '$' : '', true, false).draw();
+                        });
 
+                    column.data().unique().sort().each(function (d) {
+                        if (d) select.append('<option value="' + d + '">' + d + '</option>');
+                    });
+                });
+            },
+            "createdRow": function (row) {
+                $('td', row).css({
+                    'vertical-align': 'middle',
+                    'text-align': 'center'
+                });
             }
+        });
+
+        const table = $('#tableIndura').DataTable(customConfig);
+
+        // Escuchador para recargar la tabla cuando cambie el selector de año manualmente
+        $('#filtroAnio').on('change', function () {
+            table.ajax.reload();
+        });
+
+        // Listener estético del input file del modal
+        $('#archivo_excel').on('change', function () {
+            let fileName = this.value.split('\\').pop();
+            $(this).next('.custom-file-label').addClass("selected").html(fileName);
         });
     });
 </script>
 </body>
-
 </html>
