@@ -8,6 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 $descargaConfirma = "";
 $idUsuario = $_SESSION['idUsuario'];
+$idDepartamento = $_SESSION['idDepartamento'];
 
 
 
@@ -39,6 +40,7 @@ date_default_timezone_set('America/Santiago');
     <link rel="stylesheet" href="../dist/sweetalert2/dist/sweetalert2.min.css">
     <link rel="stylesheet" href="css/dark-mode.css">
     <script src="../sdo-funciones/jquery-3.2.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 
     <script>
@@ -60,6 +62,25 @@ date_default_timezone_set('America/Santiago');
                 $("#listarMC").hide();
                 $("#registrarMC").show();
             });
+
+            $(".show-verdash").click(function() {
+                $("#rowMenu3").show();
+                $("#rowMenu1").hide();
+                $("#verDashAC").hide();
+                $("#verDashh").hide();
+                $("#ocultarDashAC").show();
+                $("#ocultarDashh").show();
+            });
+
+            $(".show-ocultardash").click(function() {
+                $("#rowMenu3").hide();
+                $("#verDashAC").show();
+                $("#rowMenu1").show();
+                $("#verDashh").show();
+                $("#ocultarDashAC").hide();
+                $("#ocultarDashh").hide();
+            });
+
         });
     </script>
     <script>
@@ -132,9 +153,11 @@ date_default_timezone_set('America/Santiago');
                             <div class="card">
                                 <div class="card-body" style="text-align:center;">
                                     <?php
-                                        if($_SESSION['departamentoPersonal'] == "Instrumentación"){
+                                        if($idDepartamento == 1){
                                             ?>
                                             <button class="btn bg-yellow show-listar" id="listarMC" style="display:none;" name="listarMC">Ver Mediciones de Combustible</button>
+                                            <button class="btn bg-green show-verdash" id="verDashAC" name="verDashAC"><i class="fas fa-eye"></i>&nbsp;Ver Dashboard</button>
+                                            <button class="btn bg-red show-ocultardash" id="ocultarDashAC" style="display:none;" name="ocultarDashAC"><i class="fas fa-eye-slash"></i>&nbsp;Ocultar Dashboard</button>
                                             <?php
                                         } else{
                                             ?>
@@ -786,6 +809,74 @@ date_default_timezone_set('America/Santiago');
                         </div>
 
                     </div>
+
+                    <div class="row" id="rowMenu3" style="display:none;">
+                        <div class="col-md-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <ul id="listaAnios" class="nav bg-dark p-2 rounded">
+
+                                        <?php
+                                        $sqlBuscarAño = "SELECT DISTINCT YEAR(fechaMC) AS anio
+                                     FROM combustible_medicion
+                                     ORDER BY anio DESC";
+
+                                        $resBuscarAño = mysqli_query($conexion,$sqlBuscarAño);
+
+                                        while($rowBuscarAño = mysqli_fetch_assoc($resBuscarAño)){
+
+                                            $anio = $rowBuscarAño['anio'];
+
+                                            echo "
+                                            <li class='nav-item'>
+                                                <a href='#'
+                                                   class='nav-link text-white fw-bold anio-link'
+                                                   data-anio='$anio'>
+                                                    $anio
+                                                </a>
+                                            </li>";
+                                        }
+                                        ?>
+
+                                    </ul>
+                                </div>
+                                <div class="card-body">
+                                    <h5 class="card-title text-center">Dashboard de las Mediciones en el Año:  <span id="anioDashboard"></span></h5>
+                                    <br>
+                                    <hr>
+                                    <div class="row mb-4" id="dashboardKpis">
+                                    </div>
+                                    <div class="row mt-4">
+                                        <div class="col-md-12">
+                                            <div class="card shadow">
+
+                                                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                                    <span>Evolución Histórica de Tanques</span>
+
+                                                    <button class="btn btn-sm btn-light"
+                                                            type="button"
+                                                            data-toggle="collapse"
+                                                            data-target="#historicoBody"
+                                                            aria-expanded="true"
+                                                            aria-controls="historicoBody">
+                                                        <i class="fas fa-minus"></i>
+                                                    </button>
+                                                </div>
+
+                                                <div id="historicoBody" class="collapse show">
+                                                    <div class="card-body">
+                                                        <canvas id="chartHistorico"></canvas>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
                 <!-- /.timeline -->
 
@@ -874,11 +965,177 @@ date_default_timezone_set('America/Santiago');
             }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
         });
     </script>
-    <!-- <script>
-        function myFunction(name) {
-            alert(name)
+
+    <script>
+        let chartHistorico;
+
+        $(document).ready(function(){
+
+            chartHistorico = new Chart(
+                document.getElementById('chartHistorico'),
+                {
+                    type: 'line',
+                    data: {
+                        labels: [],
+                        datasets: []
+                    },
+                    options:{
+                        responsive:true,
+                        interaction:{
+                            mode:'index',
+                            intersect:false
+                        },
+                        plugins:{
+                            legend:{
+                                position:'top'
+                            }
+                        }
+                    }
+                }
+            );
+
+        });
+    </script>
+    <script>
+        $(document).on('click','.anio-link',function(e){
+
+
+            e.preventDefault();
+
+            $('.anio-link').removeClass('active');
+            $(this).addClass('active');
+
+            let anio = $(this).data('anio');
+
+            $('#anioDashboard').text(anio);
+
+            $.ajax({
+                url: '../sdo-includes/dashboardMedicionCombus.php',
+                type: 'POST',
+                data: {
+                    anio: anio
+                },
+                dataType: 'json',
+                success: function(data){
+                    console.log(data);
+                    //console.log(data.historico);
+                    actualizarKPIs(data);
+                    actualizarGraficos(data);
+
+                },
+                error: function(xhr){
+                    console.log(xhr.responseText);
+                }
+            });
+
+        });
+        function actualizarKPIs(data){
+
+            let html = `
+
+    <div class="col-md-4 mb-3">
+        <div class="card text-white shadow-lg border-0"
+             style="background: linear-gradient(135deg,#0d6efd,#4dabf7);">
+            <div class="card-body text-center">
+                <i class="fas fa-gas-pump fa-2x mb-2"></i>
+                <h6>Total Terreno</h6>
+                <h2>
+                    ${Number(data.kpiTerreno.totalTerreno).toLocaleString('es-CL')}
+                </h2>
+                <small>Litros</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card text-white shadow-lg border-0"
+             style="background: linear-gradient(135deg,#198754,#52c41a);">
+            <div class="card-body text-center">
+                <i class="fas fa-chart-line fa-2x mb-2"></i>
+                <h6>Total Control</h6>
+                <h2>
+                    ${Number(data.kpiControl.totalControl).toLocaleString('es-CL')}
+                </h2>
+                <small>Litros</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card text-white shadow-lg border-0"
+             style="background: linear-gradient(135deg,#dc3545,#ff6b6b);">
+            <div class="card-body text-center">
+                <i class="fas fa-chevron-up fa-2x mb-2"></i><i class="fas fa-chevron-down fa-2x mb-2"></i>
+                <h6>Diferencia Total</h6>
+                <h2>
+                    ${Number(data.kpiDiferencia.diferenciaTotal).toLocaleString('es-CL')}
+                </h2>
+                <small>Litros</small>
+            </div>
+        </div>
+    </div>
+
+    `;
+
+            $('#dashboardKpis').html(html);
         }
-    </script> -->
+
+        function actualizarGraficos(data){
+
+            let labels = data.historico.map(item => {
+
+                let fecha = new Date(item.fechaMC);
+
+                return fecha.toLocaleDateString('es-CL');
+
+            });
+
+            chartHistorico.data.labels = labels;
+
+            chartHistorico.data.datasets = [
+
+                {
+                    label:'Terreno T1',
+                    data:data.historico.map(item => item.terreno1MC),
+                    borderColor:'#0d6efd',
+                    backgroundColor:'#0d6efd',
+                    tension:0.3
+                },
+
+                {
+                    label:'Terreno T2',
+                    data:data.historico.map(item => item.terreno2MC),
+                    borderColor:'#198754',
+                    backgroundColor:'#198754',
+                    tension:0.3
+                },
+
+                {
+                    label:'Terreno T3',
+                    data:data.historico.map(item => item.terreno3MC),
+                    borderColor:'#ffc107',
+                    backgroundColor:'#ffc107',
+                    tension:0.3
+                },
+
+                {
+                    label:'Terreno T4',
+                    data:data.historico.map(item => item.terreno4MC),
+                    borderColor:'#dc3545',
+                    backgroundColor:'#dc3545',
+                    tension:0.3
+                }
+
+            ];
+
+            chartHistorico.update();
+
+        }
+    </script>
+
+
+
+
 </body>
 
 </html>

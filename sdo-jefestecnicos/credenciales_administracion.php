@@ -676,6 +676,34 @@ $ipCliente = $_SERVER['REMOTE_ADDR'];
                 $('td:eq(0)', row).html(dataIndex + 1); // Actualiza el contenido de la primera celda (columna "N°")
                 // $('td', row).css('font-size', '10pt');
 
+            },
+            "initComplete": function () {
+                var api = this.api();
+
+                api.columns(5).every(function () {
+                    var column = this;
+
+                    var select = $('<select class="form-control"><option value="">Filtrar Estado</option></select>')
+                        .appendTo($(column.header()).empty())
+                        .on('change', function () {
+
+                            var val = $.fn.dataTable.util.escapeRegex($(this).val());
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d) {
+
+                        // 🔥 LIMPIAR HTML
+                        var text = $('<div>').html(d).text().trim();
+
+                        if (text) {
+                            select.append('<option value="' + text + '">' + text + '</option>');
+                        }
+                    });
+                });
             }
         });
     });

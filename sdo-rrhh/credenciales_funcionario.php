@@ -218,6 +218,14 @@ while ($rowTarjetas = $resTarjetas->fetch_assoc()) {
             color: #000 !important;
         }
 
+        #toast-container.toast-center-center {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -55%);
+            right: auto;
+        }
+
     </style>
 
 </head>
@@ -799,7 +807,7 @@ while ($rowTarjetas = $resTarjetas->fetch_assoc()) {
 
                                                                 <div class="form-group">
                                                                     <label for="tipoTarjeta">Tipo</label>
-                                                                    <input type="text" class="form-control" id="tipoTarjeta" name="tipoTarjeta" readonly>
+                                                                    <input type="text" class="form-control" placeholder="GENÉRICA O PERSONALIZADA" id="tipoTarjeta" name="tipoTarjeta" readonly>
                                                                 </div>
 
                                                                 <div class="form-group">
@@ -1131,12 +1139,14 @@ while ($rowTarjetas = $resTarjetas->fetch_assoc()) {
                 }
             },
             ajax: {
+                toastr.options.positionClass = "toast-center-center";
                 url: "/sdo-includes/credenciales_rrhh_funcionario_observaciones.php",
                 type: "POST",
                 data: {idCredencialDatos: idCredencial},
                 dataSrc: json => Array.isArray(json) ? json : [],
                 error: function (xhr) {
                     console.error("❌ Error AJAX:", xhr.responseText);
+                    toast-center-center
                     toastr.error("Error al cargar las observaciones.");
                 }
             },
@@ -1244,6 +1254,7 @@ while ($rowTarjetas = $resTarjetas->fetch_assoc()) {
                 }
             },
             ajax: {
+                toastr.options.positionClass = "toast-center-center";
                 url: "/sdo-includes/credenciales_rrhh_contrato_datos.php",
                 type: "POST",
                 data: {idCredencialContratos: idCredencial},
@@ -1334,6 +1345,7 @@ while ($rowTarjetas = $resTarjetas->fetch_assoc()) {
                 }
             },
             ajax: {
+                toastr.options.positionClass = "toast-center-center";
                 url: "/sdo-includes/credenciales_rrhh_tarjetas_asociadas.php",
                 type: "POST",
                 data: {
@@ -1458,6 +1470,7 @@ while ($rowTarjetas = $resTarjetas->fetch_assoc()) {
             }
         }).then((result) => {
             if (result.isConfirmed) {
+                toastr.options.positionClass = "toast-center-center";
                 toastr.success("Unidad agregada correctamente");
             }
         });
@@ -1513,6 +1526,7 @@ while ($rowTarjetas = $resTarjetas->fetch_assoc()) {
             }
         }).then((result) => {
             if (result.isConfirmed) {
+                toastr.options.positionClass = "toast-center-center";
                 toastr.success("Jefatura agregada correctamente");
             }
         });
@@ -1659,6 +1673,7 @@ while ($rowTarjetas = $resTarjetas->fetch_assoc()) {
         };
 
         if (!data.idCalidad || !data.idCargo || !data.idUnidad || !data.idJefatura || !data.inicio) {
+            toastr.options.positionClass = "toast-center-center";
             toastr.warning('Debes completar todos los campos obligatorios');
             return;
         }
@@ -1666,6 +1681,7 @@ while ($rowTarjetas = $resTarjetas->fetch_assoc()) {
         $.post('/sdo-funciones/credenciales_rrhh_guardar_relacion.php', data, function (resp) {
             console.log(resp); // para debug
             if (resp.status === 'ok') {
+                toastr.options.positionClass = "toast-center-center";
                 toastr.success('Relación laboral registrada');
                 $('#modalAgregarRelacion').modal('hide');
                 $('#tableContratos').DataTable().ajax.reload(null, false);
@@ -1704,6 +1720,7 @@ while ($rowTarjetas = $resTarjetas->fetch_assoc()) {
                         $('#textoTarjeta').val(response.textoTarjeta).prop('readonly', true);
                         $('#codigoTarjeta').prop('readonly', false);
                     } else {
+                        toastr.options.positionClass = "toast-center-center";
                         toastr.warning('La tarjeta no existe, se creará nueva al guardar');
 
                         // 🔓 Habilita inputs para permitir ingreso manual
@@ -1713,6 +1730,7 @@ while ($rowTarjetas = $resTarjetas->fetch_assoc()) {
                     }
                 },
                 error: function () {
+                    toastr.options.positionClass = "toast-center-center";
                     toastr.error('Error al buscar tarjeta');
                 }
             });
@@ -1720,7 +1738,7 @@ while ($rowTarjetas = $resTarjetas->fetch_assoc()) {
 
         $('#formAgregarTarjeta').on('submit', function (e) {
             e.preventDefault();
-
+            toastr.options.positionClass = "toast-center-center";
             // Si no están readonly, deben estar completos
             if (!$('#tipoTarjeta').prop('readonly') && $('#tipoTarjeta').val().trim() === '') {
                 toastr.warning('Debe ingresar el tipo de tarjeta');
@@ -1760,6 +1778,7 @@ while ($rowTarjetas = $resTarjetas->fetch_assoc()) {
 
     $(document).on('click', '[data-idcreddesh]', function () {
         const id = $(this).data('idcreddesh');
+        toastr.options.positionClass = "toast-center-center";
 
         Swal.fire({
             title: '¿Estás seguro?',
@@ -1791,6 +1810,8 @@ while ($rowTarjetas = $resTarjetas->fetch_assoc()) {
         const credencial = Number(btn.data("credencial"));
         const accion = String(btn.data("accion") ?? "").trim();
         const nomPerfil = btn.data("nomperfil");
+
+        toastr.options.positionClass = "toast-center-center";
 
         if (perfil <= 0 || credencial <= 0 || !["Autoriza", "Anular"].includes(accion)) {
             toastr.error("Datos inválidos o acción no reconocida.", "Error");
@@ -1839,7 +1860,7 @@ while ($rowTarjetas = $resTarjetas->fetch_assoc()) {
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.getElementById('formModificarCredenciales');
-
+        toastr.options.positionClass = "toast-center-center";
         if (!form) {
             console.error('Formulario NO encontrado');
             return;
@@ -2042,6 +2063,11 @@ while ($rowTarjetas = $resTarjetas->fetch_assoc()) {
         flex-direction: column;
     }
 </style>
+<script>
+    toastr.options.positionClass = "toast-center-center";
+
+    toastr.error("Error simulado");
+</script>
 
 </body>
 

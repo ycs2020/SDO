@@ -23,7 +23,7 @@ while ($row = $result->fetch_assoc()) {
 
     $sql2 = "SELECT * 
              FROM trabajos_general 
-             WHERE idTG = ?";
+             WHERE idTG = ? ORDER BY fechaProgramacion DESC";
 
     $stmt2 = $conexion->prepare($sql2);
     $stmt2->bind_param("i", $idTG);
@@ -35,11 +35,11 @@ while ($row = $result->fetch_assoc()) {
 
         $data[] = [
             "idTG"               => $row2["idTG"],
-            "idCredencial"               => $row["idCredencial"],
+            "idCredencial"       => $row["idCredencial"],
             "folioTG"            => $row2["folioTG"],
             "tecnico1"           => $row2["tecnico1"],
             "estadoTG"           => $row2["estadoTG"],
-            "fechaProgramacion"  => $row2["fechaProgramacion"],
+            "fechaProgramacion"  => date("d-m-Y", strtotime($row2["fechaProgramacion"])),
             "turnoTG"            => $row2["turnoTG"]
         ];
     }

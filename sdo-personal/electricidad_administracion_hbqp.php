@@ -64,6 +64,7 @@ while($rowMonto = $resMonto->fetch_assoc()){
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <!-- include summernote js-->
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         .reset {
@@ -100,6 +101,7 @@ while($rowMonto = $resMonto->fetch_assoc()){
 
             $(".show-verdash").click(function() {
                 $("#rowMenu3").show();
+                $("#rowMenu1").hide();
                 $("#verDashAC").hide();
                 $("#verDashh").hide();
                 $("#ocultarDashAC").show();
@@ -109,6 +111,7 @@ while($rowMonto = $resMonto->fetch_assoc()){
             $(".show-ocultardash").click(function() {
                 $("#rowMenu3").hide();
                 $("#verDashAC").show();
+                $("#rowMenu1").show();
                 $("#verDashh").show();
                 $("#ocultarDashAC").hide();
                 $("#ocultarDashh").hide();
@@ -325,7 +328,138 @@ while($rowMonto = $resMonto->fetch_assoc()){
                 ?>
 
                 <div class="row" id="rowMenu3" name="rowMenu3" style="display: none">
-                    <?php //include_once('../sdo-includes/electricidad_dashboard_hbqp.php')?>
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <ul id="listaAnios" class="nav bg-dark p-2 rounded">
+
+                                    <?php
+                                    $sqlBuscarAño = "SELECT DISTINCT YEAR(fechaDocumento) AS anio
+                                     FROM electricidad_administracion WHERE tipohospital = 'HBQP'
+                                     ORDER BY anio DESC";
+
+                                    $resBuscarAño = mysqli_query($conexion,$sqlBuscarAño);
+
+                                    while($rowBuscarAño = mysqli_fetch_assoc($resBuscarAño)){
+
+                                        $anio = $rowBuscarAño['anio'];
+
+                                        echo "
+                                            <li class='nav-item'>
+                                                <a href='#'
+                                                   class='nav-link text-white fw-bold anio-link'
+                                                   data-anio='$anio'>
+                                                    $anio
+                                                </a>
+                                            </li>";
+                                    }
+                                    ?>
+
+                                </ul>
+                            </div>
+                            <div class="card-body">
+
+                                <h5 class="card-title text-center">Dashboard de Consumo de Energia Año:   <span id="anioDashboard"></span></h5>
+                                <br>
+                                <hr>
+                                <!-- KPIs -->
+                                <div class="row mb-4" id="dashboardKpis">
+
+                                    <div class="col-md-3">
+                                        <div class="card border-primary">
+                                            <div class="card-body text-center">
+                                                <h6>Consumo Total</h6>
+                                                <h3 id="consumoTotal">-</h3>
+                                                <small>kWh</small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="card border-success">
+                                            <div class="card-body text-center">
+                                                <h6>Gasto Total</h6>
+                                                <h3 id="montoTotal">-</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="card border-warning">
+                                            <div class="card-body text-center">
+                                                <h6>Precio Promedio kWh</h6>
+                                                <h3 id="precioKwh">-</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="card border-danger">
+                                            <div class="card-body text-center">
+                                                <h6>IVA Acumulado</h6>
+                                                <h3 id="ivaTotal">-</h3>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <!-- Gráficos -->
+                                <div class="row">
+
+                                    <div class="col-md-6 mb-4">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                Consumo Mensual
+                                            </div>
+                                            <div class="card-body">
+                                                <canvas id="chartConsumo"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-4">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                Facturación Mensual
+                                            </div>
+                                            <div class="card-body">
+                                                <canvas id="chartFacturacion"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-md-6 mb-4">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                Neto / IVA / Exento
+                                            </div>
+                                            <div class="card-body">
+                                                <canvas id="chartComposicion"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-4">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                Precio kWh
+                                            </div>
+                                            <div class="card-body">
+                                                <canvas id="chartPrecioKwh"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="row" id="rowMenu1" name="rowMenu1">
@@ -1118,6 +1252,229 @@ while($rowMonto = $resMonto->fetch_assoc()){
     });
 </script>
 
+<script>
+    let chartConsumo;
+    let chartFacturacion;
+    let chartPrecioKwh;
+    let chartComposicion;
+
+    $(document).ready(function(){
+
+        chartConsumo = new Chart(
+            document.getElementById('chartConsumo'),
+            {
+                type:'line',
+                data:{
+                    labels:[],
+                    datasets:[{
+                        label:'Consumo kWh',
+                        data:[]
+                    }]
+                }
+            }
+        );
+
+        chartFacturacion = new Chart(
+            document.getElementById('chartFacturacion'),
+            {
+                type:'bar',
+                data:{
+                    labels:[],
+                    datasets:[{
+                        label:'Facturación',
+                        data:[]
+                    }]
+                }
+            }
+        );
+
+        chartPrecioKwh = new Chart(
+            document.getElementById('chartPrecioKwh'),
+            {
+                type:'line',
+                data:{
+                    labels:[],
+                    datasets:[{
+                        label:'Precio kWh',
+                        data:[]
+                    }]
+                }
+            }
+        );
+
+        chartComposicion = new Chart(
+            document.getElementById('chartComposicion'),
+            {
+                type:'bar',
+                data:{
+                    labels:[],
+                    datasets:[
+                        {
+                            label:'Neto',
+                            data:[]
+                        },
+                        {
+                            label:'IVA',
+                            data:[]
+                        },
+                        {
+                            label:'Exento',
+                            data:[]
+                        }
+                    ]
+                },
+                options:{
+                    scales:{
+                        x:{ stacked:true },
+                        y:{ stacked:true }
+                    }
+                }
+            }
+        );
+
+        $('.anio-link:first').trigger('click');
+
+    });
+</script>
+<script>
+    $(document).on('click','.anio-link',function(e){
+
+        e.preventDefault();
+
+        $('.anio-link').removeClass('active');
+        $(this).addClass('active');
+
+        let anio = $(this).data('anio');
+
+        $('#anioDashboard').text(anio);
+
+        $.ajax({
+            url: '../sdo-includes/dashboardElectricidad_HBQP.php',
+            type: 'POST',
+            data: {
+                anio: anio,
+                tipohospital: 'HBQP'
+            },
+            dataType: 'json',
+            success: function(data){
+
+                actualizarKPIs(data);
+                actualizarGraficos(data);
+
+            },
+            error: function(xhr){
+                console.log(xhr.responseText);
+            }
+        });
+
+    });
+
+
+    function actualizarKPIs(data){
+
+        $('#consumoTotal').html(
+            Number(data.kpis.consumoTotal).toLocaleString('es-CL')
+        );
+
+        $('#montoTotal').html(
+            '$' + Number(data.kpis.montoTotal).toLocaleString('es-CL')
+        );
+
+        $('#precioKwh').html(
+            '$' + Number(data.kpis.precioKwh).toLocaleString('es-CL')
+        );
+
+        $('#ivaTotal').html(
+            '$' + Number(data.kpis.ivaTotal).toLocaleString('es-CL')
+        );
+    }
+
+
+    function actualizarGraficos(data){
+
+        const meses = [
+            '',
+            'Ene',
+            'Feb',
+            'Mar',
+            'Abr',
+            'May',
+            'Jun',
+            'Jul',
+            'Ago',
+            'Sep',
+            'Oct',
+            'Nov',
+            'Dic'
+        ];
+
+        /*
+        ==========================
+        CONSUMO MENSUAL
+        ==========================
+        */
+
+        chartConsumo.data.labels =
+            data.consumoMensual.map(item => meses[item.mes]);
+
+        chartConsumo.data.datasets[0].data =
+            data.consumoMensual.map(item => item.consumo);
+
+        chartConsumo.update();
+
+
+        /*
+        ==========================
+        FACTURACION MENSUAL
+        ==========================
+        */
+
+        chartFacturacion.data.labels =
+            data.facturacionMensual.map(item => meses[item.mes]);
+
+        chartFacturacion.data.datasets[0].data =
+            data.facturacionMensual.map(item => item.total);
+
+        chartFacturacion.update();
+
+
+        /*
+        ==========================
+        PRECIO KWH
+        ==========================
+        */
+
+        chartPrecioKwh.data.labels =
+            data.precioKwhMensual.map(item => meses[item.mes]);
+
+        chartPrecioKwh.data.datasets[0].data =
+            data.precioKwhMensual.map(item => item.precioKwh);
+
+        chartPrecioKwh.update();
+
+
+        /*
+        ==========================
+        NETO IVA EXENTO
+        ==========================
+        */
+
+        chartComposicion.data.labels =
+            data.composicion.map(item => meses[item.mes]);
+
+        chartComposicion.data.datasets[0].data =
+            data.composicion.map(item => item.neto);
+
+        chartComposicion.data.datasets[1].data =
+            data.composicion.map(item => item.iva);
+
+        chartComposicion.data.datasets[2].data =
+            data.composicion.map(item => item.exento);
+
+        chartComposicion.update();
+
+    }
+</script>
 
 <script type="text/javascript">
     $("input[name='opciones']").change(function() {

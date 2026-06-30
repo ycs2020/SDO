@@ -45,6 +45,7 @@ date_default_timezone_set('America/Santiago');
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <!-- include summernote js-->
     <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
     <style>
         .reset {
@@ -80,19 +81,21 @@ date_default_timezone_set('America/Santiago');
             });
 
             $(".show-verdash").click(function() {
-                $("#rowMenu3").show();
+                $("#verDash").show();
+                $("#rowMenu1").hide();
+                $("#rowMenu2").hide();
                 $("#verDashAC").hide();
-                $("#verDashh").hide();
                 $("#ocultarDashAC").show();
                 $("#ocultarDashh").show();
             });
 
             $(".show-ocultardash").click(function() {
-                $("#rowMenu3").hide();
+                $("#rowMenu1").show();
+                $("#rowMenu2").hide();
                 $("#verDashAC").show();
-                $("#verDashh").show();
                 $("#ocultarDashAC").hide();
                 $("#ocultarDashh").hide();
+                $("#verDash").hide();
             });
         });
     </script>
@@ -254,10 +257,19 @@ date_default_timezone_set('America/Santiago');
                         <div class="card">
                             <div class="card-body" style="text-align:center;">
                                 <?php
-                                if($nomUsuario == 'Guillermo Hidalgo' || $nomUsuario == 'Matias Gutierrez' || $nomUsuario == 'Haroll Álvarez Barrera' || $nomUsuario == 'Pablo Sanchez Molina'){
+                                if($nomUsuario == 'Guillermo Hidalgo' || $nomUsuario == 'Matias Gutierrez' || $nomUsuario == 'Haroll Álvarez Barrera' || $nomUsuario == 'Carola Avila' || $nomUsuario == 'Pablo Sanchez Molina'){
                                     ?>
-                                    <button class="btn bg-yellow show-realizar" id="registrarAC" name="registrarAC"><i class="fas fa-clipboard"></i>&nbsp;Registrar Consumo del Criogenico</button>
-                                    <button class="btn bg-yellow show-listar" id="listarAC" style="display:none;" name="listarAC"><i class="fas fa-list"></i>&nbsp;Ver Consumo del Criogenico</button>
+                                    <button class="btn bg-yellow show-realizar" id="registrarAC" name="registrarAC"><i class="fas fa-clipboard"></i>&nbsp;Registrar Cargas del Criogenico</button>
+                                    <button class="btn bg-yellow show-listar" id="listarAC" style="display:none;" name="listarAC"><i class="fas fa-list"></i>&nbsp;Ver Cargas del Criogenico</button>
+                                    <button class="btn bg-green" data-toggle="modal" data-target="#obsGenerales" id="verObs" name="verObs">
+                                        <i class="fas fa-eye"></i> Ver Observaciones
+                                    </button>
+                                    <button class="btn bg-blue show-verdash" id="verDashAC" name="verDashAC">
+                                        <i class="fas fa-chart-line"></i>&nbsp;Ver Dashboard
+                                    </button>
+                                    <button class="btn bg-blue show-ocultardash" style="display: none" id="ocultarDashAC" name="ocultarDashAC">
+                                        <i class="fas fa-chart-line"></i>&nbsp;Ocultar DashBoard
+                                    </button>
                                     <?php
                                 }
                                 ?>
@@ -270,7 +282,7 @@ date_default_timezone_set('America/Santiago');
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body">
-                                <h5>1.- Listado de Consumo del Criogenico</h5>
+                                <h5>1.- Listado de Cargados del Criogenico</h5>
                                 <hr>
                                 <br>
                                 <div class="table-responsive">
@@ -287,7 +299,7 @@ date_default_timezone_set('America/Santiago');
                                                 <center>N° de Factura</center>
                                             </th>
                                             <th style="vertical-align:middle;">
-                                                <center>M<sup>3</sup> Consumidos</center>
+                                                <center>M<sup>3</sup> Cargados</center>
                                             </th>
                                             <th style="vertical-align:middle;">
                                                 <center>Precio Unitario</center>
@@ -299,7 +311,7 @@ date_default_timezone_set('America/Santiago');
                                                 <center>Valor Total Con IVA</center>
                                             </th>
                                             <?php
-                                            if($nomUsuario == 'Guillermo Hidalgo' || $nomUsuario == 'Matias Gutierrez' || $nomUsuario == 'Haroll Álvarez Barrera' || $nomUsuario == 'Pablo Sanchez Molina') {
+                                            if($nomUsuario == 'Guillermo Hidalgo' || $nomUsuario == 'Matias Gutierrez' || $nomUsuario == 'Carola Avila' || $nomUsuario == 'Haroll Álvarez Barrera' || $nomUsuario == 'Pablo Sanchez Molina') {
                                                 ?>
                                                 <th style="vertical-align:middle;">
                                                     <center>Acciones</center>
@@ -325,7 +337,7 @@ date_default_timezone_set('America/Santiago');
                                                 <center>N° de Factura</center>
                                             </th>
                                             <th style="vertical-align:middle;">
-                                                <center>M<sup>3</sup> Consumidos</center>
+                                                <center>M<sup>3</sup> Cargados</center>
                                             </th>
                                             <th style="vertical-align:middle;">
                                                 <center>Precio Unitario</center>
@@ -337,7 +349,7 @@ date_default_timezone_set('America/Santiago');
                                                 <center>Valor Total Con IVA</center>
                                             </th>
                                             <?php
-                                            if($nomUsuario == 'Guillermo Hidalgo' || $nomUsuario == 'Matias Gutierrez' || $nomUsuario == 'Haroll Álvarez Barrera' || $nomUsuario == 'Pablo Sanchez Molina') {
+                                            if($nomUsuario == 'Guillermo Hidalgo' || $nomUsuario == 'Matias Gutierrez' || $nomUsuario == 'Carola Avila' || $nomUsuario == 'Haroll Álvarez Barrera' || $nomUsuario == 'Pablo Sanchez Molina') {
                                                 ?>
                                                 <th style="vertical-align:middle;">
                                                     <center>Acciones</center>
@@ -357,7 +369,7 @@ date_default_timezone_set('America/Santiago');
                     <div class="col-md-12">
                         <div class="card">
                             <div class="card-body">
-                                <h5>2.- Registrar Consumo del Criogenico </h5>
+                                <h5>2.- Registrar Carga del Criogenico </h5>
                                 <hr>
                                 <form action="../sdo-funciones/criogenico_nuevo_consumo.php" method="post" enctype="multipart/form-data">
                                     <div class="form-row">
@@ -386,12 +398,12 @@ date_default_timezone_set('America/Santiago');
                                             </div>
                                         </div>
                                         <div class="form-group col-md-6">
-                                            <label>M<sup>3</sup> Consumidos: <code>*</code></label>
+                                            <label>M<sup>3</sup> Cargados: <code>*</code></label>
                                             <div class="input-group mb-3">
                                                 <div class="input-group-prepend">
                                                     <span class="input-group-text"><i class="fas fa-pen"></i></span>
                                                 </div>
-                                                <input class="form-control" required id="mConsumidos" placeholder="Metros Cubicos Consumidos" type="text" name="mConsumidos" />
+                                                <input class="form-control" required id="mConsumidos" placeholder="Metros Cubicos Cargados" type="text" name="mConsumidos" />
                                             </div>
                                         </div>
                                     </div>
@@ -433,6 +445,154 @@ date_default_timezone_set('America/Santiago');
                         </div>
                     </div>
                 </div>
+                <div class="row" id="verDash" style="display:none;">
+                    <div class="col-md-12">
+                        <div class="card shadow-sm">
+
+                            <div class="card-header">
+                                <ul class="nav bg-dark p-2 rounded">
+
+                                    <?php
+                                    $sqlBuscarAño = "SELECT DISTINCT YEAR(fecha) AS anio
+                                     FROM criogenico_datos
+                                     ORDER BY anio DESC";
+
+                                    $resBuscarAño = mysqli_query($conexion,$sqlBuscarAño);
+
+                                    while($rowBuscarAño = mysqli_fetch_assoc($resBuscarAño)){
+
+                                        $anio = $rowBuscarAño['anio'];
+
+                                        echo "
+                                            <li class='nav-item'>
+                                                <a href='#'
+                                                   class='nav-link text-white fw-bold anio-link'
+                                                   data-anio='$anio'>
+                                                    $anio
+                                                </a>
+                                            </li>";
+                                    }
+                                    ?>
+
+                                </ul>
+                            </div>
+
+                            <div class="card-body">
+
+                                <!-- KPI -->
+                                <div class="row mb-4">
+
+                                    <div class="col-md-3">
+                                        <div class="card border-0 bg-primary text-white">
+                                            <div class="card-body text-center">
+                                                <h6>Total Cargados</h6>
+                                                <h2 id="totalM3">0</h2>
+                                                <small>M³ Cargados</small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="card border-0 bg-success text-white">
+                                            <div class="card-body text-center">
+                                                <h6>Total Facturado</h6>
+                                                <h2 id="totalFacturado">$0</h2>
+                                                <small>Con Iva</small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="card border-0 bg-warning">
+                                            <div class="card-body text-center">
+                                                <h6>Facturas</h6>
+                                                <h2 id="totalFacturas">0</h2>
+                                                <small>Emitidas</small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <div class="card border-0 bg-danger text-white">
+                                            <div class="card-body text-center">
+                                                <h6>Promedio M³</h6>
+                                                <h2 id="promedioM3">0</h2>
+                                                <small>Por Factura</small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <!-- GRÁFICOS -->
+                                <div class="row">
+
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                Carga Mensual (M³)
+                                            </div>
+                                            <div class="card-body">
+                                                <canvas id="graficoConsumo" height="120"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                Facturación Mensual
+                                            </div>
+                                            <div class="card-body">
+                                                <canvas id="graficoFacturacion" height="120"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <!-- TABLA RESUMEN -->
+                                <div class="row mt-4">
+
+                                    <div class="col-md-12">
+
+                                        <div class="card">
+
+                                            <div class="card-header">
+                                                Detalle Mensual
+                                            </div>
+
+                                            <div class="card-body">
+
+                                                <table class="table table-striped table-bordered">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Mes</th>
+                                                        <th>M³ Cargados</th>
+                                                        <th>Total Neto</th>
+                                                        <th>Total IVA</th>
+                                                        <th>Facturas</th>
+                                                    </tr>
+                                                    </thead>
+
+                                                    <tbody id="tablaDetalleMeses">
+                                                    </tbody>
+
+                                                </table>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
     </div>
@@ -458,6 +618,113 @@ date_default_timezone_set('America/Santiago');
 <script src="../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 <!-- AdminLTE App -->
 <script src="../dist/js/adminlte.min.js"></script>
+<script>
+    let chartConsumo = null;
+    let chartFacturacion = null;
+
+    $(document).on('click', '.anio-link', function(e){
+
+        e.preventDefault();
+
+        let anio = $(this).data('anio');
+
+        $.ajax({
+            url: '../sdo-includes/obtener_datos.php',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                anio: anio
+            },
+            success: function(resp){
+
+                // KPIs
+                $('#totalM3').text(
+                    Number(resp.totalM3).toLocaleString('es-CL')
+                );
+
+                $('#totalFacturado').text(
+                    '$' + Number(resp.totalGastoIva).toLocaleString('es-CL')
+                );
+
+                $('#totalFacturas').text(
+                    resp.facturas
+                );
+
+                $('#promedioM3').text(
+                    Number(resp.promedioM3).toLocaleString('es-CL')
+                );
+
+                // Tabla
+                let filas = '';
+
+                resp.detalle.forEach(function(item){
+
+                    filas += `
+                        <tr>
+                            <td>${item.mes}</td>
+                            <td>${Number(item.m3).toLocaleString('es-CL')}</td>
+                            <td>$${Number(item.neto).toLocaleString('es-CL')}</td>
+                            <td>$${Number(item.iva).toLocaleString('es-CL')}</td>
+                            <td>${item.facturas}</td>
+                        </tr>
+                    `;
+                });
+
+                $('#tablaDetalleMeses').html(filas);
+
+                // Gráfico consumo
+                if(chartConsumo){
+                    chartConsumo.destroy();
+                }
+
+                chartConsumo = new Chart(
+                    document.getElementById('graficoConsumo'),
+                    {
+                        type: 'bar',
+                        data: {
+                            labels: resp.labels,
+                            datasets: [{
+                                label: 'M³ Consumidos',
+                                data: resp.consumos,
+                                backgroundColor: '#0d6efd'
+                            }]
+                        }
+                    }
+                );
+
+                // Gráfico facturación
+                if(chartFacturacion){
+                    chartFacturacion.destroy();
+                }
+
+                chartFacturacion = new Chart(
+                    document.getElementById('graficoFacturacion'),
+                    {
+                        type: 'line',
+                        data: {
+                            labels: resp.labels,
+                            datasets: [{
+                                label: 'Gasto con IVA',
+                                data: resp.gastos,
+                                borderColor: '#198754',
+                                backgroundColor: 'rgba(25,135,84,0.2)',
+                                fill: true,
+                                tension: 0.3
+                            }]
+                        }
+                    }
+                );
+
+            }
+        });
+
+    });
+</script>
+<script>
+    $(document).ready(function(){
+        $('.anio-link:first').trigger('click');
+    });
+</script>
 <script>
     $(function() {
         $('#example2').DataTable({
@@ -519,6 +786,7 @@ date_default_timezone_set('America/Santiago');
                              ${botones}
 
                             <form action="../sdo-funciones/criogenico_nueva_observacion.php" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="nomUsuario" value="${row.nomUsuario}">
                         <div class="modal fade" id="exampleModal${row.id}" tabindex="-1" role="dialog">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
@@ -566,6 +834,7 @@ date_default_timezone_set('America/Santiago');
                                 <thead class="bg-secondary">
                                     <tr>
                                         <th>Fecha</th>
+                                        <th>Usuario Creador</th>
                                         <th>Observación</th>
                                     </tr>
                                 </thead>
@@ -575,15 +844,17 @@ date_default_timezone_set('America/Santiago');
                                 ? row.observaciones.map(obs => `
                                             <tr>
                                                 <td>${obs.fecha}</td>
+                                                <td>${obs.nomUsuarioCreador}</td>
                                                 <td>${obs.obs}</td>
                                             </tr>
                                         `).join('')
-                                : `<tr><td colspan="2" class="text-center">Sin observaciones</td></tr>`
+                                : `<tr><td colspan="3" class="text-center">Sin observaciones</td></tr>`
                         }
                                 </tbody>
                             <tfoot class="bg-secondary">
                                     <tr>
                                         <th>Fecha</th>
+                                         <th>Usuario Creador</th>
                                         <th>Observación</th>
                                     </tr>
                                 </tfoot>
@@ -666,5 +937,111 @@ date_default_timezone_set('America/Santiago');
             }
         });
     });
-</script></body>
+</script>
+
+<!-- Modal -->
+<div class="modal fade" id="obsGenerales" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-green">
+                <h5 class="modal-title" id="exampleModalLabel"> Visualizar todas las Observaciones</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="text-center table table-bordered">
+                    <thead class="bg-secondary">
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Usuario Creador</th>
+                        <th>Observación</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                    <tfoot class="bg-secondary">
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Usuario Creador</th>
+                        <th>Observación</th>
+                    </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $('#obsGenerales').on('show.bs.modal', function () {
+
+            let tbody = $('#obsGenerales tbody');
+
+            tbody.html(`
+            <tr>
+                <td colspan="3" class="text-center">
+                    Cargando observaciones...
+                </td>
+            </tr>
+        `);
+
+            $.ajax({
+                url: '../sdo-includes/obtener_observaciones_criogenico.php',
+                type: 'GET',
+                dataType: 'json',
+                success: function(data){
+
+                    let filas = '';
+
+                    if(data.length === 0){
+                        filas = `
+                        <tr>
+                            <td colspan="3" class="text-center">
+                                No hay observaciones registradas
+                            </td>
+                        </tr>
+                    `;
+                    } else {
+
+                        data.forEach(obs => {
+
+                            filas += `
+                            <tr>
+                                <td>${obs.fecha}</td>
+                                <td>${obs.usuario}</td>
+                                <td>${obs.observacion}</td>
+                            </tr>
+                        `;
+                        });
+                    }
+
+                    tbody.html(filas);
+                },
+                error: function(xhr){
+
+                    console.log(xhr.responseText);
+
+                    tbody.html(`
+                    <tr>
+                        <td colspan="3" class="text-center text-danger">
+                            Error al cargar datos
+                        </td>
+                    </tr>
+                `);
+
+                }
+            });
+
+        });
+
+    });
+</script>
+</body>
 </html>

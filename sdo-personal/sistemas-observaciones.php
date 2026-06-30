@@ -138,84 +138,7 @@ date_default_timezone_set('America/Santiago');
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <?php
-                                                $query = "SELECT * FROM equipos_observaciones ORDER BY fechaObservaciones DESC";
 
-                                                $res = mysqli_query($conexion, $query);
-
-                                                $numReporte = 1;
-
-                                                while ($row = $res->fetch_assoc()) {
-
-                                                    $esForzado = $row['esForzado'];
-
-                                                    $classObservacion = "";
-
-                                                    if ($esForzado == "Forzado - Encendido") {
-
-                                                        $classObservacion = "bg-success";
-                                                    } else if ($esForzado == "Forzado - Apagado") {
-
-                                                        $classObservacion = "bg-pink";
-                                                    } else if ($esForzado == "Forzado - Variables") {
-
-                                                        $classObservacion = "bg-yellow";
-                                                    } else if ($esForzado == "Modo Automatico") {
-
-                                                        $classObservacion = "bg-navy";
-                                                    } else if ($esForzado == "Observación Normal") {
-
-                                                        $classObservacion = "bg-primary";
-                                                    } else if ($esForzado == "Forzado") {
-
-                                                        $classObservacion = "bg-gray";
-                                                    } else {
-
-                                                        $classObservacion = "bg-light";
-                                                    }
-
-                                                ?>
-
-                                                    <tr class="<?php echo $classObservacion; ?>">
-
-                                                        <td nowrap="nowrap" style="vertical-align:middle; width:1%">
-                                                            <center><?php echo mb_strtoupper(getSubCategoriaConEquipo($row['idEquipo']), "UTF-8"); ?></center>
-                                                        </td>
-
-                                                        <td nowrap="nowrap" style="vertical-align:middle; width:1%">
-                                                            <center><?php echo getCategoriaEquipo($row['idEquipo']); ?></center>
-                                                        </td>
-
-                                                        <td style="vertical-align:middle; font-weight: normal;">
-                                                            <center>
-                                                                <?php if ($row['fechaObservaciones'] == 0) {
-                                                                    echo "No registra fecha";
-                                                                } else {
-                                                                    $inicioFecha = date('d/m/Y', strtotime(str_replace('/', '-', $row['fechaObservaciones'])));
-                                                                    $inicioHora = date('H:i', strtotime($row['fechaObservaciones']));
-                                                                    echo $inicioFecha . '<br>' . $inicioHora;
-                                                                } ?>
-                                                            </center>
-                                                        </td>
-                                                        <td nowrap="nowrap" style="vertical-align:middle; font-weight: normal;">
-                                                            <center>
-                                                                <?php echo $row['personalObservacion']; ?>
-                                                            </center>
-                                                        </td>
-                                                        <td nowrap="nowrap" style="vertical-align:middle; text-align:justify; font-weight: normal;">
-                                                            <center><?php echo $row['esForzado']; ?></center>
-                                                        </td>
-                                                        <td style="vertical-align:middle; text-align:justify; font-weight: normal;">
-                                                            <?php echo nl2br($row['detalleObservaciones']); ?>
-                                                        </td>
-
-                                                    </tr>
-
-                                                <?php
-
-                                                    $numReporte++;
-                                                }
-                                                ?>
                                             </tbody>
                                             <tfoot>
                                                 <tr>
@@ -291,30 +214,68 @@ date_default_timezone_set('America/Santiago');
     <!-- Page specific script -->
     <script>
         $(document).ready(function() {
+
             $('#example2').DataTable({
-                "lengthChange": false,
-                "searching": true,
-                "autoWidth": false,
-                "responsive": true,
-                "ordering": false,
-                "language": {
-                    "lengthMenu": "Visualizando _MENU_ Registros por P&aacute;gina",
-                    "zeroRecords": "No se han encontrado Registros.",
-                    "info": "Mostrando p&aacute;gina _PAGE_ de _PAGES_",
-                    "infoEmpty": "No existen Registros.",
-                    "infoFiltered": "(Filtrado desde _MAX_ Registros Totales)",
-                    "search": "Buscar:",
-                    "processing": "Procesando...",
-                    "paginate": {
-                        "previous": "Anterior",
-                        "next": "Siguiente"
+
+                processing: true,   // 👈 MUESTRA "Procesando..."
+                ajax: {
+                    url: '../sdo-includes/sistemas_observaciones.php',
+                    type: 'POST',
+                    dataSrc: 'data',
+                    error: function(xhr, error, thrown) {
+                        console.log('Status:', xhr.status);
+                        console.log('Response:', xhr.responseText);
+                    }
+                },
+
+                columns: [
+                    { data: 'subcategoria' },
+                    { data: 'categoria' },
+                    { data: 'fecha' },
+                    { data: 'personal' },
+                    { data: 'forzado' },
+                    { data: 'detalle' }
+                ],
+
+                columnDefs: [
+                    {
+                        targets: [2, 5],
+                        render: function(data) {
+                            return data;
+                        }
+                    }
+                ],
+
+                createdRow: function(row, data) {
+                    $(row).addClass(data.clase);
+                },
+
+                lengthChange: false,
+                searching: true,
+                autoWidth: false,
+                responsive: true,
+                ordering: false,
+
+                processing: true,
+
+                language: {
+                    processing: '<span class="spinner-border spinner-border-sm"></span> Procesando...',
+                    lengthMenu: "Visualizando _MENU_ Registros por Página",
+                    zeroRecords: "No se han encontrado Registros.",
+                    info: "Mostrando página _PAGE_ de _PAGES_",
+                    infoEmpty: "No existen Registros.",
+                    infoFiltered: "(Filtrado desde _MAX_ Registros Totales)",
+                    search: "Buscar:",
+                    paginate: {
+                        previous: "Anterior",
+                        next: "Siguiente"
                     }
                 }
+
             });
+
         });
-    </script>
-    <!-- DARK MODE-->
-    <script src="js/dark-mode.js"></script>
+    </script>    <script src="js/dark-mode.js"></script>
 </body>
 
 </html>

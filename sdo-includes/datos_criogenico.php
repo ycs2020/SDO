@@ -35,7 +35,7 @@ while ($fila = $resultado->fetch_assoc()) {
     $fila['nomUsuario'] = $nomUsuario;
 
 // 🔽 CONSULTA DE OBSERVACIONES
-    $obsQuery = $conexion->prepare("SELECT fecha, obs FROM criogenico_obs WHERE idConsumo = ?");
+    $obsQuery = $conexion->prepare("SELECT fecha, obs, nomUsuarioCreador FROM criogenico_obs WHERE idConsumo = ? ORDER BY fecha DESC");
     $obsQuery->bind_param("i", $id);
     $obsQuery->execute();
     $obsResult = $obsQuery->get_result();

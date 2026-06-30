@@ -58,6 +58,13 @@ if (isset($_POST['rutActa2']) || isset($_SESSION['rutActa2'])) {
     $folioActa = $datosActa['folioActa'];
     $fechaActa = $datosActa['fechaActa'];
     $rutTarjeta = $datosActa['rutTarjeta'];
+    $rutLimpio = preg_replace('/[^0-9kK]/', '', $rutTarjeta);
+
+    $cuerpo = substr($rutLimpio, 0, -1);
+    $dv = substr($rutLimpio, -1);
+
+    $rutTarjetaFormateado = number_format($cuerpo, 0, '', '.') . '-' . strtoupper($dv);
+
     $codigoTarjeta = mb_convert_case($datosActa['codigoTarjeta'], MB_CASE_UPPER, "UTF-8");
     $nomTarjeta = $datosActa['nomTarjeta'];
     $unidadTarjeta = mb_convert_case($datosActa['unidadTarjeta'], MB_CASE_TITLE, "UTF-8");
@@ -73,6 +80,7 @@ if (isset($_POST['rutActa2']) || isset($_SESSION['rutActa2'])) {
 
 
 
+
 } else {
     header('Location: ../'.$ruta.'/actas-listado.php?errorModificarActa=true');
     exit;
@@ -84,6 +92,12 @@ while ($rowObs = $resObs->fetch_assoc()) {
     $idActasObs = $rowObs['idActasObs'];
 }
 
+
+$sqlSHAI = "SELECT * FROM `credenciales_rrhh` WHERE rutCredencial = '$rutTarjetaFormateado'";
+$resSHAI = mysqli_query($conexion, $sqlSHAI);
+while ($rowSHAI = $resSHAI->fetch_assoc()) {
+    $idCredencial = $rowSHAI['idCredencial'];
+}
 
 ?>
 <!DOCTYPE html>
@@ -719,6 +733,9 @@ while ($rowObs = $resObs->fetch_assoc()) {
                                     <li class="nav-item"><a class="nav-link text-white" href="#tabSolicitudes" data-toggle="tab">Solicitudes de Accesos</a></li>
                                     <li class="nav-item"><a class="nav-link text-white" href="#tabBloqueos" data-toggle="tab">Bloqueos / Desbloqueos</a></li>
                                     <li class="nav-item"><a class="nav-link text-white" href="#tabMemos" data-toggle="tab">Memorandum</a></li>
+                                    <li class="nav-item">
+                                        <a class="nav-link text-white" href="#tabPerfil" data-toggle="tab">Perfiles</a>
+                                    </li>
                                 </ul>
                             </div>
 
@@ -1408,7 +1425,7 @@ while ($rowObs = $resObs->fetch_assoc()) {
                                                       $resFuncionariosMemo = mysqli_query($conexion,$sqlFuncionariosMemo);
                                                       while($rowFuncionariosMemo = $resFuncionariosMemo->fetch_assoc()){
                                                           $idMemo = $rowFuncionariosMemo['idMemo'];
-                                                          $sqlMemos = "SELECT * FROM memos_control_acceso WHERE id = $idMemo";
+                                                          $sqlMemos = "SELECT * FROM memos_control_acceso WHERE id = $idMemo ORDER BY fechaEmision DESC";
                                                           $resMemos = mysqli_query($conexion,$sqlMemos);
                                                           while($rowMemos = $resMemos->fetch_assoc()){
 
@@ -1481,13 +1498,218 @@ while ($rowObs = $resObs->fetch_assoc()) {
                                                             "search": "Buscar:",
                                                             "processing": "Procesando...",
                                                             "paginate": {
-                                                                "previous": "Anterior",
-                                                                "next": "Siguiente"
+                                                                "previous": "Shai Flaco",
+                                                                "next": "Shai Waton"
                                                             }
                                                         }
                                                     });
                                                 });
                                             </script>
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tabPerfil">
+                                        <h5 class="text-center align-content-center">Perfiles de Acceso</h5>
+                                        <hr>
+                                        <div class="table-responsive">
+                                            <input type="hidden" name="idCredencialPerfil" id="idCredencialPerfil" value="<?php echo $idCredencial; ?>">
+                                            <table id="perfilesCredencial" class="table table-bordered table-hover table-sm text-center">
+                                                <thead>
+                                                <tr class="bg-secondary text-white">
+                                                    <th>Perfil</th>
+                                                    <th>Descripci&oacute;n</th>
+                                                    <th>Grupos de Puertas</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <?php
+                                                $sqlPerfiles = "SELECT * FROM `credenciales_rrhh_registro_perfiles` WHERE idCredencial = $idCredencial";
+                                                $resPerfiles = mysqli_query($conexion, $sqlPerfiles);
+                                                if($resPerfiles->num_rows > 0){
+                                                    while($rowPerfiles = $resPerfiles->fetch_assoc()){
+                                                        $idPerfil = $rowPerfiles['idPerfil'];
+                                                        $sqlBuscarGrupos = "SELECT * FROM `protoc_ccaa_perfil` WHERE idPerfil = $idPerfil";
+                                                        $resBuscarGrupos = mysqli_query($conexion, $sqlBuscarGrupos);
+                                                        while($rowBuscarGrupos = $resBuscarGrupos->fetch_assoc()){
+                                                            $nomPerfil = $rowBuscarGrupos['nomPerfil'];
+                                                            $descripPerfil = $rowBuscarGrupos['descripPerfil'];
+
+                                                            ?>
+                                                            <tr>
+                                                                <td><?php echo $nomPerfil?></td>
+                                                                <td><?php echo $descripPerfil?></td>
+                                                                <td>
+                                                                    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModal<?php echo $idPerfil?>">
+                                                                        <i class="fas fa-eye"></i>
+                                                                    </button>
+                                                                    <div class="modal fade" id="exampleModal<?php echo $idPerfil?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                                        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+                                                                            <div class="modal-content">
+                                                                                <div class="modal-header bg-primary">
+                                                                                    <h5 class="modal-title" id="exampleModalLabel">Puertas en este Perfil</h5>
+                                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                        <span aria-hidden="true">&times;</span>
+                                                                                    </button>
+                                                                                </div>
+                                                                                <div class="modal-body">
+                                                                                    <table id="puertasPerfil<?php echo $idPerfil?>" class="table table-bordered table-sm" style="width: 100%">
+                                                                                        <thead class='bg-primary text-white text-center'>
+                                                                                        <tr>
+                                                                                            <th style='width:10%;'>N°</th>
+                                                                                            <th style='width:10%;'>Grupo de Puerta</th>
+                                                                                            <th style='width:10%;'>Puerta</th>
+                                                                                            <th style='width:10%;'>UCA</th>
+                                                                                        </tr>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                        <?php
+                                                                                        $sqlBuscarGruposdePuertas = "SELECT 
+                                                                                                                pcpg.idPerfilGrupo AS idPerfilGrupo,
+                                                                                                                pcpg.idGrupo AS idGrupo,
+                                                                                                                gr.nomGrupo AS grupo,
+                                                                                                                gr.descripGrupo AS descripcion
+                                                                                                            FROM protoc_ccaa_perfil_grupo pcpg
+                                                                                                            INNER JOIN protoc_ccaa_grupo gr ON pcpg.idGrupo = gr.idGrupo
+                                                                                                            WHERE idPerfil = $idPerfil
+                                                                                                            ORDER BY
+                                                                                                                gr.nomGrupo ASC";
+
+                                                                                        $resBuscarGruposdePuertas = mysqli_query($conexion, $sqlBuscarGruposdePuertas);
+
+                                                                                        while($rowBuscarGruposdePuertas = $resBuscarGruposdePuertas->fetch_assoc()){
+                                                                                            $idGrupo = $rowBuscarGruposdePuertas['idGrupo'];
+
+                                                                                            $sqlPuertas = "
+                                                                                                        SELECT 
+                                                                                                            pcgp.idGrupoPuerta AS idGrupoPuerta,
+                                                                                                            ul.idUnique AS idUnique,
+                                                                                                            ad.no AS noPuerta,
+                                                                                                            UPPER(ad.name) AS puerta,
+                                                                                                            UPPER(ul.name) AS uca
+                                                                                                        FROM protoc_ccaa_grupo_puerta pcgp
+                                                                                                        INNER JOIN acs_door ad 
+                                                                                                            ON (pcgp.numPuerta - 1) = ad.no 
+                                                                                                            AND pcgp.numUCA = ad.idDevice
+                                                                                                        INNER JOIN ucas_listado ul 
+                                                                                                            ON pcgp.numUCA = ul.idUnique
+                                                                                                        WHERE pcgp.idGrupo = $idGrupo
+                                                                                                        ORDER BY
+                                                                                                            CASE
+                                                                                                                WHEN ul.name LIKE '%-P0' THEN 0
+                                                                                                                WHEN ul.name LIKE '%-P1' THEN 1
+                                                                                                                WHEN ul.name LIKE '%-P2' THEN 2
+                                                                                                                WHEN ul.name LIKE '%-P3' THEN 3
+                                                                                                                WHEN ul.name LIKE '%-P4' THEN 4
+                                                                                                                WHEN ul.name LIKE '%-P5' THEN 5
+                                                                                                                WHEN ul.name LIKE '%-P6' THEN 6
+                                                                                                                ELSE 99
+                                                                                                            END,
+                                                                                                            ul.name ASC,
+                                                                                                            ad.name ASC
+                                                                                                    ";
+
+                                                                                            $resPuertas = mysqli_query($conexion, $sqlPuertas);
+
+                                                                                            if ($resPuertas && mysqli_num_rows($resPuertas) > 0) {
+
+                                                                                                $numPuertas = 1;
+
+                                                                                                while ($row = mysqli_fetch_assoc($resPuertas)) {
+                                                                                                    ?>
+                                                                                                    <tr>
+                                                                                                        <td class='text-center align-middle'><?php echo $numPuertas ?></td>
+                                                                                                        <td>
+                                                                                                            <?php
+                                                                                                            $queryPUERTAS = 'SELECT * FROM ACS_DOOR_GROUP_DOOR WHERE DoorID = '.$row['noPuerta'].' AND DeviceID = '.$row['idUnique'].' ORDER BY DoorID ASC';
+                                                                                                            $resQuery = mysqli_query($conexion, $queryPUERTAS);
+                                                                                                            while($rowQuery = $resQuery->fetch_assoc()){
+                                                                                                                if ($rowQuery['DoorGroupID'] > 0) {
+                                                                                                                    $nomGrupoPuerta = obtenerNameGrupoPuerta($rowQuery['DoorGroupID']);
+
+                                                                                                                    $nomGrupoPuerta = mb_convert_case($nomGrupoPuerta, MB_CASE_UPPER, "UTF-8");
+                                                                                                                    echo $nomGrupoPuerta.'<br><br>';
+                                                                                                                } else {
+                                                                                                                    ?>
+                                                                                                                    <center><?php echo "Error al Cargar Datos."; ?></center>
+                                                                                                                    <?php
+                                                                                                                }
+                                                                                                            }
+                                                                                                            ?>
+                                                                                                        </td>
+                                                                                                        <td><?php echo $row['puerta'] ?></td>
+                                                                                                        <td><?php echo $row['uca'] ?></td>
+                                                                                                    </tr>
+                                                                                                    <?php
+
+                                                                                                    $numPuertas++;
+                                                                                                }
+
+                                                                                            } else {
+
+                                                                                                echo "<p class='text-muted'>
+                                                                                                                No se encontraron autorizaciones configuradas para esta unidad.
+                                                                                                              </p>";
+                                                                                            }
+                                                                                        }
+                                                                                        ?>
+                                                                                        </tbody>
+                                                                                        <tfoot class='bg-primary text-white text-center'>
+                                                                                        <tr>
+                                                                                            <th style='width:10%;'>N°</th>
+                                                                                            <th style='width:45%;'>Grupo de Puerta</th>
+                                                                                            <th style='width:45%;'>Puerta</th>
+                                                                                            <th style='width:45%;'>UCA</th>
+                                                                                        </tr>
+                                                                                        </tfoot>
+                                                                                    </table>
+                                                                                    <script>
+                                                                                        $(document).ready(function () {
+                                                                                            var tablaGrupoPerfilesProtoc = $('#puertasPerfil<?php echo $idPerfil?>').DataTable({
+                                                                                                "lengthChange": false,
+                                                                                                "searching": true,
+                                                                                                "autoWidth": false,
+                                                                                                "responsive": true,
+                                                                                                "ordering": false,
+                                                                                                "language": {
+                                                                                                    "lengthMenu": "Visualizando _MENU_ Registros por P&aacute;gina",
+                                                                                                    "zeroRecords": "No se han encontrado Registros.",
+                                                                                                    "info": "Mostrando p&aacute;gina _PAGE_ de _PAGES_",
+                                                                                                    "infoEmpty": "No existen Registros.",
+                                                                                                    "infoFiltered": "(Filtrado desde _MAX_ Registros Totales)",
+                                                                                                    "search": "Buscar:",
+                                                                                                    "processing": "Procesando...",
+                                                                                                    "paginate": {
+                                                                                                        "previous": "Anterior",
+                                                                                                        "next": "Siguiente"
+                                                                                                    }
+                                                                                                }
+                                                                                            });
+                                                                                        });
+                                                                                    </script>
+                                                                                </div>
+                                                                                <div class="modal-footer">
+                                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <?php
+                                                        }
+                                                    }
+                                                }else{
+                                                    echo "<tr><td colspan='3'><center>No se han encontrado perfiles asociados a esta credencial.</center></td></tr>";
+                                                }
+                                                ?>
+                                                </tbody>
+                                                <tfoot>
+                                                <tr class="bg-secondary text-white">
+                                                    <th>Perfil</th>
+                                                    <th>Descripci&oacute;n</th>
+                                                    <th>Grupo de Puertas</th>
+                                                </tr>
+                                                </tfoot>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>

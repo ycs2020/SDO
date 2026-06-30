@@ -40,6 +40,9 @@ if ($rolUsuario2 == "personal") {
 } else if($rolUsuario2 == "oficina tecnica") {
     $tipoUsuario = 'oficina tecnica';
     $rutaDireccion = "sdo-oficinaTecnica";
+} else if($rolUsuario2 == "mesa ayuda") {
+    $tipoUsuario = 'mesa ayuda';
+    $rutaDireccion = "sdo-mesa-ayuda";
 }else{
     header('Location: ../sdo-flujo/login_index.php?errorSesion=true');
 

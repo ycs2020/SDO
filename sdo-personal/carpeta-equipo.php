@@ -610,110 +610,7 @@ if (isset($_POST['idCarpeta'])) {
                                                                 </tr>
                                                                 </thead>
                                                                 <tbody>
-                                                                <?php
-                                                                $sqlObservaciones = "SELECT * FROM historial_cambios_equipos_falla WHERE idCategoria = $idCarpeta";
-                                                                $resObservaciones = mysqli_query($conexion, $sqlObservaciones);
-                                                                while($rowObservaciones = $resObservaciones->fetch_assoc()){
-                                                                    $datos = [];
-                                                                    $datos['idCambio'] = $rowObservaciones['idCambio'];
-                                                                    $idCambio = $datos['idCambio'];
-                                                                    $datos['fecha'] = $rowObservaciones['fecha'];
-                                                                    $fecha = $datos['fecha'];
-                                                                    $datos['estado'] = $rowObservaciones['estado'];
-                                                                    $estado = $datos['estado'];
-                                                                    $datos['observaciones'] = $rowObservaciones['observaciones'];
-                                                                    $observaciones = $datos['observaciones'];
-                                                                    $datos['idEquipo'] = $rowObservaciones['idEquipo'];
-                                                                    $idEquipo = $datos['idEquipo'];
-                                                                    $datos['nomEquipo'] = $rowObservaciones['nomEquipo'];
-                                                                    $nomEquipo1 = $datos['nomEquipo'];
-                                                                    $fecha = strtotime($fecha);
-                                                                    $fechaFormateada = date('d/m/Y', $fecha);
-                                                                    $datos['tipoUsuario'] = $rowObservaciones['tipoUsuario'];
-                                                                    $tipoUsuario1 = $datos['tipoUsuario'];
-                                                                    $datos['idUsuarioCambia'] = $rowObservaciones['idUsuarioCambia'];
-                                                                    $idUsuarioCambia1 = $datos['idUsuarioCambia'];
-                                                                    ?>
-                                                                    <tr>
-                                                                        <?php
-                                                                        if($tipoUsuario == 'administrativo') {
-                                                                            $sql1 = "SELECT * FROM adm_tecnicos WHERE idAdmTecnicos = $idUsuarioCambia1";
-                                                                            $res1 = mysqli_query($conexion, $sql1);
-                                                                            while ($row3 = $res1->fetch_assoc()) {
-                                                                                $datos3 = [];
-                                                                                $datos3['nomAdmTecnicos'] = $row3['nomAdmTecnicos'];
-                                                                                $nombre1 = $datos3['nomAdmTecnicos'];
-                                                                            }
 
-                                                                        }else if($tipoUsuario == 'jefe tecnico'){
-                                                                            $sql1 = "SELECT * FROM jefes_tecnicos WHERE idJefe = $idUsuarioCambia1";
-                                                                            $res1 = mysqli_query($conexion, $sql1);
-                                                                            while ($row3 = $res1->fetch_assoc()) {
-                                                                                $datos3 = [];
-                                                                                $datos3['nomJefe'] = $row3['nomJefe'];
-                                                                                $nombre1 = $datos3['nomJefe'];
-                                                                            }
-
-                                                                        }else if($tipoUsuario == 'personal'){
-                                                                            $sql1 = "SELECT * FROM personal WHERE idPersonal = $idUsuarioCambia1";
-                                                                            $res1 = mysqli_query($conexion, $sql1);
-                                                                            while ($row3 = $res1->fetch_assoc()) {
-                                                                                $datos3 = [];
-                                                                                $datos3['nomPersonal'] = $row3['nomPersonal'];
-                                                                                $nombre1 = $datos3['nomPersonal'];
-                                                                            }
-                                                                        } else if($tipoUsuario == 'administrador'){
-                                                                            $sql1 = "SELECT * FROM administracion WHERE idAdministrador = $idUsuarioCambia1";
-                                                                            $res1 = mysqli_query($conexion,$sql1);
-                                                                            while($row3 = $res1->fetch_assoc()){
-                                                                                $datos3 = [];
-                                                                                $datos3['nomAdministrador'] = $row3['nomAdministrador'];
-                                                                                $nombre1 = $datos3['nomAdministrador'];
-
-                                                                            }
-
-                                                                        } else if($tipoUsuario == 'mesa ayuda'){
-                                                                            $sql1 = "SELECT * FROM mesa_ayuda WHERE idMesaAyuda = $idUsuarioCambia1";
-                                                                            $res1 = mysqli_query($conexion,$sql1);
-                                                                            while($row3 = $res1->fetch_assoc()){
-                                                                                $datos3 = [];
-                                                                                $datos3['nomMesaAyuda'] = $row3['nomMesaAyuda'];
-                                                                                $nombre1 = $datos3['nomMesaAyuda'];
-
-                                                                            }
-                                                                        } else if($tipoUsuario == 'directiva'){
-                                                                            $sql1 = "SELECT * FROM directivos WHERE idDirectivo = $idUsuarioCambia1 ";
-                                                                            $res1 = mysqli_query($conexion,$sql1);
-                                                                            while($row3 = $res1->fetch_assoc()){
-                                                                                $datos3 = [];
-                                                                                $datos3['nomDirectivo'] = $row3['nomDirectivo'];
-                                                                                $nombre1 = $datos3['nomDirectivo'];
-                                                                            }
-                                                                        }
-                                                                        ?>
-                                                                        <td class="text-center" style="font-size: 14px">
-                                                                            <?php
-                                                                            echo $nombre1;
-                                                                            ?>
-
-                                                                        </td>
-
-                                                                        <td class="text-center">
-                                                                            <?php echo $nomEquipo1?>
-                                                                        </td>
-                                                                        <td  class="text-center">
-                                                                            <form  method="POST" action="equipo.php">
-                                                                                <input type="hidden" value="<?php echo $idEquipo ?>" name="idEquipo">
-                                                                                <button type="submit" class="btn btn-primary btn-xs"><i class="fas fa-eye"></i></button>
-                                                                            </form>
-                                                                        </td>
-                                                                        <td class="text-center"  style="font-size: 14px"><?php echo  $fechaFormateada ?></td>
-                                                                        <td class="text-center" style="font-size: 14px"><?php echo mb_convert_case($estado, MB_CASE_UPPER, 'UTF-8') ?></td>
-                                                                        <td class="text-center" style="font-size: 14px"><?php echo $observaciones ?></td>
-                                                                    </tr>
-                                                                    <?php
-                                                                }
-                                                                ?>
                                                                 </tbody>
                                                                 <tfoot class="bg-info">
                                                                 <th scope="col" class="text-center">Usuario Observador</th>
@@ -776,7 +673,7 @@ if (isset($_POST['idCarpeta'])) {
                                                             </div>
                                                             <div class="modal-body">
 
-                                                                <table id="tabla-hojas-mpi" class="table table-hover  table-bordered table-sm">
+                                                                <table style="width: 100%" id="tabla-hojas-mpi" class="table table-hover text-center  table-bordered table-sm">
                                                                     <thead class="bg-secondary">
                                                                     <tr>
                                                                         <th scope="col" class="text-center">N°</th>
@@ -791,226 +688,7 @@ if (isset($_POST['idCarpeta'])) {
                                                                     </tr>
                                                                     </thead>
                                                                     <tbody>
-                                                                    <?php
-                                                                    $sqlEquipo = "SELECT * FROM gasto_equipo_carpeta WHERE idCategoria = $idCarpeta  AND tipoMantencion	 = 'MPI' ORDER BY fechaGasto DESC";
-                                                                    $resEquipo = mysqli_query($conexion, $sqlEquipo);
 
-
-
-
-
-                                                                    $num = 1;
-
-                                                                    if($resEquipo && mysqli_affected_rows($conexion) > 0){
-
-                                                                        while ($rowEquipo = $resEquipo->fetch_assoc()) {
-                                                                            $datos = [];
-                                                                            $datos['idGasto'] = $rowEquipo['idGasto'];
-                                                                            $datos['fechaRegistro'] = $rowEquipo['fechaRegistro'];
-                                                                            $datos['fechaGasto'] = $rowEquipo['fechaGasto'];
-                                                                            $datos['mesGasto'] = $rowEquipo['mesGasto'];
-                                                                            $datos['nomMantenimiento'] = $rowEquipo['nomMantenimiento'];
-                                                                            $datos['idHojaTecnica'] = $rowEquipo['idHojaTecnica'];
-                                                                            $datos['tipoMantencion'] = $rowEquipo['tipoMantencion'];
-                                                                            $datos['solicitudCompra'] = $rowEquipo['solicitudCompra'];
-                                                                            $datos['codOrdenCompra'] = $rowEquipo['codOrdenCompra'];
-                                                                            $datos['costoTotal'] = $rowEquipo['costoTotal'];
-                                                                            $datos['encargadoMant'] = $rowEquipo['encargadoMant'];
-                                                                            $datos['idEquipo'] = $rowEquipo['idEquipo'];
-
-                                                                            $idGasto = $datos['idGasto'];
-                                                                            $fechaRegistro = $datos['fechaRegistro'];
-                                                                            $mesGasto = $datos['mesGasto'];
-                                                                            $fechaGasto = $datos['fechaGasto'];
-                                                                            $nomMantenimiento = $datos['nomMantenimiento'];
-                                                                            $idHojaTecnica = $datos['idHojaTecnica'];
-                                                                            $tipoMantencion = $datos['tipoMantencion'];
-                                                                            $solicitudCompra = $datos['solicitudCompra'];
-                                                                            $codOrdenCompra = $datos['codOrdenCompra'];
-                                                                            $costoTotal = $datos['costoTotal'];
-                                                                            $encargadoMant = $datos['encargadoMant'];
-                                                                            $idEquipo = $datos['idEquipo'];
-
-                                                                            $formatoFecha = date('d/m/Y', strtotime($fechaGasto));
-
-
-                                                                            $costoTotal = moneda_chilena($costoTotal);
-
-                                                                            ?>
-                                                                            <tr >
-                                                                                <td class="text-center"><?php echo $num ?></td>
-                                                                                <td class="text-center"><?php echo $formatoFecha ?></td>
-                                                                                <td class="text-center"><?php echo $tipoMantencion ?></td>
-                                                                                <td class="text-center"><?php echo $nomMantenimiento ?></td>
-                                                                                <td class="text-center">
-                                                                                    <?php
-
-                                                                                    if ($solicitudCompra == '') {
-                                                                                        echo '-';
-                                                                                    } else {
-                                                                                        ?>
-                                                                                        <form action='../<?php echo $ruta ?>/soliCompra_visualizarSC_sdo.php' target="_blank" method="POST">
-                                                                                            <input type="hidden" name="idSoliCompra" value="<?php echo $solicitudCompra  ?>">
-                                                                                            <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
-                                                                                        </form>
-                                                                                        <?php
-                                                                                    }
-                                                                                    ?>
-                                                                                </td>
-                                                                                <td class="text-center">
-                                                                                    <?php
-
-                                                                                    if ($idHojaTecnica == '') {
-                                                                                        echo '-';
-                                                                                    } else {
-                                                                                        ?>
-                                                                                        <form action="../sdo-pdf/SDO-OrdenTrabajoGeneral.php" target="_blank" method="POST">
-                                                                                            <input type="hidden" name="idOrden" value="<?php echo $idHojaTecnica  ?>">
-                                                                                            <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
-                                                                                        </form>
-                                                                                        <?php
-                                                                                    }
-                                                                                    ?>
-                                                                                </td>
-                                                                                <td class="text-center text-success text-bold"><?php echo '$ 0' ?></td>
-                                                                                <td class="text-center">
-                                                                                    <?php
-                                                                                    if ($encargadoMant == '') {
-                                                                                        echo '-';
-                                                                                    } else {
-                                                                                        echo $encargadoMant;
-                                                                                    }
-                                                                                    ?>
-                                                                                </td>
-                                                                                <td class="text-center">
-                                                                                    <?php
-                                                                                    if ($idEquipo == '' || $idEquipo == 0) {
-                                                                                        echo '-';
-                                                                                    } else {
-                                                                                        echo $idEquipo;
-                                                                                    }
-                                                                                    ?>
-                                                                                </td>
-
-                                                                            </tr>
-                                                                            <?php
-                                                                            $num++;
-                                                                        }
-
-                                                                    }
-
-                                                                    $sqlHT = "SELECT * FROM ordenes_trabajos_general WHERE idCategoria = $idCarpeta  AND tipoMantencion	 = 'MPI' ORDER BY fechaOrden DESC";
-                                                                    $resHT = mysqli_query($conexion, $sqlHT);
-
-                                                                    if($resHT && mysqli_affected_rows($conexion) > 0){
-
-                                                                        while ($rowHT = $resHT->fetch_assoc()) {
-
-                                                                            $datos = [];
-
-                                                                            $datos['idOrden'] = $rowHT['idOrden'];
-                                                                            $datos['fechaOrden'] = $rowHT['fechaOrden'];
-                                                                            $datos['tipoMantencion'] = $rowHT['tipoMantencion'];
-                                                                            $datos['folioOrden'] = $rowHT['folioOrden'];
-                                                                            $datos['ticketAsociado'] = $rowHT['ticketAsociado'];
-                                                                            $datos['nomTecnicoRecepcionador'] = $rowHT['nomTecnicoRecepcionador'];
-                                                                            $datos['trabajoRealizado'] = $rowHT['trabajoRealizado'];
-                                                                            $datos['idEquipo'] = $rowHT['idEquipo'];
-
-                                                                            $idOrden = $datos['idOrden'];
-                                                                            $idEquipo = $datos['idEquipo'];
-                                                                            $fechaOrden = $datos['fechaOrden'];
-                                                                            $tipoMantencion = $datos['tipoMantencion'];
-                                                                            $folioOrden = $datos['folioOrden'];
-                                                                            $nomTecnicoRecepcionador = $datos['nomTecnicoRecepcionador'];
-                                                                            $ticketAsociado = $datos['ticketAsociado'];
-                                                                            $trabajoRealizado = $datos['trabajoRealizado'];
-
-                                                                            if($tipoMantencion == 'MPI'){
-                                                                                $nomMantencion = 'MANTENCIÓN PREVENTIVO INTERNO';
-                                                                            }else if($tipoMantencion == 'MRI'){
-                                                                                $nomMantencion = 'MANTENCIÓN REPARATIVO INTERNO';
-                                                                            }else if($tipoMantencion == 'MPE'){
-                                                                                $nomMantencion = 'MANTENCIÓN REPARATIVO EXTERNO';
-                                                                            }else if($tipoMantencion == 'MRE'){
-                                                                                $nomMantencion = 'MANTENCIÓN REPARATIVO EXTERNO';
-                                                                            }else if($tipoMantencion == 'OM'){
-                                                                                $nomMantencion = 'OBRAS MENORES';
-                                                                            }else if($tipoMantencion == 'IS'){
-                                                                                $nomMantencion = 'INSPECCIÓN Y/O SUPERVISIÓN';
-                                                                            }
-
-                                                                            $fechaOrden = date('d/m/Y', strtotime($fechaOrden));
-
-                                                                            $solicitudCompra = '';
-                                                                            ?>
-                                                                            <tr >
-                                                                                <td class="text-center"><?php echo $num ?></td>
-                                                                                <td class="text-center"><?php echo $fechaOrden ?></td>
-                                                                                <td class="text-center"><?php echo $tipoMantencion ?></td>
-                                                                                <td class="text-center"><?php echo $nomMantencion ?></td>
-                                                                                <td class="text-center">
-                                                                                    <?php
-
-                                                                                    if ($solicitudCompra == '') {
-                                                                                        echo '-';
-                                                                                    } else {
-                                                                                        ?>
-                                                                                        <form action='../<?php echo $ruta ?>/soliCompra_visualizarSC_sdo.php' target="_blank" method="POST">
-                                                                                            <input type="hidden" name="idSoliCompra" value="<?php echo $solicitudCompra  ?>">
-                                                                                            <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
-                                                                                        </form>
-                                                                                        <?php
-                                                                                    }
-                                                                                    ?>
-                                                                                </td>
-                                                                                <td class="text-center">
-                                                                                    <?php
-
-                                                                                    if ($idOrden == '') {
-                                                                                        echo '-';
-                                                                                    } else {
-                                                                                        ?>
-                                                                                        <form action="../sdo-pdf/SDO-OrdenTrabajoGeneral.php" target="_blank" method="POST">
-                                                                                            <input type="hidden" name="idOrden" value="<?php echo $idOrden  ?>">
-                                                                                            <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
-                                                                                        </form>
-                                                                                        <?php
-                                                                                    }
-                                                                                    ?>
-                                                                                </td>
-                                                                                <td class="text-center text-success text-bold"><?php echo '$ 0' ?></td>
-                                                                                <td class="text-center">
-                                                                                    <?php
-                                                                                    if ($nomTecnicoRecepcionador == '') {
-                                                                                        echo '-';
-                                                                                    } else {
-                                                                                        echo mb_convert_case($nomTecnicoRecepcionador, MB_CASE_UPPER, "UTF-8");
-                                                                                    }
-                                                                                    ?>
-                                                                                </td>
-                                                                                <td class="text-center">
-                                                                                    <?php
-                                                                                    if ($idEquipo == '' || $idEquipo == 0) {
-                                                                                        echo '-';
-                                                                                    } else {
-                                                                                        ?>
-                                                                                        <form action="equipo.php" method="post">
-                                                                                            <input type="hidden" id="idCategoria" value="<?php echo $idCarpeta?>">
-                                                                                            <input type="hidden" id="idEquipo" name="idEquipo" value="<?php echo $idEquipo?>">
-                                                                                            <button type="submit" class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></button>
-                                                                                        </form>
-                                                                                        <?php
-                                                                                    }
-                                                                                    ?>
-                                                                                </td>
-
-                                                                            </tr>
-                                                                            <?php
-                                                                            $num++;
-                                                                        }
-                                                                    }
-                                                                    ?>
                                                                     </tbody>
                                                                     <tfoot class="bg-secondary">
                                                                     <tr>
@@ -2250,7 +1928,7 @@ if (isset($_POST['idCarpeta'])) {
                                                             </div>
                                                             <div class="modal-body">
 
-                                                                <table id="tabla-hojas-mpi" class="table table-hover  table-bordered table-sm">
+                                                                <table id="tabla-hojas-is" class="table table-hover  table-bordered table-sm">
                                                                     <thead class="bg-secondary">
                                                                     <tr>
                                                                         <th scope="col" class="text-center">N°</th>
@@ -2571,7 +2249,7 @@ if (isset($_POST['idCarpeta'])) {
                                                                 <tbody>
 
                                                                 <?php
-                                                                $query = "SELECT * FROM ordenes_trabajos_general  WHERE idCategoria = $idCarpeta AND ticketAsociado != '' AND ticketAsociado != '0' ORDER BY nomOrden DESC;";
+                                                                $query = "SELECT * FROM ordenes_trabajos_general  WHERE idCategoria = $idCarpeta AND ticketAsociado != '' AND ticketAsociado != '0' ORDER BY idOrden DESC;";
 
                                                                 $res = mysqli_query($conexion, $query);
 
@@ -2791,7 +2469,7 @@ if (isset($_POST['idCarpeta'])) {
                                                                 </form>
                                                                 <br>
                                                                 <div class="table-responsive">
-                                                                    <table id="tabla-equipos" class="table table-hover  table-bordered table-sm">
+                                                                    <table id="tabla-equipos" class="table text-center table-hover  table-bordered table-sm">
                                                                         <thead class="bg-secondary">
                                                                         <tr>
                                                                             <th scope="col" class="text-center">ID</th>
@@ -2804,109 +2482,7 @@ if (isset($_POST['idCarpeta'])) {
                                                                             <th scope="col" class="text-center">Acciones</th>
                                                                         </tr>
                                                                         </thead>
-                                                                        <tbody>
-                                                                        <?php
-                                                                        $getIDCategoriaSistemaCCTV = getIDCategoriaSistemaCCTV();
-                                                                        $getIDCategoriaSistemaCCAA = getIDCategoriaSistemaCCAA();
-
-                                                                        if($idCarpeta == $getIDCategoriaSistemaCCTV){
-                                                                            $sqlEquipo = "SELECT * FROM equipamiento_hbqp WHERE idCategoria = $idCarpeta ORDER BY piso ASC, nombreEquipo ASC";
-                                                                        }else if($idCarpeta == $getIDCategoriaSistemaCCAA){
-                                                                            $sqlEquipo = "SELECT * FROM equipamiento_hbqp WHERE idCategoria = $idCarpeta AND (modelo = 'ASC1208C-S' OR modelo = 'ASC1204C-S') ORDER BY piso ASC, nombreEquipo ASC";
-                                                                        }else{
-                                                                            $sqlEquipo = "SELECT * FROM equipamiento_hbqp WHERE idCategoria = $idCarpeta ORDER BY  ordenEquipo ASC,piso ASC, pma ASC, nombreEquipo ASC";
-                                                                        }
-                                                                        $resEquipo = mysqli_query($conexion, $sqlEquipo);
-
-                                                                        $num = 1;
-
-                                                                        while ($rowEquipo = $resEquipo->fetch_assoc()) {
-                                                                            $datos = [];
-                                                                            $datos['id'] = $rowEquipo['id'];
-                                                                            $datos['identificadorUnico'] = $rowEquipo['identificadorUnico'];
-                                                                            $datos['nombreEquipo'] = $rowEquipo['nombreEquipo'];
-                                                                            $datos['idServicio'] = $rowEquipo['idServicio'];
-                                                                            $datos['recinto'] = $rowEquipo['recinto'];
-                                                                            $datos['pma'] = $rowEquipo['pma'];
-                                                                            $datos['piso'] = $rowEquipo['piso'];
-                                                                            $datos['estadoEquipo'] = $rowEquipo['estadoEquipo'];
-
-                                                                            $idEquipo = $datos['id'];
-                                                                            $identificadorUnico = $datos['identificadorUnico'];
-                                                                            $nombreEquipo = $datos['nombreEquipo'];
-                                                                            $idServicio = $datos['idServicio'];
-                                                                            $recinto = $datos['recinto'];
-                                                                            $pma = $datos['pma'];
-                                                                            $piso = $datos['piso'];
-                                                                            $estadoEquipo = $datos['estadoEquipo'];
-
-                                                                            if ($recinto == '') {
-                                                                                $recinto = '-';
-                                                                            }
-
-                                                                            if ($pma == '') {
-                                                                                $pma = '-';
-                                                                            }
-
-                                                                            if ($piso == '' || $piso == 0) {
-                                                                                $piso = '-';
-                                                                            }
-
-                                                                            // $servicio = "SELECT * FROM servicios WHERE idServicio = $idServicio";
-                                                                            // $res = mysqli_query($conexion, $servicio);
-                                                                            // while ($rowServicio = $res->fetch_assoc()) {
-                                                                            //     $datos = [];
-                                                                            //     $datos['nomServicio'] = $rowServicio['nomServicio'];
-                                                                            //     $nombreServicio = $datos['nomServicio'];
-                                                                            // }
-
-                                                                            ?>
-                                                                            <tr>
-                                                                                <td class="text-center"><?php echo $num; ?></td>
-                                                                                <!-- <td class="text-center"><?php echo $identificadorUnico ?></td> -->
-                                                                                <td class="text-center"><?php echo $nombreEquipo ?></td>
-                                                                                <!-- <td class="text-center"><?php echo $nombreServicio ?></td> -->
-                                                                                <td class="text-center"><?php echo $recinto ?></td>
-                                                                                <td class="text-center"><?php echo $pma ?></td>
-                                                                                <td class="text-center"><?php echo $piso ?></td>
-                                                                                <?php
-
-                                                                                if ($estadoEquipo == 'Operativo') {
-                                                                                    ?>
-                                                                                    <td class="font-weight-bold text-success text-center  " style="display: inline-block"><?php echo '<i class="fas fa-check"></i> ' .  strtoupper($estadoEquipo) ?></td>
-                                                                                    <?php
-                                                                                } else if ($estadoEquipo == 'Mantenimiento') {
-                                                                                    ?>
-                                                                                    <td class="font-weight-bold   text-warning text-center " style="display: inline-block"><?php echo '<i class="fas fa-exclamation-triangle"></i> ' .  strtoupper($estadoEquipo) ?></td>
-                                                                                    <?php
-                                                                                } else {
-                                                                                    ?>
-                                                                                    <td class="font-weight-bold   text-danger  text-center" style="display: inline-block"><?php echo '<i class="fas fa-skull-crossbones"></i> ' .  strtoupper($estadoEquipo) ?></td>
-                                                                                    <?php
-                                                                                }
-
-                                                                                ?>
-                                                                                <td class="text-center">
-                                                                                    <form action="../sdo-pdf/SDO-Hoja-Vida-Equipamiento.php" target="_blank" method="POST" style="display: inline;">
-                                                                                        <input type="hidden" id="idCarpeta" name="idCarpeta" value="<?php echo $idEquipo ?>">
-                                                                                        <button type="submit" title="Visualizar Hoja de Vida del equipo" class="btn btn-primary btn-sm"><i class="far fa-file"></i></button>
-                                                                                    </form>
-                                                                                    <form action="equipo.php" method="POST" target="_blank" style="display: inline">
-                                                                                        <input type="hidden" id="idCategoria" name="idCategoria" value="<?php echo $idCarpeta ?>">
-                                                                                        <input type="hidden" id="idEquipo" name="idEquipo" value="<?php echo $idEquipo ?>">
-                                                                                        <button type="submit" title="Informacion del equipo" class="btn btn-info btn-sm"><i class="fa-solid fa-door-open"></i></button>
-                                                                                    </form>
-
-                                                                                    <button class="btn btn-danger btn-sm eliminar" id="<?php echo $idEquipo ?>"><i class="fas fa-trash-alt"></i></button>
-                                                                                </td>
-                                                                            </tr>
-                                                                            <?php
-
-                                                                            $num++;
-                                                                        }
-
-                                                                        ?>
-                                                                        </tbody>
+                                                                        <tbody></tbody>
                                                                         <tfoot class="bg-secondary">
                                                                         <tr>
                                                                             <th scope="col" class="text-center">ID</th>
@@ -3026,7 +2602,75 @@ if (isset($_POST['idCarpeta'])) {
 <script src="../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 <script>
     $(document).ready(function() {
+        let idCarpeta = document.getElementById('idCategoria').value;
+        //console.log('Hola ' + idCarpeta);
         $('#tabla-equipos').DataTable({
+            //console.log($('#idCategoria').val());
+            "ajax": {
+                              "url": "../sdo-personal/listar_equipos_personal.php",
+                              "type": "POST",
+                              "data": function(d) {
+                                  d.idCarpeta = idCarpeta;
+                              },
+                              "dataSrc": ""
+                          },
+            "columns": [
+                { "data": "id" },
+                { "data": "nombreEquipo" },
+                { "data": "recinto" },
+                { "data": "pma" },
+                { "data": "piso" },
+                // Estado con color
+                {
+                    "data": "estadoEquipo",
+                    "render": function(data, type, row) {
+
+                        if (data === 'Operativo') {
+                            return '<span class="font-weight-bold text-success"><i class="fas fa-check"></i> ' + data.toUpperCase() + '</span>';
+                        }
+
+                        if (data === 'Mantenimiento') {
+                            return '<span class="font-weight-bold text-warning"><i class="fas fa-exclamation-triangle"></i> ' + data.toUpperCase() + '</span>';
+                        }
+
+                        if (data === 'OperativoObs') {
+                            return '<span class="font-weight-bold text-orange"><i class="fas fa-exclamation-triangle"></i> OPERATIVO CON OBSERVACIONES</span>';
+                        }
+
+                        if (data === 'Extraviado') {
+                            return '<span class="font-weight-bold text-purple"><i class="fas fa-question"></i> ' + data.toUpperCase() + '</span>';
+                        }
+
+                        return '<span class="font-weight-bold text-danger"><i class="fas fa-skull-crossbones"></i> ' + data.toUpperCase() + '</span>';
+                    }
+                },
+                {
+                    "data": "id",
+                    "render": function(data, type, row) {
+
+                        return `
+                        <form action="../sdo-pdf/SDO-Hoja-Vida-Equipamiento.php" target="_blank" method="POST" style="display:inline;">
+                            <input type="hidden" name="idCarpeta" value="${data}">
+                            <button type="submit" class="btn btn-primary btn-sm" title="Hoja de Vida">
+                                <i class="far fa-file"></i>
+                            </button>
+                        </form>
+
+                        <form action="equipo.php" method="POST" target="_blank" style="display:inline;">
+                            <input type="hidden" name="idEquipo" value="${data}">
+                            <input type="hidden" name="idCategoria" value="${row.idCategoria ?? ''}">
+                            <button type="submit" class="btn btn-info btn-sm" title="Información">
+                                <i class="fa-solid fa-door-open"></i>
+                            </button>
+                        </form>
+
+                        <button class="btn btn-danger btn-sm eliminar" data-id="${data}">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+            `;
+                    }
+                }
+            ],
             "paging": true,
             "iDisplayLength": 10,
             "lengthChange": true,
@@ -3047,6 +2691,7 @@ if (isset($_POST['idCarpeta'])) {
                     "next": "Siguiente"
                 }
             },
+
             initComplete: function() {
                 this.api().columns([1]).every(function() {
                     var column = this;
@@ -3090,7 +2735,152 @@ if (isset($_POST['idCarpeta'])) {
 </script>
 <script>
     $(document).ready(function() {
-        $('#tabla-tickets').DataTable({
+        let idCarpeta = document.getElementById('idCategoria').value;
+
+        $('#tabla-hojas-mpi').DataTable({
+
+            ajax: {
+                url: "../sdo-personal/listar_equipos_personal_mpi.php",
+                type: "POST",
+                data: function(d) {
+                    d.idCarpeta = idCarpeta;
+                },
+                dataSrc: ""
+            },
+
+            columns: [
+
+                {
+                    data: null,
+                    render: function(data, type, row, meta){
+                        return meta.row + 1;
+                    }
+                },
+
+                { data: 'fecha' },
+
+                { data: 'tipoMantencion' },
+
+                { data: 'descripcion' },
+
+                {
+                    data: 'solicitudCompra',
+                    render: function(data){
+
+                        if(!data) return '-';
+
+                        return `
+                    <form action="../ruta/soliCompra_visualizarSC_sdo.php"
+                          target="_blank"
+                          method="POST">
+
+                        <input type="hidden"
+                               name="idSoliCompra"
+                               value="${data}">
+
+                        <button class="btn btn-sm btn-info">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </form>
+                `;
+                    }
+                },
+
+                {
+                    data: 'idOrden',
+                    render: function(data){
+
+                        if(!data) return '-';
+
+                        return `
+                    <form action="../sdo-pdf/SDO-OrdenTrabajoGeneral.php"
+                          target="_blank"
+                          method="POST">
+
+                        <input type="hidden"
+                               name="idOrden"
+                               value="${data}">
+
+                        <button class="btn btn-sm btn-info">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </form>
+                `;
+                    }
+                },
+
+                {
+                    data: null,
+                    render: function(){
+                        return '<span class="text-success font-weight-bold">$ 0</span>';
+                    }
+                },
+
+                {
+                    data: 'encargado',
+                    render: function(data){
+                        return data ? data : '-';
+                    }
+                },
+
+                {
+                    data: 'idEquipo',
+                    render: function(data){
+
+                        if(!data || data == 0){
+                            return '-';
+                        }
+
+                        return `
+                    <form action="equipo.php" method="POST">
+                        <input type="hidden" name="idEquipo" value="${data}">
+                        <button type="submit"
+                                class="btn btn-sm btn-primary">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </form>
+                `;
+                    }
+                }
+
+            ]
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        let idCarpeta = document.getElementById('idCategoria').value;
+        $('#tabla-equipo-observacion').DataTable({
+            ajax:{
+                url:'../sdo-personal/listar_equipos_fallas_personal.php',
+                type:'POST',
+                data:function(d){
+                    d.idCarpeta = idCarpeta;
+                },
+                dataSrc:''
+            },
+
+            columns:[
+                {data:'usuario'},
+                {data:'nomEquipo'},
+                {
+                    data:'idEquipo',
+                    render:function(data){
+
+                        return `
+                    <form method="POST" action="equipo.php">
+                        <input type="hidden" name="idEquipo" value="${data}">
+                        <button type="submit" class="btn btn-primary btn-xs">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </form>
+                `;
+                    }
+                },
+                {data:'fecha'},
+                {data:'estado'},
+                {data:'observaciones'}
+            ],
             "paging": true,
             "iDisplayLength": 10,
             "lengthChange": true,
@@ -3116,7 +2906,34 @@ if (isset($_POST['idCarpeta'])) {
 </script>
 <script>
     $(document).ready(function() {
-        $('#tabla-hojas-mpi').DataTable({
+        $('#tabla-tickets').DataTable({
+            "paging": true,
+            "iDisplayLength": 10,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": false,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+            "language": {
+                "lengthMenu": "Visualizando _MENU_ Registros por P&aacute;gina",
+                "zeroRecords": "No se han encontrado Registros.",
+                "info": "Mostrando p&aacute;gina _PAGE_ de _PAGES_",
+                "infoEmpty": "No existen Registros.",
+                "search": "Buscar:",
+                "infoFiltered": "(Filtrado desde _MAX_ Registros Totales)",
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            },
+        });
+    });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('#tabla-hojas-is').DataTable({
             "paging": true,
             "iDisplayLength": 10,
             "lengthChange": true,
@@ -3167,32 +2984,7 @@ if (isset($_POST['idCarpeta'])) {
     });
 </script>
 
-<script>
-    $(document).ready(function() {
-        $('#tabla-equipo-observacion').DataTable({
-            "paging": true,
-            "iDisplayLength": 10,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": false,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
-            "language": {
-                "lengthMenu": "Visualizando _MENU_ Registros por P&aacute;gina",
-                "zeroRecords": "No se han encontrado Registros.",
-                "info": "Mostrando p&aacute;gina _PAGE_ de _PAGES_",
-                "infoEmpty": "No existen Registros.",
-                "search": "Buscar:",
-                "infoFiltered": "(Filtrado desde _MAX_ Registros Totales)",
-                "paginate": {
-                    "previous": "Anterior",
-                    "next": "Siguiente"
-                }
-            },
-        });
-    });
-</script>
+
 
 <script>
     $(document).ready(function() {
@@ -3276,6 +3068,32 @@ if (isset($_POST['idCarpeta'])) {
 <script>
     $(document).ready(function() {
         $('#tabla_ht_mpe').DataTable({
+            "paging": true,
+            "iDisplayLength": 10,
+            "lengthChange": true,
+            "searching": true,
+            "ordering": false,
+            "info": true,
+            "autoWidth": false,
+            "responsive": true,
+            "language": {
+                "lengthMenu": "Visualizando _MENU_ Registros por P&aacute;gina",
+                "zeroRecords": "No se han encontrado Registros.",
+                "info": "Mostrando p&aacute;gina _PAGE_ de _PAGES_",
+                "infoEmpty": "No existen Registros.",
+                "search": "Buscar:",
+                "infoFiltered": "(Filtrado desde _MAX_ Registros Totales)",
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            },
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        $('#tabla-hojas-om').DataTable({
             "paging": true,
             "iDisplayLength": 10,
             "lengthChange": true,
@@ -3569,6 +3387,7 @@ if (isset($_POST['idCarpeta'])) {
         }
     }
 </script>
+
 
 </body>
 

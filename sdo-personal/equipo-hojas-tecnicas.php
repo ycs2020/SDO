@@ -152,6 +152,8 @@ if (isset($_POST['idEquipo'])) {
                                 ?>
                             </div>
                             <div class="card-body">
+                                <input type="hidden" id="idEquipo" value="<?php echo $idEquipo ?>">
+                                <input type="hidden" id="idDepartamento" value="<?php echo $idDepartamento ?>">
                                 <div class="row">
                                     <div class="col-12">
                                         <h1 style="font-size: 32px;" class="text-center text-bold text-muted">Equipo <?php echo $nombreEquipo ?> - Hojas Técnicas </h1>
@@ -263,7 +265,7 @@ if (isset($_POST['idEquipo'])) {
                                                         </button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <table id="hoja_tecnicas" class="table table-sm table-hover  table-bordered">
+                                                        <table id="hoja_tecnicas" class="table text-center table-sm table-hover  table-bordered">
                                                             <thead>
                                                             <tr>
                                                                 <th scope="col" class="text-center">N°</th>
@@ -275,62 +277,7 @@ if (isset($_POST['idEquipo'])) {
                                                             </tr>
                                                             </thead>
                                                             <tbody>
-                                                            <?php
 
-                                                            $sqlHojaTec = "SELECT * FROM ordenes_trabajos_general WHERE (idEquipo is NULL OR idEquipo = 0) and (idCategoria is NULL OR idCategoria = 0) AND idDepartamento = $idDepartamento  ORDER BY idOrden DESC";
-                                                            $resHojaTec = mysqli_query($conexion, $sqlHojaTec);
-
-                                                            $num = 1;
-
-                                                            while ($rowHojaTec = $resHojaTec->fetch_assoc()) {
-                                                                $datos = [];
-                                                                $datos['idOrden'] = $rowHojaTec['idOrden'];
-                                                                $datos['nomOrden'] = $rowHojaTec['nomOrden'];
-                                                                $datos['nomTecnicoRecepcionador'] = $rowHojaTec['nomTecnicoRecepcionador'];
-                                                                $datos['ticketAsociado'] = $rowHojaTec['ticketAsociado'];
-
-                                                                $idOrden  = $datos['idOrden'];
-                                                                $nomOrden = $datos['nomOrden'];
-                                                                $nomTecnicoRecepcionador = $datos['nomTecnicoRecepcionador'];
-                                                                $ticketAsociado = $datos['ticketAsociado'];
-
-                                                                ?>
-                                                                <tr>
-                                                                    <td><?php echo $num ?> </td>
-                                                                    <td><?php echo mb_convert_case($nomOrden, MB_CASE_UPPER, 'UTF-8');  ?></td>
-                                                                    <td><?php echo mb_convert_case($nomTecnicoRecepcionador, MB_CASE_UPPER, 'UTF-8'); ?></td>
-                                                                    <td>
-                                                                        <?php
-                                                                        if ($ticketAsociado == '') {
-                                                                            echo "SIN INFORMACIÓN";
-                                                                        } else {
-                                                                            echo strtoupper($ticketAsociado);
-                                                                        }
-                                                                        ?>
-                                                                    </td>
-                                                                    <td>
-
-                                                                        <form action="../sdo-funciones/agregar-hoja-tecnica-equipo.php" method="POST">
-                                                                            <input type="hidden" name="idCategoria" value="<?php echo $idCategoria ?>">
-                                                                            <input type="hidden" name="idEquipo" value="<?php echo $idEquipo ?>">
-                                                                            <input type="hidden" name="idHojaTecnica" value="<?php echo $idOrden ?>">
-                                                                            <input type="submit" value="Añadir Esta Hoja" class="btn btn-danger">
-                                                                        </form>
-
-                                                                    </td>
-                                                                    <td>
-                                                                        <form action="../sdo-pdf/SDO-OrdenTrabajoGeneral.php" target="_blank" method="POST" style="display: inline;">
-                                                                            <input type="hidden" name="idOrden" value="<?php echo $idOrden ?>">
-                                                                            <center>
-                                                                                <button type="submit" class="btn btn-sm btn-info"><i class="far fa-eye"></i></button>
-                                                                            </center>
-                                                                        </form>
-                                                                    </td>
-                                                                </tr>
-                                                                <?php
-                                                                $num++;
-                                                            }
-                                                            ?>
                                                             </tbody>
                                                             <tfoot>
                                                             <tr>
@@ -350,7 +297,7 @@ if (isset($_POST['idEquipo'])) {
                                                 </div>
                                             </div>
                                         </div>
-                                        <table id="tabla-hojas-tecnicas" class="table table-hover  table-bordered table-sm">
+                                        <table id="tabla-hojas-tecnicas" class="table table-hover text-center  table-bordered table-sm">
                                             <thead class="bg-secondary">
                                             <tr>
                                                 <th scope="col" class="text-center">N°</th>
@@ -362,75 +309,7 @@ if (isset($_POST['idEquipo'])) {
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <?php
-                                            $sqlEquipo = "SELECT * FROM ordenes_trabajos_general WHERE idEquipo = $idEquipo ORDER BY fechaOrden ASC";
-                                            $resEquipo = mysqli_query($conexion, $sqlEquipo);
-                                            $num1 = 1;
-                                            while ($rowEquipo = $resEquipo->fetch_assoc()) {
-                                                $datos = [];
-                                                $datos['idOrden'] = $rowEquipo['idOrden'];
-                                                $datos['nomOrden'] = $rowEquipo['nomOrden'];
-                                                $datos['nomTecnicoRecepcionador'] = $rowEquipo['nomTecnicoRecepcionador'];
-                                                $datos['ticketAsociado'] = $rowEquipo['ticketAsociado'];
-                                                $datos['idEquipo'] = $rowEquipo['idEquipo'];
-                                                $datos['folioOrden'] = $rowEquipo['folioOrden'];
 
-                                                $idOrden = $datos['idOrden'];
-                                                $nomOrden = $datos['nomOrden'];
-                                                $nomTecnicoRecepcionador = $datos['nomTecnicoRecepcionador'];
-                                                $ticketAsociado = $datos['ticketAsociado'];
-                                                $idEquipo = $datos['idEquipo'];
-                                                $folioOrden = $datos['folioOrden'];
-                                                $tipoMantencion = $rowEquipo['tipoMantencion'];
-                                                ?>
-                                                <tr style="background-color:<?php echo $color ?>;color:<?php echo $colorText ?>;">
-                                                    <td class="text-center"><?php echo $num1 ?></td>
-                                                    <td class="text-center"><?php echo $nomOrden ?></td>
-                                                    <td class="text-center"><?php echo $nomTecnicoRecepcionador ?></td>
-                                                    <td class="text-center"><?php echo $tipoMantencion?></td>
-                                                    <td class="text-center">
-                                                        <?php
-                                                        if ($ticketAsociado == '') {
-                                                            echo '-';
-                                                        } else {
-                                                            echo $ticketAsociado;
-                                                        }
-                                                        ?>
-                                                    </td>
-
-                                                    <td class="text-center">
-                                                        <?php
-                                                        if($idDepartamento == 6){
-                                                            $activo1 = "../sdo-pdf/SDO-OrdenTrabajoGeneral-Inge-Clinica.php";
-                                                        }else{
-                                                            $activo1 = "../sdo-pdf/SDO-OrdenTrabajoGeneral.php";
-                                                        }
-                                                        ?>
-                                                        <form action="<?php echo $activo1?>" target="_blank" method="POST" style="display: inline;">
-                                                            <input type="hidden" name="idOrden" value="<?php echo $idOrden ?>">
-                                                            <button type="submit" class="btn btn-sm btn-info "><i class="far fa-eye"></i></button>
-                                                        </form>
-                                                        <?php
-                                                        $archivos_orden_general = "SELECT * FROM archivos_orden_general WHERE idOrden = $idOrden";
-                                                        $res = mysqli_query($conexion, $archivos_orden_general);
-
-                                                        if ($res && mysqli_affected_rows($conexion) > 0) {
-                                                            ?>
-                                                            <form action="hojastecnicas.php" method="POST" style="display: inline;">
-                                                                <input type="hidden" name="idOrden" value="<?php echo $idOrden ?>">
-                                                                <input type="hidden" name="folio" value="<?php echo $folioOrden ?>">
-                                                                <button type="submit" class="btn btn-sm btn-warning "><i class="fas fa-download"></i></button>
-                                                            </form>
-                                                            <?php
-                                                        }
-                                                        ?>
-                                                        <a class="btn btn-sm btn-danger eliminar" id="<?php echo $idOrden ?>"><i class="fas fa-trash-alt"></i></a>
-                                                    </td>
-                                                </tr>
-                                                <?php
-                                                $num1++;
-                                            }
-                                            ?>
                                             </tbody>
                                             <tfoot class="bg-secondary">
                                             <tr>
@@ -505,56 +384,194 @@ if (isset($_POST['idEquipo'])) {
 <script src="../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 <script>
     $(document).ready(function() {
+        let idEquipo = document.getElementById('idEquipo').value;
+
         $('#tabla-hojas-tecnicas').DataTable({
-            "paging": true,
-            "iDisplayLength": 50,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": false,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
-            "language": {
-                "lengthMenu": "Visualizando _MENU_ Registros por P&aacute;gina",
-                "zeroRecords": "No se han encontrado Registros.",
-                "info": "Mostrando p&aacute;gina _PAGE_ de _PAGES_",
-                "infoEmpty": "No existen Registros.",
-                "search": "Buscar:",
-                "infoFiltered": "(Filtrado desde _MAX_ Registros Totales)",
-                "paginate": {
-                    "previous": "Anterior",
-                    "next": "Siguiente"
-                }
+
+            ajax: {
+                url: "../sdo-personal/listar-HT-equipo.php",
+                type: "POST",
+                data: function(d) {
+                    d.idEquipo = idEquipo;
+                },
+                dataSrc: ""
             },
+
+            columns: [
+
+                {
+                    data: null,
+                    render: function(data, type, row, meta){
+                        return meta.row + 1;
+                    }
+                },
+
+                { data: 'nomOrden' },
+
+                { data: 'nomTecnicoRecepcionador' },
+
+                { data: 'tipoMantencion' },
+
+                {
+                    data: 'ticketAsociado',
+                    render: function(data){
+                        return data ? data : '-';
+                    }
+                },
+
+                {
+                    data: 'idOrden',
+                    render: function(data, type, row){
+
+                        let botones = `
+                    <form action="../sdo-pdf/SDO-OrdenTrabajoGeneral.php"
+                          target="_blank"
+                          method="POST"
+                          style="display:inline;">
+                        <input type="hidden"
+                               name="idOrden"
+                               value="${data}">
+                        <button type="submit"
+                                class="btn btn-sm btn-info">
+                            <i class="far fa-eye"></i>
+                        </button>
+                    </form>
+                `;
+
+                        if(row.tieneArchivos == 1){
+                            botones += `
+                        <form action="hojastecnicas.php"
+                              method="POST"
+                              style="display:inline;">
+                            <input type="hidden"
+                                   name="idOrden"
+                                   value="${data}">
+                            <input type="hidden"
+                                   name="folio"
+                                   value="${row.folioOrden}">
+                            <button type="submit"
+                                    class="btn btn-sm btn-warning">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </form>
+                    `;
+                        }
+
+                        botones += `
+                    <a class="btn btn-sm btn-danger eliminar"
+                       data-id="${data}">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
+                `;
+
+                        return botones;
+                    }
+                }
+            ],
+
+            paging: true,
+            iDisplayLength: 50,
+            lengthChange: true,
+            searching: true,
+            ordering: false,
+            info: true,
+            autoWidth: false,
+            responsive: true
         });
     });
 </script>
 <script>
     $(document).ready(function() {
+        let idDepartamento = document.getElementById('idDepartamento').value;
+
         $('#hoja_tecnicas').DataTable({
-            "paging": true,
-            "iDisplayLength": 10,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": false,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
-            "language": {
-                "lengthMenu": "Visualizando _MENU_ Registros por P&aacute;gina",
-                "zeroRecords": "No se han encontrado Registros.",
-                "info": "Mostrando p&aacute;gina _PAGE_ de _PAGES_",
-                "infoEmpty": "No existen Registros.",
-                "search": "Buscar:",
-                "infoFiltered": "(Filtrado desde _MAX_ Registros Totales)",
-                "paginate": {
-                    "previous": "Anterior",
-                    "next": "Siguiente"
-                }
+
+            ajax: {
+                url: "../sdo-personal/listar-HT-MODAL.php",
+                type: "POST",
+                data: function(d) {
+                    d.idDepartamento = idDepartamento;
+                },
+                dataSrc: ""
             },
+
+            columns: [
+
+                {
+                    data: null,
+                    render: function(data, type, row, meta) {
+                        return meta.row + 1;
+                    }
+                },
+
+                {
+                    data: 'nomOrden'
+                },
+
+                {
+                    data: 'nomTecnicoRecepcionador'
+                },
+
+                {
+                    data: 'ticketAsociado',
+                    render: function(data) {
+                        return data ? data.toUpperCase() : 'SIN INFORMACIÓN';
+                    }
+                },
+
+                {
+                    data: 'idOrden',
+                    render: function(data) {
+
+                        return `
+                    <form action="../sdo-funciones/agregar-hoja-tecnica-carpeta.php" method="POST">
+                        <input type="hidden" name="idCategoria" value="${idCarpeta}">
+                        <input type="hidden" name="idHojaTecnica" value="${data}">
+                        <input type="submit" value="Añadir Esta Hoja" class="btn btn-danger">
+                    </form>
+                `;
+                    }
+                },
+
+                {
+                    data: 'idOrden',
+                    render: function(data) {
+
+                        return `
+                    <form action="../sdo-pdf/SDO-OrdenTrabajoGeneral.php"
+                          target="_blank"
+                          method="POST">
+
+                        <input type="hidden"
+                               name="idOrden"
+                               value="${data}">
+
+                        <center>
+                            <button type="submit"
+                                    class="btn btn-sm btn-info">
+                                <i class="far fa-eye"></i>
+                            </button>
+                        </center>
+
+                    </form>
+                `;
+                    }
+                }
+
+            ],
+
+            paging: true,
+            iDisplayLength: 10,
+            lengthChange: true,
+            searching: true,
+            ordering: false,
+            info: true,
+            autoWidth: false,
+            responsive: true
         });
     });
 </script>
+
 <script>
     $(document).ready(
         $('.eliminar').click(function(e) {

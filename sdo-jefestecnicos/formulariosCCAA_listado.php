@@ -283,6 +283,39 @@ $nomUsuario = $_SESSION['nomUsuario'];
 <!-- AdminLTE App -->
 <script src="../dist/js/adminlte.min.js"></script>
 <!-- Page specific script -->
+<script>
+    $(document).ready(function () {
+        $('#tablaFuncionarios').DataTable({
+            "ajax": {
+                "url": "/sdo-includes/formularios_ccaa_recibidos_cargar_funcionarios.php",
+                "type": "POST"
+            },
+            "columns": [
+                {"data": "folioFormRegAcceso"},
+                {"data": "funcionarios"},
+                {"data": "estadoDocumento"},
+                {"data": "botonVisualizar"},
+            ],
+            "responsive": true,
+            "lengthChange": false,
+            "ordering": false,
+            "searching": true,
+            "language": {
+                "lengthMenu": "Visualizando _MENU_ Registros por Página",
+                "zeroRecords": "No se han encontrado registros.",
+                "info": "Mostrando página _PAGE_ de _PAGES_",
+                "infoEmpty": "No existen registros.",
+                "infoFiltered": "(filtrado desde _MAX_ registros totales)",
+                "search": "Buscar:",
+                "processing": "Procesando...",
+                "paginate": {
+                    "previous": "Anterior",
+                    "next": "Siguiente"
+                }
+            }
+        });
+    });
+</script>
 
 </body>
 

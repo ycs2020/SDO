@@ -190,18 +190,20 @@ if (isset($_POST['idCarpeta'])) {
                         <div class="card">
                             <div class="card-header bg-primary">
                                 <?php
-                                    if($idDepartamento1 == 6){
-                                        ?>
-                                        <a href="carpeta-equipo-inge-clinica.php" style="float: right;" class="btn btn-danger btn-xs"><i class="fa fa-chevron-left"></i>&nbsp;&nbsp;Volver Atras</a>
-                                        <?php
-                                    }else{
-                                        ?>
-                                        <a href="carpeta-equipo.php" style="float: right;" class="btn btn-danger btn-xs"><i class="fa fa-chevron-left"></i>&nbsp;&nbsp;Volver Atras</a>
-                                        <?php
-                                    }
+                                if($idDepartamento1 == 6){
+                                    ?>
+                                    <a href="carpeta-equipo-inge-clinica.php" style="float: right;" class="btn btn-danger btn-xs"><i class="fa fa-chevron-left"></i>&nbsp;&nbsp;Volver Atras</a>
+                                    <?php
+                                }else{
+                                    ?>
+                                    <a href="carpeta-equipo.php" style="float: right;" class="btn btn-danger btn-xs"><i class="fa fa-chevron-left"></i>&nbsp;&nbsp;Volver Atras</a>
+                                    <?php
+                                }
                                 ?>
                             </div>
                             <div class="card-body">
+                                <input type="hidden" id="idCarpeta" value="<?php echo $idCarpeta ?>">
+                                <input type="hidden" id="idDepartamento" value="<?php echo $idDepartamento ?>">
                                 <div class="row">
                                     <div class="col-12">
                                         <h1 style="font-size: 32px;" class="text-center text-bold text-muted">Hojas Técnicas - <?php echo $nomCategoria ?> </h1>
@@ -217,114 +219,6 @@ if (isset($_POST['idCarpeta'])) {
                                         <hr>
                                         <!--<button type="button" class="btn btn-warning" onclick="agregarHojaVida();" data-toggle="modal" data-target=".generarInforme"> <b><i class="far fa-file-pdf"></i> Generar Informes</b> </button> -->
 
-                                        <div class="modal fade generarInforme" tabindex="-1">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <div class="modal-header bg-warning">
-                                                        <h5 class="modal-title"> <b>Generar Informe</b> </h5>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <form action="../sdo-pdf/SDO-Informe-Gasto-Carpeta.php" target="_blank" method="POST">
-
-                                                            <input type="hidden" name="idCategoria"  value="<?php echo $idCarpeta ?>">
-
-                                                            <div class="row" >
-                                                                <div class="form-group col-md-12">
-                                                                    <label for="exampleInputCodigoTarjeta" style="font-size:12px">Tipo informe:<code>*</code></label>
-                                                                    <div class="input-group mb-3">
-                                                                        <div class="input-group-prepend">
-                                                                            <span class="input-group-text"><i class="fas fa-file-archive"></i></span>
-                                                                        </div>
-                                                                        <select type="text" class="form-control form-control-sm" required id="tipoInforme" name="tipoInforme">
-                                                                            <option value="" disabled selected>-- Seleccione --</option>
-                                                                            <option value="Completo">Completo - Carpeta y equipos</option>
-                                                                            <option value="Carpeta">Solo Carpeta</option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="form-group">
-                                                                <h6 class="tex-center">Escoja el periodo</h6>
-                                                                <div class="form-check form-check-inline">
-                                                                    <input class="form-check-input" type="radio" name="periodo" onchange="mostrarInputs(this.value)" id="exampleRadios1" value="mensual">
-                                                                    <label class="form-check-label" for="exampleRadios1">
-                                                                        Mensual
-                                                                    </label>
-                                                                </div>
-                                                                <div class="form-check form-check-inline">
-                                                                    <input class="form-check-input" type="radio" name="periodo" onchange="mostrarInputs(this.value)" id="exampleRadios2" value="rangoFechas">
-                                                                    <label class="form-check-label" for="exampleRadios2">
-                                                                        Rango de Fechas
-                                                                    </label>
-                                                                </div>
-                                                                <div class="form-check form-check-inline">
-                                                                    <input class="form-check-input" type="radio" name="periodo" onchange="mostrarInputs(this.value)" id="exampleRadios3" value="todos">
-                                                                    <label class="form-check-label" for="exampleRadios3">
-                                                                        Todos
-                                                                    </label>
-                                                                </div>
-                                                            </div>
-                                                            <div class="row" id="mesInforme">
-                                                                <div class="form-group col-md-12">
-                                                                    <label for="exampleInputCodigoTarjeta" style="font-size:12px">Escoja el mes:<code>*</code></label>
-                                                                    <div class="input-group mb-3">
-                                                                        <div class="input-group-prepend">
-                                                                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                                                                        </div>
-                                                                        <select type="text" class="form-control form-control-sm" required id="mensual" name="mesInforme">
-                                                                            <option value="" disabled selected>-- Seleccione --</option>
-                                                                            <option value="Enero">Enero</option>
-                                                                            <option value="Febrero">Febrero</option>
-                                                                            <option value="Marzo">Marzo</option>
-                                                                            <option value="Abril">Abril</option>
-                                                                            <option value="Mayo">Mayo</option>
-                                                                            <option value="Junio">Junio</option>
-                                                                            <option value="Julio">Julio</option>
-                                                                            <option value="Agosto">Agosto</option>
-                                                                            <option value="Septiembre">Septiembre</option>
-                                                                            <option value="Octubre">Octubre</option>
-                                                                            <option value="Noviembre">Noviembre</option>
-                                                                            <option value="Diciembre">Diciembre</option>
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
-                                                            <div class="row" id="rangoFecha">
-                                                                <div class="form-group col-md-12">
-                                                                    <label for="exampleInputCodigoTarjeta" style="font-size:12px">Desde :<code>*</code></label>
-                                                                    <div class="input-group mb-3">
-                                                                        <div class="input-group-prepend">
-                                                                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                                                                        </div>
-                                                                        <input type="date" class="form-control form-control-sm" required id="fechaInicio" name="fechaInicio">
-
-                                                                    </div>
-                                                                </div>
-                                                                <div class="form-group col-md-12">
-                                                                    <label for="exampleInputCodigoTarjeta" style="font-size:12px">Hasta :<code>*</code></label>
-                                                                    <div class="input-group mb-3">
-                                                                        <div class="input-group-prepend">
-                                                                            <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
-                                                                        </div>
-                                                                        <input type="date" class="form-control form-control-sm" onchange="ValidarFechas()" required id="fechaFin" name="fechaFin">
-
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal"> <b>Cerrar</b> </button>
-                                                        <button type="submit" id="enviar" class="btn btn-primary"> <b>Generar Informe</b> </button>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
                                         <button class="btn btn-primary text-center ml-2" data-toggle="modal" data-target="#modalHojas"><i class="fa-solid fa-plus"></i>&nbsp;&nbsp; <b>Añadir Hoja Técnica A La Carpeta</b> </button>
                                         <br>
 
@@ -339,7 +233,7 @@ if (isset($_POST['idCarpeta'])) {
                                                         </button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <table id="hoja_tecnicas" class="table table-sm table-hover  table-bordered">
+                                                        <table id="hoja_tecnicas" class="table text-center table-sm table-hover  table-bordered">
                                                             <thead>
                                                             <tr>
                                                                 <th scope="col" class="text-center">N°</th>
@@ -351,61 +245,7 @@ if (isset($_POST['idCarpeta'])) {
                                                             </tr>
                                                             </thead>
                                                             <tbody>
-                                                            <?php
 
-                                                            $sqlHojaTec = "SELECT * FROM ordenes_trabajos_general WHERE (idEquipo is NULL OR idEquipo = 0) and (idCategoria is NULL OR idCategoria = 0) AND idDepartamento = $idDepartamento ORDER BY idOrden DESC";
-                                                            $resHojaTec = mysqli_query($conexion, $sqlHojaTec);
-
-                                                            $num = 1;
-
-                                                            while ($rowHojaTec = $resHojaTec->fetch_assoc()) {
-                                                                $datos = [];
-                                                                $datos['idOrden'] = $rowHojaTec['idOrden'];
-                                                                $datos['nomOrden'] = $rowHojaTec['nomOrden'];
-                                                                $datos['nomTecnicoRecepcionador'] = $rowHojaTec['nomTecnicoRecepcionador'];
-                                                                $datos['ticketAsociado'] = $rowHojaTec['ticketAsociado'];
-
-                                                                $idOrden  = $datos['idOrden'];
-                                                                $nomOrden = $datos['nomOrden'];
-                                                                $nomTecnicoRecepcionador = $datos['nomTecnicoRecepcionador'];
-                                                                $ticketAsociado = $datos['ticketAsociado'];
-
-                                                                ?>
-                                                                <tr>
-                                                                    <td><?php echo $num ?> </td>
-                                                                    <td><?php echo mb_convert_case($nomOrden, MB_CASE_UPPER, 'UTF-8');  ?></td>
-                                                                    <td><?php echo mb_convert_case($nomTecnicoRecepcionador, MB_CASE_UPPER, 'UTF-8'); ?></td>
-                                                                    <td>
-                                                                        <?php
-                                                                        if ($ticketAsociado == '') {
-                                                                            echo "SIN INFORMACIÓN";
-                                                                        } else {
-                                                                            echo strtoupper($ticketAsociado);
-                                                                        }
-                                                                        ?>
-                                                                    </td>
-                                                                    <td>
-
-                                                                        <form action="../sdo-funciones/agregar-hoja-tecnica-carpeta.php" method="POST">
-                                                                            <input type="hidden" name="idCategoria" value="<?php echo $idCarpeta ?>">
-                                                                            <input type="hidden" name="idHojaTecnica" value="<?php echo $idOrden ?>">
-                                                                            <input type="submit" value="Añadir Esta Hoja" class="btn btn-danger">
-                                                                        </form>
-
-                                                                    </td>
-                                                                    <td>
-                                                                        <form action="../sdo-pdf/SDO-OrdenTrabajoGeneral.php" target="_blank" method="POST" style="display: inline;">
-                                                                            <input type="hidden" name="idOrden" value="<?php echo $idOrden ?>">
-                                                                            <center>
-                                                                                <button type="submit" class="btn btn-sm btn-info"><i class="far fa-eye"></i></button>
-                                                                            </center>
-                                                                        </form>
-                                                                    </td>
-                                                                </tr>
-                                                                <?php
-                                                                $num++;
-                                                            }
-                                                            ?>
                                                             </tbody>
                                                             <tfoot>
                                                             <tr>
@@ -426,7 +266,7 @@ if (isset($_POST['idCarpeta'])) {
                                             </div>
                                         </div>
                                         <br>
-                                        <table id="tabla-hojas-tecnicas" class="table table-hover  table-bordered table-sm">
+                                        <table id="tabla-hojas-tecnicas" class="table table-hover text-center  table-bordered table-sm">
                                             <thead class="bg-secondary">
                                             <tr>
                                                 <th scope="col" class="text-center">N°</th>
@@ -439,105 +279,7 @@ if (isset($_POST['idCarpeta'])) {
                                             </tr>
                                             </thead>
                                             <tbody>
-                                            <?php
-                                            $sqlEquipo = "SELECT * FROM ordenes_trabajos_general WHERE idCategoria = $idCarpeta ORDER BY fechaOrden DESC";
-                                            $resEquipo = mysqli_query($conexion, $sqlEquipo);
-                                            $num = 1;
-                                            while ($rowEquipo = $resEquipo->fetch_assoc()) {
-                                                $datos = [];
-                                                $datos['idOrden'] = $rowEquipo['idOrden'];
-                                                $datos['nomOrden'] = $rowEquipo['nomOrden'];
-                                                $datos['nomTecnicoRecepcionador'] = $rowEquipo['nomTecnicoRecepcionador'];
-                                                $datos['ticketAsociado'] = $rowEquipo['ticketAsociado'];
-                                                $datos['idEquipo'] = $rowEquipo['idEquipo'];
-                                                $datos['folioOrden'] = $rowEquipo['folioOrden'];
-                                                $datos['tipoMantencion'] = $rowEquipo['tipoMantencion'];
 
-                                                $idOrden = $datos['idOrden'];
-                                                $nomOrden = $datos['nomOrden'];
-                                                $nomTecnicoRecepcionador = $datos['nomTecnicoRecepcionador'];
-                                                $ticketAsociado = $datos['ticketAsociado'];
-                                                $idEquipo = $datos['idEquipo'];
-                                                $folioOrden = $datos['folioOrden'];
-                                                $tipoMantencion = $datos['tipoMantencion'];
-
-                                                if ($idEquipo == '') {
-                                                    $color = '#FFC107';
-                                                    $colorText = '#000';
-                                                }else{
-                                                    $color = '';
-                                                    $colorText = '';
-                                                }
-
-                                                ?>
-                                                <tr style="background-color:<?php echo $color ?>;color:<?php echo $colorText ?>;">
-                                                    <td class="text-center"><?php echo $num ?></td>
-                                                    <td class="text-center"><?php echo $nomOrden ?></td>
-                                                    <td class="text-center"><?php echo $tipoMantencion ?></td>
-                                                    <td class="text-center"><?php echo $nomTecnicoRecepcionador ?></td>
-                                                    <td class="text-center">
-                                                        <?php
-                                                        if ($ticketAsociado == '') {
-                                                            echo '-';
-                                                        } else {
-                                                            echo $ticketAsociado;
-                                                        }
-                                                        ?>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <?php
-                                                        if ($idEquipo == '') {
-                                                            echo '-';
-                                                        } else {
-                                                            $getNomEquipamiento = getNomEquipamiento($idEquipo);
-                                                            if($idDepartamento1 == 6){
-                                                                $activo = "equipo-inge-clinica.php";
-                                                            }else{
-                                                                $activo = "equipo.php";
-                                                            }
-                                                            ?>
-                                                            <form action="<?php echo $activo?>" method="post" target="_blank">
-                                                                <input type="hidden" value="<?php echo $idEquipo ?>" name="idEquipo">
-                                                                <button class="btn btn-primary btn-sm"><i class="fas fa-eye"></i></button>
-                                                            </form>
-                                                            <?php
-                                                        }
-                                                        ?>
-                                                    </td>
-                                                    <td class="text-center">
-                                                        <?php
-                                                            if($idDepartamento1 == 6){
-                                                                $activo1 = "../sdo-pdf/SDO-OrdenTrabajoGeneral-Inge-Clinica.php";
-                                                            }else{
-                                                                $activo1 = "../sdo-pdf/SDO-OrdenTrabajoGeneral.php";
-                                                            }
-                                                        ?>
-                                                        <form action="<?php echo $activo1?>" target="_blank" method="POST" style="display: inline;">
-                                                            <input type="hidden" name="idOrden" value="<?php echo $idOrden ?>">
-                                                            <button type="submit" class="btn btn-sm btn-info "><i class="far fa-eye"></i></button>
-                                                        </form>
-                                                        <?php
-                                                        $archivos_orden_general = "SELECT * FROM archivos_orden_general WHERE idOrden = $idOrden";
-                                                        $res = mysqli_query($conexion, $archivos_orden_general);
-
-                                                        if ($res && mysqli_affected_rows($conexion) > 0) {
-                                                            ?>
-                                                            <form action="hojastecnicas.php" method="POST" style="display: inline;">
-                                                                <input type="hidden" name="idOrden" value="<?php echo $idOrden ?>">
-                                                                <input type="hidden" name="folio" value="<?php echo $folioOrden ?>">
-                                                                <button type="submit" class="btn btn-sm btn-warning "><i class="fas fa-download"></i></button>
-                                                            </form>
-                                                            <?php
-                                                        }
-                                                        ?>
-                                                        <a class="btn btn-sm btn-danger eliminar" id="<?php echo $idOrden ?>"><i class="fas fa-trash-alt"></i></a>
-                                                    </td>
-                                                </tr>
-                                                <?php
-                                                $num++;
-                                            }
-
-                                            ?>
                                             </tbody>
                                             <tfoot class="bg-secondary">
                                             <tr>
@@ -613,33 +355,89 @@ if (isset($_POST['idCarpeta'])) {
 <script src="../plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
 <script>
     $(document).ready(function() {
+
+        let idCarpeta = document.getElementById('idCarpeta').value;
+
         $('#tabla-hojas-tecnicas').DataTable({
-            "paging": true,
-            "iDisplayLength": 50,
-            "lengthChange": true,
-            "searching": true,
-            "ordering": false,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
-            "language": {
-                "lengthMenu": "Visualizando _MENU_ Registros por P&aacute;gina",
-                "zeroRecords": "No se han encontrado Registros.",
-                "info": "Mostrando p&aacute;gina _PAGE_ de _PAGES_",
-                "infoEmpty": "No existen Registros.",
-                "search": "Buscar:",
-                "infoFiltered": "(Filtrado desde _MAX_ Registros Totales)",
-                "paginate": {
-                    "previous": "Anterior",
-                    "next": "Siguiente"
-                }
+
+            "ajax": {
+                "url": "../sdo-personal/listar-HT-general.php",
+                "type": "POST",
+                "data": function(d) {
+                    d.idCarpeta = idCarpeta;
+                },
+                "dataSrc": ""
             },
-        });
-    });
-</script>
-<script>
-    $(document).ready(function() {
-        $('#hoja_tecnicas').DataTable({
+
+            "columns": [
+
+                { "data": null, "render": function(data, type, row, meta) {
+                        return meta.row + 1;
+                    }},
+
+                { "data": "nomOrden" },
+
+                { "data": "tipoMantencion" },
+
+                { "data": "nomTecnicoRecepcionador" },
+
+                { "data": "ticketAsociado", "render": function(data) {
+                        return data ? data : '-';
+                    }},
+
+                { "data": "idEquipo", "render": function(data) {
+                        if (!data) return '-';
+
+                        return `
+                    <form action="${window.idDepartamento1 == 6 ? 'equipo-inge-clinica.php' : 'equipo.php'}"
+                          method="post" target="_blank" style="display:inline;">
+                        <input type="hidden" name="idEquipo" value="${data}">
+                        <button class="btn btn-primary btn-sm">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </form>
+                `;
+                    }},
+
+                { "data": "idOrden", "render": function(data, type, row) {
+
+                        let pdf = (window.idDepartamento1 == 6)
+                            ? "../sdo-pdf/SDO-OrdenTrabajoGeneral-Inge-Clinica.php"
+                            : "../sdo-pdf/SDO-OrdenTrabajoGeneral.php";
+
+                        let btn = `
+                    <form action="${pdf}" target="_blank" method="POST" style="display:inline;">
+                        <input type="hidden" name="idOrden" value="${data}">
+                        <button type="submit" class="btn btn-sm btn-info">
+                            <i class="far fa-eye"></i>
+                        </button>
+                    </form>
+                `;
+
+                        // botón descarga (hojas técnicas)
+                        if (row.tieneArchivos == 1) {
+                            btn += `
+                        <form action="hojastecnicas.php" method="POST" style="display:inline;">
+                            <input type="hidden" name="idOrden" value="${data}">
+                            <input type="hidden" name="folio" value="${row.folioOrden}">
+                            <button type="submit" class="btn btn-sm btn-warning">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </form>
+                    `;
+                        }
+
+                        btn += `
+                    <a class="btn btn-sm btn-danger eliminar" data-id="${data}">
+                        <i class="fas fa-trash-alt"></i>
+                    </a>
+                `;
+
+                        return btn;
+                    }}
+
+            ],
+
             "paging": true,
             "iDisplayLength": 10,
             "lengthChange": true,
@@ -647,19 +445,99 @@ if (isset($_POST['idCarpeta'])) {
             "ordering": false,
             "info": true,
             "autoWidth": false,
-            "responsive": true,
-            "language": {
-                "lengthMenu": "Visualizando _MENU_ Registros por P&aacute;gina",
-                "zeroRecords": "No se han encontrado Registros.",
-                "info": "Mostrando p&aacute;gina _PAGE_ de _PAGES_",
-                "infoEmpty": "No existen Registros.",
-                "search": "Buscar:",
-                "infoFiltered": "(Filtrado desde _MAX_ Registros Totales)",
-                "paginate": {
-                    "previous": "Anterior",
-                    "next": "Siguiente"
-                }
+            "responsive": true
+        });
+
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        let idDepartamento = document.getElementById('idDepartamento').value;
+
+        $('#hoja_tecnicas').DataTable({
+
+            ajax: {
+                url: "../sdo-personal/listar-HT-MODAL.php",
+                type: "POST",
+                data: function(d) {
+                    d.idDepartamento = idDepartamento;
+                },
+                dataSrc: ""
             },
+
+            columns: [
+
+                {
+                    data: null,
+                    render: function(data, type, row, meta) {
+                        return meta.row + 1;
+                    }
+                },
+
+                {
+                    data: 'nomOrden'
+                },
+
+                {
+                    data: 'nomTecnicoRecepcionador'
+                },
+
+                {
+                    data: 'ticketAsociado',
+                    render: function(data) {
+                        return data ? data.toUpperCase() : 'SIN INFORMACIÓN';
+                    }
+                },
+
+                {
+                    data: 'idOrden',
+                    render: function(data) {
+
+                        return `
+                    <form action="../sdo-funciones/agregar-hoja-tecnica-carpeta.php" method="POST">
+                        <input type="hidden" name="idCategoria" value="${idCarpeta}">
+                        <input type="hidden" name="idHojaTecnica" value="${data}">
+                        <input type="submit" value="Añadir Esta Hoja" class="btn btn-danger">
+                    </form>
+                `;
+                    }
+                },
+
+                {
+                    data: 'idOrden',
+                    render: function(data) {
+
+                        return `
+                    <form action="../sdo-pdf/SDO-OrdenTrabajoGeneral.php"
+                          target="_blank"
+                          method="POST">
+
+                        <input type="hidden"
+                               name="idOrden"
+                               value="${data}">
+
+                        <center>
+                            <button type="submit"
+                                    class="btn btn-sm btn-info">
+                                <i class="far fa-eye"></i>
+                            </button>
+                        </center>
+
+                    </form>
+                `;
+                    }
+                }
+
+            ],
+
+            paging: true,
+            iDisplayLength: 10,
+            lengthChange: true,
+            searching: true,
+            ordering: false,
+            info: true,
+            autoWidth: false,
+            responsive: true
         });
     });
 </script>

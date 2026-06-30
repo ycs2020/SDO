@@ -424,8 +424,8 @@ $ipCliente = $_SERVER['REMOTE_ADDR'];
 </script>
 
 <script>
-
     $(document).ready(function () {
+
         var tablaListadoCredencial = $('#tablaListadoCredencial').DataTable({
             "lengthChange": false,
             "searching": true,
@@ -433,6 +433,7 @@ $ipCliente = $_SERVER['REMOTE_ADDR'];
             "responsive": true,
             "ordering": false,
             "processing": true,
+
             "language": {
                 "lengthMenu": "Visualizando _MENU_ Registros por P&aacute;gina",
                 "zeroRecords": "No se han encontrado Registros.",
@@ -446,13 +447,12 @@ $ipCliente = $_SERVER['REMOTE_ADDR'];
                     "next": "Siguiente"
                 }
             },
+
             "ajax": {
-                "url": "/sdo-includes/credenciales_cargarDatos.php", // Archivo PHP que contiene la consulta SQL
+                "url": "/sdo-includes/credenciales_cargarDatos.php",
                 "type": "POST",
                 "data": function (d) {
-                    // d.idDepartamento = $('#idDeptoHT').val(); // Pasa el valor seleccionado del select como parámetro
-                    d.esRRHH = $('#esRRHH').val(); // 👈 aquí lo mandas
-
+                    d.esRRHH = $('#esRRHH').val();
                 },
                 "dataSrc": "data",
                 "error": function (xhr, error, thrown) {
@@ -460,34 +460,66 @@ $ipCliente = $_SERVER['REMOTE_ADDR'];
                     console.log("XHR object:", xhr);
                 }
             },
+
             "columns": [
                 {
                     "data": null,
                     "render": function (data, type, row, meta) {
-                        return meta.row + 1; // Devuelve el número de fila (empezando desde 1)
+                        return meta.row + 1;
                     }
                 },
-                {"data": "nombreCredencial"},
-                {"data": "apellidoCredencial"},
-                {"data": "rutCredencial"},
-                {"data": "telefonoCredencial"},
-                {"data": "activacionCredencial"},
-                {"data": "estadoContrato"},
-                 {"data": "notificaciones" }, // <-- nueva column
-                {"data": "buttonVisualizar"},
-
-
-                // Agrega más columnas según sea necesario
+                { "data": "nombreCredencial" },
+                { "data": "apellidoCredencial" },
+                { "data": "rutCredencial" },
+                { "data": "telefonoCredencial" },
+                { "data": "activacionCredencial" }, // 👈 columna 5
+                { "data": "estadoContrato" },
+                { "data": "notificaciones" },
+                { "data": "buttonVisualizar" }
             ],
-            "createdRow": function (row, data, dataIndex) {
-                $('td', row).css('vertical-align', 'middle');
-                $('td', row).css('text-align', 'center');
-                $('td', row).css('text-transform', 'uppercase');
-                $('td:eq(0)', row).html(dataIndex + 1); // Actualiza el contenido de la primera celda (columna "N°")
-                // $('td', row).css('font-size', '10pt');
 
+            "createdRow": function (row, data, dataIndex) {
+                $('td', row).css({
+                    'vertical-align': 'middle',
+                    'text-align': 'center',
+                    'text-transform': 'uppercase'
+                });
+
+                $('td:eq(0)', row).html(dataIndex + 1);
+            },
+
+            // ✅ AQUÍ VA EL FILTRO
+            "initComplete": function () {
+                var api = this.api();
+
+                api.columns(5).every(function () {
+                    var column = this;
+
+                    var select = $('<select class="form-control"><option value="">Filtrar Estado</option></select>')
+                        .appendTo($(column.header()).empty())
+                        .on('change', function () {
+
+                            var val = $.fn.dataTable.util.escapeRegex($(this).val());
+
+                            column
+                                .search(val ? '^' + val + '$' : '', true, false)
+                                .draw();
+                        });
+
+                    column.data().unique().sort().each(function (d) {
+
+                        // 🔥 LIMPIAR HTML
+                        var text = $('<div>').html(d).text().trim();
+
+                        if (text) {
+                            select.append('<option value="' + text + '">' + text + '</option>');
+                        }
+                    });
+                });
             }
+
         });
+
     });
 </script>
 <script>

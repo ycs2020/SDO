@@ -40,18 +40,22 @@ if ($rolUsuario2 == "personal") {
 } else if($rolUsuario2 == "oficina tecnica") {
     $tipoUsuario = 'oficina tecnica';
     $rutaDireccion = "sdo-oficinaTecnica";
-}else{
+} else if($rolUsuario2 == "mesa ayuda") {
+    $tipoUsuario = 'mesa ayuda';
+    $rutaDireccion = "sdo-mesa-ayuda";
+}else {
     header('Location: ../sdo-flujo/login_index.php?errorSesion=true');
-
 }
+
 
 if(isset($_POST['idConsumo'])){
     $idConsumo = $_POST['idConsumo'];
     $fecha = $_POST['fecha'];
     $obs = $_POST['obs'];
+    $nomUsuarioCreador = $_POST['nomUsuario'];
 
-    $sql = "INSERT INTO `criogenico_obs`(`id`, `obs`, `fecha`, `idConsumo`) 
-    VALUES (null,'$obs','$fecha',$idConsumo)";
+    $sql = "INSERT INTO `criogenico_obs`(`id`, `obs`, `nomUsuarioCreador` , `fecha`, `idConsumo`) 
+    VALUES (null,'$obs','$nomUsuario','$fecha',$idConsumo)";
 
     $res = mysqli_query($conexion,$sql);
 
