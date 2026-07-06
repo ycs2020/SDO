@@ -55,14 +55,9 @@ $menuAdmin = [
         'link' => '#',
         'subitems' => [
             [
-                'title' => 'OT en Curso',
+                'title' => 'Listado de OTs',
                 'icon' => 'fas fa-file',
                 'link' => '../sdo-administrador/trabajos_general_listado.php'
-            ],
-            [
-                'title' => 'OT Finalizadas',
-                'icon' => 'fas fa-list',
-                'link' => '../sdo-administrador/trabajos_general_listado_terminado.php'
             ]
         ]
     ],

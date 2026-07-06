@@ -79,6 +79,45 @@ if ($stmtSubAnalizador = $conexion->prepare($querySubAnalizador)) {
     <link rel="stylesheet" href="../plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
     <script src="../sdo-funciones/jquery-3.2.1.min.js"></script>
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"/>
+
+    <style>
+        /* Reducir tamaño de la paginación en las tablas pequeñas */
+        .tabla-sub-linea_wrapper .pagination {
+            font-size: 0.75rem;
+            margin-bottom: 0;
+        }
+        .tabla-sub-linea_wrapper .page-link {
+            padding: 0.25rem 0.5rem;
+        }
+
+        /* Ajustar el input del buscador */
+        .tabla-sub-linea_wrapper .dataTables_filter input {
+            width: 150px !important;
+            font-size: 0.85rem;
+            padding: 0.2rem 0.5rem;
+            text-align: center;
+        }
+
+        /* Estilo base para los botones de Fases cuando no están seleccionados */
+        .nav-pills .nav-link.pill-fase {
+            color: #28a745 !important; /* Verde estándar */
+            background-color: transparent;
+            transition: all 0.2s ease-in-out;
+        }
+
+        /* Efecto Hover (pasar el mouse por encima) */
+        .nav-pills .nav-link.pill-fase:hover {
+            background-color: rgba(40, 167, 69, 0.1); /* Fondo verde sutil */
+            color: #218838 !important;
+        }
+
+        /* Estilo CRÍTICO: Cuando la pestaña de Fases está activa/seleccionada */
+        .nav-pills .nav-link.pill-fase.active {
+            background-color: #28a745 !important; /* Fondo Verde */
+            color: #ffffff !important; /* Texto Blanco Puro para contraste óptimo */
+            border-color: #28a745;
+        }
+    </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-footer-fixed">
 <div class="wrapper">
@@ -95,6 +134,7 @@ if ($stmtSubAnalizador = $conexion->prepare($querySubAnalizador)) {
                                 <b><?= htmlspecialchars($datosAnalizador['nomAnalizador']) ?></b>
                             </h5>
                         </div>
+                        
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-6 col-12 mb-3">
                         <a href="analizadores_red_listado.php" class="btn btn-danger btn-block h-100 d-flex align-items-center justify-content-center">
@@ -218,11 +258,11 @@ if ($stmtSubAnalizador = $conexion->prepare($querySubAnalizador)) {
                                             ?>
                                             <li class="nav-item">
                                                 <a class="nav-link tab-sub-ajax <?= $activeClass ?>"
-                                                    id="tab-sub-<?= $sub['id'] ?>"
-                                                    data-toggle="tab"
-                                                    data-subid="<?= $sub['id'] ?>"
-                                                    href="#content-sub-<?= $sub['id'] ?>"
-                                                    role="tab">
+                                                        id="tab-sub-<?= $sub['id'] ?>"
+                                                        data-toggle="tab"
+                                                        data-subid="<?= $sub['id'] ?>"
+                                                        href="#content-sub-<?= $sub['id'] ?>"
+                                                        role="tab">
                                                     <i class="fas fa-bolt mr-1"></i> <?= htmlspecialchars($sub['nombre']) ?>
                                                 </a>
                                             </li>
@@ -242,33 +282,46 @@ if ($stmtSubAnalizador = $conexion->prepare($querySubAnalizador)) {
 
                                                 <ul class="nav nav-pills mb-3" id="pills-tab-<?= $sub['id'] ?>" role="tablist">
                                                     <li class="nav-item">
-                                                        <a class="nav-link active" data-toggle="pill" href="#panel-tabla-<?= $sub['id'] ?>">
-                                                            <i class="fas fa-table mr-1"></i> Historial (Tabla)
+                                                        <a class="nav-link active btn-cargar-tabla pill-voltaje" data-tipo="voltaje" data-subid="<?= $sub['id'] ?>" data-toggle="pill" href="#panel-tabla-voltaje-<?= $sub['id'] ?>">
+                                                            <i class="fas fa-table mr-1"></i> Voltajes (Tabla)
                                                         </a>
                                                     </li>
                                                     <li class="nav-item">
-                                                        <a class="nav-link btn-cargar-grafico" data-toggle="pill" data-subid="<?= $sub['id'] ?>" href="#panel-grafico-<?= $sub['id'] ?>">
-                                                            <i class="fas fa-chart-area mr-1"></i> Gráficos Separados (7 Días)
+                                                        <a class="nav-link btn-cargar-grafico pill-voltaje" data-tipo="voltaje" data-subid="<?= $sub['id'] ?>" data-toggle="pill" href="#panel-grafico-voltaje-<?= $sub['id'] ?>">
+                                                            <i class="fas fa-chart-area mr-1"></i> Voltajes (Gráficos)
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link btn-cargar-tabla pill-fase" data-tipo="fase" data-subid="<?= $sub['id'] ?>" data-toggle="pill" href="#panel-tabla-fase-<?= $sub['id'] ?>">
+                                                            <i class="fas fa-bolt mr-1"></i> Fases (Tabla)
+                                                        </a>
+                                                    </li>
+                                                    <li class="nav-item">
+                                                        <a class="nav-link btn-cargar-grafico pill-fase" data-tipo="fase" data-subid="<?= $sub['id'] ?>" data-toggle="pill" href="#panel-grafico-fase-<?= $sub['id'] ?>">
+                                                            <i class="fas fa-chart-line mr-1"></i> Fases (Gráficos)
                                                         </a>
                                                     </li>
                                                 </ul>
 
                                                 <div class="tab-content">
-                                                    <div class="tab-pane fade show active" id="panel-tabla-<?= $sub['id'] ?>" role="tabpanel">
-                                                        <div class="contenedor-tabla-sub" id="tabla-sub-<?= $sub['id'] ?>">
-                                                            <div class="text-center p-4">
-                                                                <i class="fas fa-spinner fa-spin fa-2x text-primary"></i>
-                                                                <p class="mt-2">Cargando mediciones de <?= htmlspecialchars($sub['nombre']) ?>...</p>
-                                                            </div>
+                                                    <div class="tab-pane fade show active" id="panel-tabla-voltaje-<?= $sub['id'] ?>" role="tabpanel">
+                                                        <div class="contenedor-tabla-sub" id="tabla-voltaje-<?= $sub['id'] ?>">
+                                                            <div class="text-center p-4"><i class="fas fa-spinner fa-spin fa-2x text-primary"></i><p class="mt-2">Cargando voltajes...</p></div>
                                                         </div>
                                                     </div>
-
-                                                    <div class="tab-pane fade" id="panel-grafico-<?= $sub['id'] ?>" role="tabpanel">
-                                                        <div class="row" id="contenedor-grilla-graficos-<?= $sub['id'] ?>">
-                                                            <div class="col-12 text-center p-4 contenedor-loading-grafico">
-                                                                <i class="fas fa-circle-notch fa-spin fa-2x text-success"></i>
-                                                                <p class="mt-2 text-muted">Construyendo paneles individuales de análisis...</p>
-                                                            </div>
+                                                    <div class="tab-pane fade" id="panel-grafico-voltaje-<?= $sub['id'] ?>" role="tabpanel">
+                                                        <div class="row" id="grafico-voltaje-<?= $sub['id'] ?>">
+                                                            <div class="col-12 text-center p-4"><i class="fas fa-circle-notch fa-spin fa-2x text-primary"></i><p class="mt-2">Construyendo gráficos de voltaje...</p></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="tab-pane fade" id="panel-tabla-fase-<?= $sub['id'] ?>" role="tabpanel">
+                                                        <div class="contenedor-tabla-sub" id="tabla-fase-<?= $sub['id'] ?>">
+                                                            <div class="text-center p-4"><i class="fas fa-spinner fa-spin fa-2x text-warning"></i><p class="mt-2">Cargando fases...</p></div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="tab-pane fade" id="panel-grafico-fase-<?= $sub['id'] ?>" role="tabpanel">
+                                                        <div class="row" id="grafico-fase-<?= $sub['id'] ?>">
+                                                            <div class="col-12 text-center p-4"><i class="fas fa-circle-notch fa-spin fa-2x text-warning"></i><p class="mt-2">Construyendo gráficos de fases...</p></div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -359,6 +412,23 @@ if ($stmtSubAnalizador = $conexion->prepare($querySubAnalizador)) {
                         <div class="col-md-4 col-12 mb-3">
                             <label class="form-label font-weight-bold">Archivo L3-L1:</label><input type="file" class="form-control" name="csv_l3l1" accept=".csv">
                         </div>
+                        <div class="col-12 mt-3">
+                            <h6 class="text-warning border-bottom pb-1 mb-3">
+                                <i class="fas fa-charging-station mr-1"></i> Mediciones por Fase (F1 - F2 - F3)
+                            </h6>
+                        </div>
+                        <div class="col-md-4 col-12 mb-3">
+                            <label class="form-label font-weight-bold">Archivo Fase 1:</label>
+                            <input type="file" class="form-control" name="csv_fase1" id="csv_fase1" accept=".csv">
+                        </div>
+                        <div class="col-md-4 col-12 mb-3">
+                            <label class="form-label font-weight-bold">Archivo Fase 2:</label>
+                            <input type="file" class="form-control" name="csv_fase2" id="csv_fase2" accept=".csv">
+                        </div>
+                        <div class="col-md-4 col-12 mb-3">
+                            <label class="form-label font-weight-bold">Archivo Fase 3:</label>
+                            <input type="file" class="form-control" name="csv_fase3" id="csv_fase3" accept=".csv">
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer d-flex justify-content-between">
@@ -410,21 +480,40 @@ if ($stmtSubAnalizador = $conexion->prepare($querySubAnalizador)) {
             $('#idSubAnalizador').val('').trigger('change');
         });
 
-        function cargarContenidoSub(tabElement) {
-            var subId = tabElement.data('subid');
-            var contenedor = $('#tabla-sub-' + subId);
+        // Lógica actualizada para las tablas
+        function cargarContenidoSub(subId, tipo) {
+            if(!tipo) tipo = 'voltaje'; // Por defecto voltaje
+            var contenedor = $('#tabla-' + tipo + '-' + subId);
 
             if (contenedor.hasClass('cargado') || !subId) return;
 
             $.ajax({
                 url: '../sdo-includes/analizadores/sub_analizadores_cargar_mediciones.php',
                 type: 'POST',
-                data: {subId: subId},
+                data: {subId: subId, tipo: tipo},
                 success: function (response) {
                     contenedor.html(response);
-                    $('#tabla-data-sub-' + subId).DataTable({
-                        ...dataTableConfig
+
+                    // Inicialización de DataTables optimizada para columnas estrechas
+                    contenedor.find('.tabla-data-dinamica').DataTable({
+                        ...dataTableConfig,
+                        // Sobrescribimos el DOM para apilar y centrar los controles
+                        dom: "<'row mb-2'<'col-12 d-flex justify-content-center'f>>" +
+                            "<'row'<'col-12'tr>>" +
+                            "<'row mt-2'<'col-12 text-center text-xs text-muted mb-1'i><'col-12 d-flex justify-content-center'p>>",
+                        pagingType: "simple_numbers",
+                        language: {
+                            ...dataTableConfig.language,
+                            info: "_START_ - _END_ de _TOTAL_ regs", // Texto de info abreviado
+                            paginate: {
+                                previous: "◄", // Flechas en lugar de "Anterior/Siguiente"
+                                next: "►"
+                            },
+                            search: "", // Quitamos la etiqueta "Buscar:" para ahorrar espacio
+                            searchPlaceholder: "Buscar..."
+                        }
                     });
+
                     contenedor.addClass('cargado');
                 },
                 error: function () {
@@ -433,29 +522,42 @@ if ($stmtSubAnalizador = $conexion->prepare($querySubAnalizador)) {
             });
         }
 
+        // Cargar primera pestaña al iniciar
         var subActivo = $('#tabSubAnalizadores a.active');
         if (subActivo.length > 0) {
-            cargarContenidoSub(subActivo);
+            cargarContenidoSub(subActivo.data('subid'), 'voltaje');
         }
 
+        // Evento cambio de pestaña principal (Cabeceras BME1, etc)
         $('#tabSubAnalizadores a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-            cargarContenidoSub($(e.target));
+            var subId = $(e.target).data('subid');
+            // Al cambiar, cargamos la tabla de voltaje por defecto
+            cargarContenidoSub(subId, 'voltaje');
+        });
+
+        // Evento cambio de sub-pestañas (Las Pills internas)
+        $(document).on('click', '.btn-cargar-tabla', function (e) {
+            var subId = $(this).data('subid');
+            var tipo = $(this).data('tipo');
+            cargarContenidoSub(subId, tipo);
         });
 
         // =========================================================================
-        // CONTROL ASÍNCRONO: CONSTRUCCIÓN GRÁFICA AVANZADA CON ZOOM & DESPLAZAMIENTO
+        // CONTROL ASÍNCRONO: CONSTRUCCIÓN GRÁFICA
         // =========================================================================
         $(document).on('click', '.btn-cargar-grafico', function (e) {
             e.preventDefault();
             var subId = $(this).data('subid');
-            var grilla = $('#contenedor-grilla-graficos-' + subId);
+            var tipo = $(this).data('tipo');
+            var grilla = $('#grafico-' + tipo + '-' + subId);
+            var identificadorInstancia = subId + '_' + tipo; // Separar instancias por tipo
 
             if (grilla.hasClass('renderizado')) {
                 setTimeout(function () {
-                    if (graficosInstanciados[subId]) {
-                        Object.keys(graficosInstanciados[subId]).forEach(function (key) {
-                            graficosInstanciados[subId][key].resize();
-                            graficosInstanciados[subId][key].update();
+                    if (graficosInstanciados[identificadorInstancia]) {
+                        Object.keys(graficosInstanciados[identificadorInstancia]).forEach(function (key) {
+                            graficosInstanciados[identificadorInstancia][key].resize();
+                            graficosInstanciados[identificadorInstancia][key].update();
                         });
                     }
                 }, 180);
@@ -465,7 +567,7 @@ if ($stmtSubAnalizador = $conexion->prepare($querySubAnalizador)) {
             $.ajax({
                 url: '../sdo-includes/analizadores/grafico_sub_analizador_7dias.php',
                 type: 'POST',
-                data: {subId: subId},
+                data: {subId: subId, tipo: tipo},
                 dataType: 'json',
                 success: function (json) {
                     if (json.status === 'error' || !json.datasets || json.datasets.length === 0) {
@@ -474,24 +576,23 @@ if ($stmtSubAnalizador = $conexion->prepare($querySubAnalizador)) {
                     }
 
                     grilla.empty();
-                    graficosInstanciados[subId] = {};
+                    graficosInstanciados[identificadorInstancia] = {};
 
                     json.datasets.forEach(function (dataset, index) {
-                        var canvasId = 'canvas-sub-' + subId + '-' + index;
-                        var btnResetId = 'btn-reset-zoom-' + subId + '-' + index;
+                        var canvasId = 'canvas-sub-' + subId + '-' + tipo + '-' + index;
+                        var btnResetId = 'btn-reset-zoom-' + subId + '-' + tipo + '-' + index;
 
                         var HTMLCard = `
                             <div class="col-xl-6 col-lg-6 col-md-12 col-12 mb-3">
                                 <div class="card card-outline card-primary shadow-sm bg-white border">
                                     <div class="card-header bg-light d-flex justify-content-between align-items-center py-2">
                                         <h6 class="card-title font-weight-bold text-dark mb-0">
-                                            <i class="fas fa-chart-area mr-2 text-primary"></i>Parámetro: ${dataset.label}
+                                            <i class="fas fa-chart-area mr-2 ${tipo === 'fase' ? 'text-warning' : 'text-primary'}"></i>Parámetro: ${dataset.label}
                                         </h6>
                                         <button class="btn btn-xs btn-outline-secondary btn-reset-zoom-instancia shadow-sm font-weight-bold"
-                                                id="${btnResetId}"
-                                                data-subid="${subId}"
+                                                data-instancia="${identificadorInstancia}"
                                                 data-idx="${index}"
-                                                title="Restaurar escala original de 7 días">
+                                                title="Restaurar escala">
                                             <i class="fas fa-search-minus mr-1 text-danger"></i> Reset Zoom
                                         </button>
                                     </div>
@@ -508,7 +609,7 @@ if ($stmtSubAnalizador = $conexion->prepare($querySubAnalizador)) {
                         var ctx = document.getElementById(canvasId).getContext('2d');
 
                         setTimeout(function () {
-                            graficosInstanciados[subId][index] = new Chart(ctx, {
+                            graficosInstanciados[identificadorInstancia][index] = new Chart(ctx, {
                                 type: 'line',
                                 data: {
                                     labels: json.labels,
@@ -531,93 +632,63 @@ if ($stmtSubAnalizador = $conexion->prepare($querySubAnalizador)) {
                                     maintainAspectRatio: false,
                                     plugins: {
                                         legend: {display: false},
-                                        // CONFIGURACIÓN DINÁMICA DE LA API DE ZOOM INTERACTIVO
                                         zoom: {
-                                            pan: {
-                                                enabled: true,
-                                                mode: 'x', // Restringido al eje X (línea temporal cronológica)
-                                                modifierKey: 'ctrl' // Evita romper el scroll vertical nativo del SDO
-                                            },
-                                            zoom: {
-                                                wheel: {
-                                                    enabled: true, // Zoom dinámico con rueda del ratón
-                                                    speed: 0.08
-                                                },
-                                                pinch: {
-                                                    enabled: true // Soporte multi-touch para tablets en terreno hospitalario
-                                                },
-                                                mode: 'x'
-                                            }
+                                            pan: { enabled: true, mode: 'x', modifierKey: 'ctrl' },
+                                            zoom: { wheel: { enabled: true, speed: 0.08 }, pinch: { enabled: true }, mode: 'x' }
                                         }
                                     },
                                     scales: {
-                                        x: {
-                                            grid: {color: '#eef2f5'},
-                                            ticks: {
-                                                color: '#495057',
-                                                maxTicksLimit: 6,
-                                                font: {size: 10}
-                                            }
-                                        },
+                                        x: { grid: {color: '#eef2f5'}, ticks: { color: '#495057', maxTicksLimit: 6, font: {size: 10} } },
                                         y: {
                                             grid: {color: '#eef2f5'},
-                                            ticks: {
-                                                color: '#495057',
-                                                font: {size: 11}
-                                            },
-                                            title: {
-                                                display: true,
-                                                text: 'Voltaje (V)',
-                                                color: '#495057',
-                                                font: {weight: 'bold'}
-                                            }
+                                            ticks: { color: '#495057', font: {size: 11} },
+                                            title: { display: true, text: json.ejeY, color: '#495057', font: {weight: 'bold'} }
                                         }
                                     }
                                 }
                             });
                         }, 150);
                     });
-
                     grilla.addClass('renderizado');
-                },
-                error: function () {
-                    grilla.html('<div class="col-12"><div class="alert alert-danger">Error crítico al estructurar los paneles gráficos.</div></div>');
                 }
             });
         });
 
-        // =========================================================================
-        // DELEGACIÓN DE EVENTOS: DISPARADOR INTERNO PARA RESETEAR EL ZOOM
-        // =========================================================================
         $(document).on('click', '.btn-reset-zoom-instancia', function(e) {
             e.preventDefault();
-            var subId = $(this).data('subid');
+            var instancia = $(this).data('instancia');
             var idx = $(this).data('idx');
-
-            if (graficosInstanciados[subId] && graficosInstanciados[subId][idx]) {
-                // Ejecuta la llamada interna del plugin de Chart.js para remover la escala de aumentos
-                graficosInstanciados[subId][idx].resetZoom();
+            if (graficosInstanciados[instancia] && graficosInstanciados[instancia][idx]) {
+                graficosInstanciados[instancia][idx].resetZoom();
             }
         });
 
         // Formulario de envío CSV heredado
+        // Formulario de envío CSV restaurado para producción
         $('#formCargaLecturas').on('submit', function (e) {
             e.preventDefault();
+
             if (!$('#idSubAnalizador').val()) {
+                Swal.fire({ icon: 'warning', title: 'Atención', text: 'Por favor, seleccione un Sub-Analizador.' });
                 return;
             }
+
             var archivosSeleccionados = false;
             $(this).find('input[type="file"]').each(function () {
                 if ($(this).val()) archivosSeleccionados = true;
             });
+
             if (!archivosSeleccionados) {
+                Swal.fire({ icon: 'warning', title: 'Sin archivos', text: 'Debe cargar al menos un archivo CSV.' });
                 return;
             }
 
+            // Aseguramos el multipart/form-data nativo para empaquetar el $_FILES
             var formData = new FormData(this);
+
             Swal.fire({
                 title: 'Procesando...',
-                text: 'Espere un momento.',
+                text: 'Analizando estructuras e indexando mediciones en la BD.',
                 allowOutsideClick: false,
                 didOpen: () => {
                     Swal.showLoading();
@@ -648,6 +719,14 @@ if ($stmtSubAnalizador = $conexion->prepare($querySubAnalizador)) {
                             text: res.message
                         });
                     }
+                },
+                error: function () {
+                    Swal.close();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error Crítico',
+                        text: 'Error de comunicación con el controlador de base de datos.'
+                    });
                 }
             });
         });

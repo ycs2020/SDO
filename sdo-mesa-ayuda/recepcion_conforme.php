@@ -253,7 +253,7 @@ $idDepartamento = $_SESSION['idDepartamento'];
                                             if($idUsuario == 5){
                                                 $sql = "SELECT * FROM categorias_recepcion_conforme WHERE nomCreador = 'Marcela Rojas Perez' OR idDepartamento = $idDepartamento ORDER BY id DESC";
                                             }else if($idUsuario == 1){
-                                                $sql = "SELECT * FROM categorias_recepcion_conformeORDER BY id DESC";
+                                                $sql = "SELECT * FROM categorias_recepcion_conforme ORDER BY id DESC";
                                             }else{
                                                 $sql = "SELECT * FROM categorias_recepcion_conforme ORDER BY id DESC";
                                             }

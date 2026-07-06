@@ -97,6 +97,26 @@ if ($stmtSubAnalizador = $conexion->prepare($querySubAnalizador)) {
             padding: 0.2rem 0.5rem;
             text-align: center;
         }
+
+        /* Estilo base para los botones de Fases cuando no están seleccionados */
+        .nav-pills .nav-link.pill-fase {
+            color: #28a745 !important; /* Verde estándar */
+            background-color: transparent;
+            transition: all 0.2s ease-in-out;
+        }
+
+        /* Efecto Hover (pasar el mouse por encima) */
+        .nav-pills .nav-link.pill-fase:hover {
+            background-color: rgba(40, 167, 69, 0.1); /* Fondo verde sutil */
+            color: #218838 !important;
+        }
+
+        /* Estilo CRÍTICO: Cuando la pestaña de Fases está activa/seleccionada */
+        .nav-pills .nav-link.pill-fase.active {
+            background-color: #28a745 !important; /* Fondo Verde */
+            color: #ffffff !important; /* Texto Blanco Puro para contraste óptimo */
+            border-color: #28a745;
+        }
     </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed layout-footer-fixed">
@@ -261,22 +281,22 @@ if ($stmtSubAnalizador = $conexion->prepare($querySubAnalizador)) {
 
                                                 <ul class="nav nav-pills mb-3" id="pills-tab-<?= $sub['id'] ?>" role="tablist">
                                                     <li class="nav-item">
-                                                        <a class="nav-link active btn-cargar-tabla" data-tipo="voltaje" data-subid="<?= $sub['id'] ?>" data-toggle="pill" href="#panel-tabla-voltaje-<?= $sub['id'] ?>">
+                                                        <a class="nav-link active btn-cargar-tabla pill-voltaje" data-tipo="voltaje" data-subid="<?= $sub['id'] ?>" data-toggle="pill" href="#panel-tabla-voltaje-<?= $sub['id'] ?>">
                                                             <i class="fas fa-table mr-1"></i> Voltajes (Tabla)
                                                         </a>
                                                     </li>
                                                     <li class="nav-item">
-                                                        <a class="nav-link btn-cargar-grafico" data-tipo="voltaje" data-subid="<?= $sub['id'] ?>" data-toggle="pill" href="#panel-grafico-voltaje-<?= $sub['id'] ?>">
+                                                        <a class="nav-link btn-cargar-grafico pill-voltaje" data-tipo="voltaje" data-subid="<?= $sub['id'] ?>" data-toggle="pill" href="#panel-grafico-voltaje-<?= $sub['id'] ?>">
                                                             <i class="fas fa-chart-area mr-1"></i> Voltajes (Gráficos)
                                                         </a>
                                                     </li>
                                                     <li class="nav-item">
-                                                        <a class="nav-link btn-cargar-tabla text-warning" data-tipo="fase" data-subid="<?= $sub['id'] ?>" data-toggle="pill" href="#panel-tabla-fase-<?= $sub['id'] ?>">
+                                                        <a class="nav-link btn-cargar-tabla pill-fase" data-tipo="fase" data-subid="<?= $sub['id'] ?>" data-toggle="pill" href="#panel-tabla-fase-<?= $sub['id'] ?>">
                                                             <i class="fas fa-bolt mr-1"></i> Fases (Tabla)
                                                         </a>
                                                     </li>
                                                     <li class="nav-item">
-                                                        <a class="nav-link btn-cargar-grafico text-warning" data-tipo="fase" data-subid="<?= $sub['id'] ?>" data-toggle="pill" href="#panel-grafico-fase-<?= $sub['id'] ?>">
+                                                        <a class="nav-link btn-cargar-grafico pill-fase" data-tipo="fase" data-subid="<?= $sub['id'] ?>" data-toggle="pill" href="#panel-grafico-fase-<?= $sub['id'] ?>">
                                                             <i class="fas fa-chart-line mr-1"></i> Fases (Gráficos)
                                                         </a>
                                                     </li>

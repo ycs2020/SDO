@@ -8770,10 +8770,28 @@ function calcularTiempoEquipoOperativo($nombre)
 function contarfaltavisado($nomUsuario)
 {
     include 'conexion.php';
-    $sql = "SELECT count(*) as total FROM trabajos_general WHERE solicitanteTG LIKE '%$nomUsuario%' AND (isVisado = 0 OR isVisado = null) AND estadoTG = 'Trabajo Terminado'";
-    $res = mysqli_query($conexion, $sql);
-    while ($row = $res->fetch_assoc()) {
-        $total = $row['total'];
+
+    // Se utiliza 'IS NULL' ya que '= null' no es una sintaxis válida en SQL
+    $sql = "SELECT COUNT(*) as total 
+            FROM trabajos_general 
+            WHERE solicitanteTG LIKE ? 
+            AND (isVisado = 0 OR isVisado IS NULL) 
+            AND estadoTG = 'Trabajo Terminado'";
+
+    $total = 0;
+
+    if ($stmt = mysqli_prepare($conexion, $sql)) {
+        // Envolver el parámetro con comodines para la cláusula LIKE de forma segura
+        $terminoBusqueda = "%" . $nomUsuario . "%";
+        mysqli_stmt_bind_param($stmt, "s", $terminoBusqueda);
+
+        mysqli_stmt_execute($stmt);
+        $res = mysqli_stmt_get_result($stmt);
+
+        if ($row = mysqli_fetch_assoc($res)) {
+            $total = (int)$row['total'];
+        }
+        mysqli_stmt_close($stmt);
     }
     return $total;
 }
@@ -12921,18 +12939,22 @@ function contarCredencialesDeshabilitadas($idCredencialVer)
 function contarNotificacionesPersonal()
 {
     include 'conexion.php';
+
+    // Al no depender de variables externas directas es estática, pero se mantiene la estructura limpia
     $sql = "SELECT COUNT(*) AS total
             FROM credenciales_rrhh_observaciones
             WHERE notificado = 0
-            AND tipoObservacion <> 'Trabajo Realizado'";
-
-    $res = $conexion->query($sql);
+            AND tipoObservacion LIKE 'Trabajo Realizado'";
 
     $total = 0;
-    if($res){
-        while($row = $res->fetch_assoc()){
-            $total = $row['total'];
+    if ($stmt = mysqli_prepare($conexion, $sql)) {
+        mysqli_stmt_execute($stmt);
+        $res = mysqli_stmt_get_result($stmt);
+
+        if ($row = mysqli_fetch_assoc($res)) {
+            $total = (int)$row['total'];
         }
+        mysqli_stmt_close($stmt);
     }
     return $total;
 }
@@ -12956,6 +12978,26 @@ function contarNotificacionesPersonalRRHH()
     return $total;
 }
 
+function obtenerTotalSeguro($conexion, $sql, $anio = null)
+{
+    if ($anio !== null) {
+        if ($stmt = mysqli_prepare($conexion, $sql)) {
+            mysqli_stmt_bind_param($stmt, "i", $anio);
+            mysqli_stmt_execute($stmt);
+            $res = mysqli_stmt_get_result($stmt);
+            $row = mysqli_fetch_assoc($res);
+            mysqli_stmt_close($stmt);
+            return isset($row['TOTAL']) ? (int)$row['TOTAL'] : 0;
+        }
+    } else {
+        // Para consultas que no requieren parámetros dinámicos estacionales
+        $res = mysqli_query($conexion, $sql);
+        if ($res && $row = $res->fetch_assoc()) {
+            return (int)$row['TOTAL'];
+        }
+    }
+    return 0;
+}
 
 function obtenerRutaCompletaEquipamiento($id)
 {

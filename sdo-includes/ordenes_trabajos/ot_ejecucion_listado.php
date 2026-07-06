@@ -121,7 +121,7 @@ if ($resTG) {
 
                 switch ($txtEstado) {
                     case 'YORGO':
-                        $txtDetalles = '<form style="margin: 0; text-align: center;" action="detalle_ordenes_trabajo_2.php" method="post" target="_blank">
+                        $txtDetalles = '<form style="margin: 0; text-align: center;" action="detalle_ordenes_trabajo.php" method="post" target="_blank">
                                         <input type="hidden" name="idTG" value="' . $idTG . '">
                                         <button type="submit" class="btn btn-sm btn-info btn-block shadow-sm" title="Ver Detalles"><i class="fa fa-eye"></i></button>
                                     </form>';

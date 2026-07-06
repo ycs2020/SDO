@@ -1,29 +1,52 @@
 <?php
-$phone = '+56940748358';
-$apikey = '7003377';
-$message = 'Hola desde tu código 👋';
+$camera_ip = '10.10.115.16';
+$username  = 'admin';
+$password  = 'quillota123';
 
-$params = http_build_query([
-    'phone' => $phone,
-    'text' => $message,
-    'apikey' => $apikey
-]);
+$url = "http://{$camera_ip}/cgi-bin/eventManager.cgi?action=attach&codes=[TrafficVehicle]";
 
-$url = 'https://api.callmebot.com/whatsapp.php?' . $params;
+echo "=== ESCUCHANDO CON FILTRO ULTRA-FLEXIBLE ===" . PHP_EOL;
 
-// Inicializar cURL
 $ch = curl_init();
-
-// Configurar las opciones de cURL
 curl_setopt($ch, CURLOPT_URL, $url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Para que devuelva el resultado como string
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, false);
+curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST);
+curl_setopt($ch, CURLOPT_USERPWD, "{$username}:{$password}");
+curl_setopt($ch, CURLOPT_TIMEOUT, 0);
+curl_setopt($ch, CURLOPT_BUFFERSIZE, 2048);
 
-// Ejecutar la petición
-$response = curl_exec($ch);
+$buffer = "";
 
-// Cerrar la conexión
+curl_setopt($ch, CURLOPT_WRITEFUNCTION, function($ch, $data) use (&$buffer) {
+    $buffer .= $data;
+
+    // Si encontramos un quiebre de línea, procesamos el fragmento
+    if (strpos($buffer, "\n") !== false) {
+
+        // Buscamos "plate" sin importar si viene como PlateNumber, platenumber o Plate
+        if (preg_match('/plate(?:number)?\s*=\s*([A-Z0-9\-]+)/i', $buffer, $matches)) {
+            $plate = trim($matches[1]);
+
+            if (!empty($plate) && strtolower($plate) !== 'unknown') {
+                echo "[" . date('H:i:s') . "] 🚗 ¡PATENTE CAPTURADA!: " . strtoupper($plate) . PHP_EOL;
+                ob_flush();
+                flush();
+            }
+        }
+
+        // Mantener el buffer limpio y corto para evitar que la cámara se sature y nos bote
+        if (strlen($buffer) > 5000) {
+            $buffer = "";
+        }
+    }
+    return strlen($data);
+});
+
+curl_exec($ch);
+
+if (curl_errno($ch)) {
+    echo "❌ Conexión cerrada por la cámara: " . curl_error($ch) . PHP_EOL;
+}
+
 curl_close($ch);
-
-// Imprimir el resultado
-echo $response;
 ?>

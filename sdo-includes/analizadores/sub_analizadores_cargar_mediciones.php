@@ -72,10 +72,31 @@ if (isset($_POST['subId'])) {
                                     <?php
                                     foreach ($registros as $reg) {
                                         $fechaFormateada = date("d-m-Y H:i:s", strtotime($reg['fecha']));
+                                        $valor = $reg['valor'];
+
+                                        // Lógica de alerta por rangos de voltaje
+                                        $fueraDeRango = false;
+                                        if ($nombreLinea === 'L1N' || $nombreLinea === 'L2N' || $nombreLinea === 'L3N') {
+                                            if ($valor < 205.0 || $valor > 235.0) {
+                                                $fueraDeRango = true;
+                                            }
+                                        } elseif ($nombreLinea === 'L1L2' || $nombreLinea === 'L2L3' || $nombreLinea === 'L3L1') {
+                                            if ($valor < 354.0 || $valor > 406.0) {
+                                                $fueraDeRango = true;
+                                            }
+                                        }
+
+                                        // Si está fuera de rango usa 'text-danger', de lo contrario mantiene el 'text-primary' (o 'text-warning' si son fases)
+                                        $claseColor = $fueraDeRango ? 'text-danger font-weight-bold' : ($esFase ? 'text-primary' : 'text-primary');
                                         ?>
                                         <tr>
                                             <td class="text-center text-muted font-weight-bold"><?= $fechaFormateada ?></td>
-                                            <td class="text-center font-weight-bold text-primary"><?= number_format($reg['valor'], 1) ?> <?= $unidadMedida ?></td>
+                                            <td class="text-center font-weight-bold <?= $claseColor ?>">
+                                                <?= number_format($valor, 1) ?> <?= $unidadMedida ?>
+                                                <?php if ($fueraDeRango): ?>
+                                                    <i class="fas fa-exclamation-triangle ml-1" title="Valor fuera de rango normativo"></i>
+                                                <?php endif; ?>
+                                            </td>
                                         </tr>
                                         <?php
                                     }
